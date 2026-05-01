@@ -47,6 +47,6 @@ This script is provided "as is", without warranty of any kind. Use at your own r
 
 ## ⚖️ License / Lizenz (MIT)
 
-Copyright (c) 2026 [Your Name / Username]
+Copyright (c) 2026 Loffholzer
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software... [Full MIT License text applies]
+Distributed under the MIT License. See `LICENSE` for more information.
