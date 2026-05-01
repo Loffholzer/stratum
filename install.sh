@@ -1,68 +1,65 @@
-#!/bin/bash
-# shellcheck disable=SC1090,SC1091
-# ==============================================================================
-# STRATUM - ARCH LINUX DEPLOYMENT FRAMEWORK
-# Main Deployment Script
-# ==============================================================================
+#!/usr/bin/env bash
 
-set -e
+# =========================================
+# 📦 Funktion: Globaler Header / Info
+# -----------------------------------------
+# Zweck: Installer Hauptsteuerung
+# Aufgabe: Lädt Module sequenziell, verwaltet DRY_RUN State
+# =========================================
 
-if [[ ! -f "config.sh" ]]; then
-    echo "[ ERROR ] config.sh fehlt. Abbruch."
-    exit 1
-fi
-source "config.sh"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" || { echo "Fehler bei der Pfadermittlung."; exit 1; }
+readonly BASE_DIR
 
-for mod_file in modules/*.sh; do
-    if [[ -f "$mod_file" ]]; then
-        source "$mod_file"
+MOD_DIR="${BASE_DIR}/modules"
+readonly MOD_DIR
+
+export DRY_RUN=false
+
+# =========================================
+# 📦 Funktion: load_module
+# -----------------------------------------
+# Zweck: Sicheres Laden von Teilskripten
+# Aufgabe: Prüft Modul-Existenz und triggert die Hauptfunktion
+# =========================================
+load_module() {
+    local mod_file="$1"
+    local func_name="$2"
+
+    if [[ -f "${MOD_DIR}/${mod_file}" ]]; then
+        # shellcheck disable=SC1090
+        source "${MOD_DIR}/${mod_file}"
+        "$func_name"
     else
-        echo "[ ERROR ] Modulverzeichnis unvollständig. Abbruch."
+        echo -e "\033[1;31m[FEHLER]\033[0m Modul ${mod_file} nicht gefunden. Abbruch."
         exit 1
     fi
-done
+}
 
-clear
-echo "=============================================================================="
-echo " $FRAMEWORK_NAME v$VERSION - Deployment Framework"
-echo "=============================================================================="
-echo "[ INFO ] Initialisierung gestartet."
+# =========================================
+# 📦 Funktion: main
+# -----------------------------------------
+# Zweck: Sequenzielle Abarbeitung der Phasen
+# Aufgabe: Triggert alle Module in der logischen Architektur-Folge
+# =========================================
+main() {
+    # 0. Utils & UI (muss zwingend als erstes geladen werden für Logging)
+    load_module "00_utils.sh" "run_utils"
 
-# 0. Datenerfassung via Wizard
-wizard_run
+    # 1. Konfigurationsphase (aufgeteilt in Sys und Disk)
+    load_module "01_config_sys.sh" "run_config_sys"
+    load_module "02_config_disk.sh" "run_config_disk"
 
-# 1. Preflight-Checks
-preflight_checks
+    # 2. Ausführung der Installationsphasen
+    load_module "03_prep.sh" "run_prep"
+    load_module "04_disk.sh" "run_disk"
+    load_module "05_base.sh" "run_base"
+    load_module "06_chroot_env.sh" "run_chroot_env"
+    load_module "07_chroot_users.sh" "run_chroot_users"
+    load_module "08_chroot_services.sh" "run_chroot_services"
 
-# 2. Festplatten-Setup
-disk_setup
+    # 3. Abschluss
+    load_module "99_cleanup.sh" "run_cleanup"
+}
 
-# 3. Dateisystem und Mounts
-mount_btrfs
-
-# 4. Basis-System (Pacstrap)
-base_pacstrap
-
-# 5. Bootloader-Umgebung (Limine)
-env_bootloader
-
-# 6. Benutzerverwaltung und AUR
-users_setup
-users_aur
-
-# 7. Systemd-Dienste
-services_enable
-
-echo "[ INFO ] Erstelle GUI-Handoff-Skript für den finalen Nutzer..."
-cp arch_desktop_setup.sh /mnt/home/"$USERNAME"/
-arch-chroot /mnt chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/arch_desktop_setup.sh
-arch-chroot /mnt chmod +x /home/"$USERNAME"/arch_desktop_setup.sh
-
-echo "=============================================================================="
-echo "[ OK ] Stratum Deployment erfolgreich abgeschlossen."
-echo "=============================================================================="
-read -rp "Systemneustart erforderlich. Fortfahren? [J/n] " reboot_choice
-case "$reboot_choice" in
-    [nN]*) echo "[ INFO ] Neustart übersprungen. System verbleibt in chroot." ;;
-    *) echo "[ INFO ] Neustart initiiert..."; umount -R /mnt; reboot ;;
-esac
+# Start
+main "$@"
