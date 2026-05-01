@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090,SC1091
 # ==============================================================================
 # STRATUM - ARCH LINUX DEPLOYMENT FRAMEWORK
 # Main Deployment Script
@@ -53,14 +54,14 @@ users_aur
 services_enable
 
 echo "[ INFO ] Erstelle GUI-Handoff-Skript für den finalen Nutzer..."
-cp arch_desktop_setup.sh /mnt/home/$USERNAME/
-arch-chroot /mnt chown $USERNAME:$USERNAME /home/$USERNAME/arch_desktop_setup.sh
-arch-chroot /mnt chmod +x /home/$USERNAME/arch_desktop_setup.sh
+cp arch_desktop_setup.sh /mnt/home/"$USERNAME"/
+arch-chroot /mnt chown "$USERNAME":"$USERNAME" /home/"$USERNAME"/arch_desktop_setup.sh
+arch-chroot /mnt chmod +x /home/"$USERNAME"/arch_desktop_setup.sh
 
 echo "=============================================================================="
 echo "[ OK ] Stratum Deployment erfolgreich abgeschlossen."
 echo "=============================================================================="
-read -p "Systemneustart erforderlich. Fortfahren? [J/n] " reboot_choice
+read -rp "Systemneustart erforderlich. Fortfahren? [J/n] " reboot_choice
 case "$reboot_choice" in
     [nN]*) echo "[ INFO ] Neustart übersprungen. System verbleibt in chroot." ;;
     *) echo "[ INFO ] Neustart initiiert..."; umount -R /mnt; reboot ;;

@@ -12,8 +12,10 @@ env_bootloader() {
         return 0
     fi
 
-    local root_uuid=$(blkid -s UUID -o value "$PART_ROOT")
-    local esp_mount=$( [[ "$USE_LUKS" == "yes" ]] && echo "/mnt/boot" || echo "/mnt/boot/efi" )
+    local root_uuid
+    root_uuid=$(blkid -s UUID -o value "$PART_ROOT")
+    local esp_mount
+    esp_mount=$( [[ "$USE_LUKS" == "yes" ]] && echo "/mnt/boot" || echo "/mnt/boot/efi" )
 
     echo "[ INFO ] Installiere Bootloader-Pakete..."
     arch-chroot /mnt pacman -S --noconfirm limine memtest86+-efi >/dev/null

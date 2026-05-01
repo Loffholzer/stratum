@@ -26,8 +26,10 @@ disk_setup() {
     sgdisk -n 1:0:+1G -t 1:ef00 -c 1:"EFI System Partition" "$DISK" >/dev/null
     sgdisk -n 2:0:0   -t 2:8304 -c 2:"Linux Root Partition" "$DISK" >/dev/null
 
-    export PART_EFI=$(lsblk -rn -o NAME "$DISK" | sed -n '2p' | sed 's|^|/dev/|')
-    export PART_ROOT=$(lsblk -rn -o NAME "$DISK" | sed -n '3p' | sed 's|^|/dev/|')
+    PART_EFI=$(lsblk -rn -o NAME "$DISK" | sed -n '2p' | sed 's|^|/dev/|')
+    export PART_EFI
+    PART_ROOT=$(lsblk -rn -o NAME "$DISK" | sed -n '3p' | sed 's|^|/dev/|')
+    export PART_ROOT
 
     echo "[ INFO ] Formatiere EFI-Partition (FAT32)..."
     mkfs.fat -F32 "$PART_EFI" >/dev/null

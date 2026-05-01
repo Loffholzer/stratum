@@ -17,7 +17,7 @@ if [[ "$EUID" -eq 0 ]]; then
     exit 1
 fi
 
-read -p "Desktop-Setup jetzt starten? [j/N]: " START_GUI
+read -rp "Desktop-Setup jetzt starten? [j/N]: " START_GUI
 case "$START_GUI" in
     [jJ]*|[yY]*) ;;
     *) echo "[ INFO ] Abbruch."; exit 0 ;;
