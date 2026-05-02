@@ -58,6 +58,10 @@ partition_drive() {
         PART_EFI="${DISK}1"
         PART_ROOT="${DISK}2"
     fi
+
+    # NEU: Zerstört "Ghost-Signatures" direkt auf den neuen Partitionen
+    wipefs -af "$PART_EFI" >/dev/null 2>&1 || true
+    wipefs -af "$PART_ROOT" >/dev/null 2>&1 || true
 }
 
 # =========================================
@@ -75,7 +79,8 @@ setup_luks() {
     local log_msg
     printf -v log_msg "$STR_LOG_LUKS_FORMAT" "$PART_ROOT"
     log "$log_msg"
-    echo -n "$LUKS_PASSWORD" | cryptsetup luksFormat --type luks2 "$PART_ROOT" -
+    # FIX: -q (Batch-Mode) hinzugefügt, ignoriert alte LUKS-Header Warnungen
+    echo -n "$LUKS_PASSWORD" | cryptsetup luksFormat -q --type luks2 "$PART_ROOT" -
 
     log "$STR_LOG_LUKS_OPEN"
     echo -n "$LUKS_PASSWORD" | cryptsetup open "$PART_ROOT" cryptroot -
