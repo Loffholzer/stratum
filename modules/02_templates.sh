@@ -11,18 +11,6 @@
 # Zweck: Lädt große Textblöcke und Configs in den Speicher
 # Aufgabe: Hält die Logik-Module sauber und wartbar
 # =========================================
-# =========================================
-# 📦 Funktion: load_templates
-# -----------------------------------------
-# Zweck: Lädt große Textblöcke und Configs in den Speicher
-# Aufgabe: Hält die Logik-Module sauber und wartbar
-# =========================================
-# =========================================
-# 📦 Funktion: load_templates
-# -----------------------------------------
-# Zweck: Lädt große Textblöcke und Configs in den Speicher
-# Aufgabe: Hält die Logik-Module sauber und wartbar
-# =========================================
 load_templates() {
     # =========================================
     # 📄 Template: ZRAM Configuration
@@ -32,14 +20,15 @@ zram-size = ram / 2
 compression-algorithm = zstd"
 
     # =========================================
-    # 📄 Template: Fish Shell Configuration
+    # 📄 Template: Globale Fish Shell Configuration (etc/fish/config.fish)
     # =========================================
-    export TPL_FISH_CONFIG="set -g fish_greeting
+    export TPL_FISH_CONFIG_ETC="set -g fish_greeting
 
 if status is-interactive
     if type -q fastfetch; fastfetch; end
 end
 
+# Starship & Zoxide global einbinden, falls installiert
 if type -q starship; starship init fish | source; end
 if type -q zoxide; zoxide init fish | source; end
 
@@ -49,7 +38,42 @@ alias la='eza -laa --icons --group-directories-first'
 alias cat='bat --theme=\"Monokai Extended\"'
 alias top='btop'
 alias cd='z'
-alias update='sudo pacman -Syu'"
+alias update='sudo pacman -Syu'
+alias parus='paru -Syu'
+alias snapshots='snapper -c root list'
+"
+
+    # =========================================
+    # 📄 Template: Globale Starship Config (etc/starship.toml)
+    # =========================================
+    export TPL_STARSHIP_CONFIG_ETC="[add_newline]
+"
+
+    # =========================================
+    # 📄 Template: Fish Snippet für globale UX (für sudo -i)
+    # =========================================
+    export TPL_FISH_UX_ROOT="
+# Zwingt Root in die gleiche UX
+set -x STARSHIP_CONFIG /etc/starship.toml
+"
+
+    # =========================================
+    # 📄 Template: Paru Configuration (.config/paru/paru.conf)
+    # =========================================
+    export TPL_PARU_CONF="
+[options]
+PgpFetch
+Devel
+Provides
+# UX
+BottomUp
+NoSudoLoop
+# Pacman Color Integration
+Color = auto
+# ILoveCandy Integration
+ParallelDownloads = 5
+BottomUp
+"
 
     # =========================================
     # 📄 Template: Nano Virtuoso Configuration
@@ -105,42 +129,68 @@ fi"
     export TPL_SUDOERS_AUR_BUILD="builduser ALL=(ALL) NOPASSWD: ALL"
 
     # =========================================
-    # 📄 Template: Limine Config (LUKS)
+    # 📄 Template: Limine Globale Config (Splash, Farben, Memtest)
     # =========================================
-    export TPL_LIMINE_LUKS="timeout: 3
+    # Farben angepasst an splash.jpg (Violett/Orange)
+    export TPL_LIMINE_BASE="timeout: 3
 remember_last_entry: yes
 default_entry: 1
+interface_background: boot():/splash.jpg
+interface_title: Stratum OS
 
-/Arch Linux (Mainline)
+# Farben (Violett/Orange Palette)
+term_background: 0F0014
+term_foreground: FFFFFF
+term_bold_foreground: 9E3DBA
+term_magenta: 5C036F
+term_cyan: C1461A
+"
+
+    # =========================================
+    # 📄 Template: Limine Config Main (LUKS)
+    # =========================================
+    # Hinzugefügt:removed Mainline zusatz, memtest
+    export TPL_LIMINE_LUKS="${TPL_LIMINE_BASE}
+/$STR_LBL_BOOT_LABEL
     protocol: linux
     kernel_path: boot():/vmlinuz-linux
     module_path: boot():/initramfs-linux.img
     cmdline: cryptdevice=UUID={{ROOT_UUID}}:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet loglevel=3 udev.log_level=3
 
-/Arch Linux (LTS)
+/$STR_LBL_BOOT_LABEL_LTS
     protocol: linux
     kernel_path: boot():/vmlinuz-linux-lts
     module_path: boot():/initramfs-linux-lts.img
-    cmdline: cryptdevice=UUID={{ROOT_UUID}}:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet loglevel=3 udev.log_level=3"
+    cmdline: cryptdevice=UUID={{ROOT_UUID}}:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet loglevel=3 udev.log_level=3
+
+# --- Tools ---
+/$STR_LBL_BOOT_MEMTEST
+    protocol: linux
+    kernel_path: boot():/memtest86+/memtest.efi
+"
 
     # =========================================
-    # 📄 Template: Limine Config (Standard)
+    # 📄 Template: Limine Config Main (Standard)
     # =========================================
-    export TPL_LIMINE_STD="timeout: 3
-remember_last_entry: yes
-default_entry: 1
-
-/Arch Linux (Mainline)
+    # Hinzugefügt:removed Mainline zusatz, memtest
+    export TPL_LIMINE_STD="${TPL_LIMINE_BASE}
+/$STR_LBL_BOOT_LABEL
     protocol: linux
     kernel_path: uuid({{ROOT_UUID}}):/@/boot/vmlinuz-linux
     module_path: uuid({{ROOT_UUID}}):/@/boot/initramfs-linux.img
     cmdline: root=UUID={{ROOT_UUID}} rootflags=subvol=@ rw quiet splash
 
-/Arch Linux (LTS)
+/$STR_LBL_BOOT_LABEL_LTS
     protocol: linux
     kernel_path: uuid({{ROOT_UUID}}):/@/boot/vmlinuz-linux-lts
     module_path: uuid({{ROOT_UUID}}):/@/boot/initramfs-linux-lts.img
-    cmdline: root=UUID={{ROOT_UUID}} rootflags=subvol=@ rw quiet splash"
+    cmdline: root=UUID={{ROOT_UUID}} rootflags=subvol=@ rw quiet splash
+
+# --- Tools ---
+/$STR_LBL_BOOT_MEMTEST
+    protocol: linux
+    kernel_path: boot():/memtest86+/memtest.efi
+"
 
     # =========================================
     # 📄 Template: Hosts File
@@ -150,24 +200,9 @@ default_entry: 1
 127.0.1.1   {{HOSTNAME}}.localdomain {{HOSTNAME}}"
 
     # =========================================
-    # 📄 Template: Snapper Pacman Hook
-    # =========================================
-    export TPL_PACMAN_SNAPPER="[Trigger]
-Operation = Install
-Operation = Upgrade
-Operation = Remove
-Type = Package
-Target = *
-
-[Action]
-Description = Erstelle BTRFS Snapshot (Pre-Transaction)...
-Depends = snapper
-When = PreTransaction
-Exec = /usr/bin/snapper -c root create -d \"Pacman Pre-Transaction\""
-
-    # =========================================
     # 📄 Template: Snapper Root Config (Desktop Best-Practice)
     # =========================================
+    # Angepasst auf Best-Practice
     export TPL_SNAPPER_ROOT="SUBVOLUME=\"/\"
 FSTYPE=\"btrfs\"
 ALLOW_USERS=\"\"
@@ -188,5 +223,95 @@ TIMELINE_LIMIT_MONTHLY=\"0\"
 TIMELINE_LIMIT_YEARLY=\"0\"
 EMPTY_PRE_POST_CLEANUP=\"yes\"
 EMPTY_PRE_POST_MIN_AGE=\"1800\""
-}
 
+    # =========================================
+    # 📄 Template: Snapper Pacman Pre-Hook
+    # =========================================
+    export TPL_PACMAN_SNAPPER="[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = Erstelle BTRFS Snapshot (Pre-Transaction)...
+Depends = snapper
+When = PreTransaction
+Exec = /usr/bin/snapper -c root create -d \"Pacman Pre-Transaction\""
+
+    # =========================================
+    # 📄 Template: BTRFS Snapshot-Update Skript (CachyOS style)
+    # =========================================
+    export TPL_SNAPPER_UPDATE_SCRIPT="#!/usr/bin/env bash
+
+LIMINE_CONF=\"/boot/limine.conf\"
+[[ -b /dev/mapper/cryptroot ]] && LIMINE_CONF=\"/boot/limine.conf\" || LIMINE_CONF=\"/boot/efi/limine.conf\"
+
+BOOT_PART_UUID=\"{{BOOT_PART_UUID}}\"
+ROOT_UUID=\"{{ROOT_UUID}}\"
+CRYPTROOT_UUID=\"{{CRYPTROOT_UUID}}\"
+
+SNAPSHOT_BASE=\"/@.snapshots\"
+
+# Bestehende Snapshot-Einträge entfernen
+sed -i '/# === AUTO_GENERATED_SNAPSHOTS ===/,/!d' \"\$LIMINE_CONF\"
+echo \"# === AUTO_GENERATED_SNAPSHOTS ===\" >> \"\$LIMINE_CONF\"
+
+# Nach Snapshots suchen (Snapper .snapshots Verzeichnis)
+mapfile -t SNAPSHOTS < <(btrfs subvolume list /mnt | grep \"/\.snapshots/\" | awk '{print \$NF}' | sort -r)
+
+for snap in \"\${SNAPSHOTS[@]}\"; do
+    snap_num=\$(basename \"\$snap\")
+    snap_name=\$(grep \"Pacman\" \"/\$snap/info.xml\" | head -n 1 | sed 's/.*<desc>\(.*\)<\/desc>.*/\1/')
+    [[ -z \"\$snap_name\" ]] && snap_name=\"Manuell\"
+
+    # Bootloader-Pfad berechnen
+    boot_path=\"/@/\$snap/vmlinuz-linux\"
+    init_path=\"/@/\$snap/initramfs-linux.img\"
+
+    # CMDLINE generieren (LUKS vs Standard)
+    cmdline=\"\"
+    if [[ -z \"\$CRYPTROOT_UUID\" ]]; then
+        cmdline=\"root=UUID=\$ROOT_UUID rootflags=subvol=\$snap/\$snap_num/snapshot rw quiet splash\"
+    else
+        cmdline=\"cryptdevice=UUID=\$CRYPTROOT_UUID:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=\$snap/\$snap_num/snapshot rw quiet loglevel=3 udev.log_level=3\"
+    fi
+
+    # Eintrag anfügen
+    echo \"
+/$STR_LBL_BOOT_LABEL (Snapshot #\$snap_num: \$snap_name)
+    protocol: linux
+    kernel_path: uuid(\$BOOT_PART_UUID):\$boot_path
+    module_path: uuid(\$BOOT_PART_UUID):\$init_path
+    cmdline: \$cmdline\" >> \"\$LIMINE_CONF\"
+done
+"
+
+    # =========================================
+    # 📄 Template: Snapper Update Service
+    # =========================================
+    export TPL_SNAPPER_UPDATE_SERVICE="[Unit]
+Description=Update Limine config with BTRFS snapshots
+After=snapper-cleanup.timer snapper-timeline.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/limine-update-snapshots.sh
+"
+
+    # =========================================
+    # 📄 Template: Snapper Update Timer
+    # =========================================
+    export TPL_SNAPPER_UPDATE_TIMER="[Unit]
+Description=Run limine-update-snapshots service hourly
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+"
+}

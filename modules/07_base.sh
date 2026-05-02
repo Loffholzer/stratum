@@ -29,6 +29,7 @@ install_base_system() {
         curl
         networkmanager
         terminus-font
+        memtest86+
     )
 
     # Hardware-spezifischer Microcode (aus Modul 03)

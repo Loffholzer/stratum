@@ -8,7 +8,7 @@
 # =========================================
 # 📦 Funktion: env_chroot_basics
 # -----------------------------------------
-# Zweck: Basics (Zeit, Locale, Netz)
+# Zweck: Basics (Zeit, Locale, Netz, Pacman)
 # =========================================
 env_chroot_basics() {
     phase_header "$STR_ENV_HDR_BASICS"
@@ -21,14 +21,16 @@ env_chroot_basics() {
     printf -v log_msg "$STR_LOG_TZ_LOCALE" "$TIMEZONE"
     log "$log_msg"
 
+    log "$STR_LOG_PACMAN_TARGET"
+
     # Vorbereiten des Hosts-Inhalts
     local final_hosts
     final_hosts=$(echo "$TPL_HOSTS" | sed "s/{{HOSTNAME}}/$HOSTNAME/g")
 
-    # WICHTIG: EOF-Block komplett linksbündig um Bash-Fehler zu vermeiden
 arch-chroot /mnt /bin/bash <<EOF
     ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
     hwclock --systohc
+    ln -sf /usr/local/bin/fastfetch /bin/fastfetch
     
     # Locales generieren
     sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
@@ -43,6 +45,10 @@ arch-chroot /mnt /bin/bash <<EOF
     echo "FONT=$CONSOLE_FONT" >> /etc/vconsole.conf
     echo "$HOSTNAME" > /etc/hostname
     echo "$final_hosts" > /etc/hosts
+
+    # Pacman konfigurieren (Color & ILoveCandy)
+    sed -i 's/^#Para/Para/' /etc/pacman.conf
+    sed -i 's/^#Color/Color\nILoveCandy/' /etc/pacman.conf
 EOF
 
     success "$STR_OK_BASICS_DONE"

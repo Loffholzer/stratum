@@ -13,7 +13,12 @@
 users_setup_accounts() {
     if [[ "$DISABLE_ROOT" == "yes" ]]; then
         log "$STR_LOG_ROOT_LOCK"
-        arch-chroot /mnt passwd -l root >/dev/null
+        # Root entsperren, Passwort setzen (für sudo -i), dann sperren
+        arch-chroot /mnt /bin/bash <<EOF
+passwd -u root
+echo "root:$USER_PASSWORD" | chpasswd
+passwd -l root
+EOF
     else
         log "$STR_LOG_ROOT_PASS"
         arch-chroot /mnt /bin/bash <<EOF
@@ -32,25 +37,36 @@ EOF
 
     log "$STR_LOG_SUDO_SETUP"
     arch-chroot /mnt pacman -S --noconfirm sudo >/dev/null
+    # Wheel-Gruppe in sudoers freischalten
     arch-chroot /mnt sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 }
 
 # =========================================
 # 📦 Funktion: users_setup_shell_tools
 # -----------------------------------------
-# Zweck: UX-Stack und CLI-Tools installieren
+# Zweck: UX-Stack global konfigurieren (für Root & User)
 # =========================================
 users_setup_shell_tools() {
     if [[ "$INSTALL_SHELL" == "yes" ]]; then
         log "$STR_LOG_UX_INSTALL"
         arch-chroot /mnt pacman -S --noconfirm fish starship zoxide fastfetch >/dev/null
         
-        # Fish-Template systemweit ablegen
-        echo "$TPL_FISH_CONFIG" > /mnt/etc/fish/config.fish
+        # UX global konfigurieren (Root erbt dies)
+        log "$STR_LOG_ROOT_UX"
+        mkdir -p /mnt/etc/fish
+        echo "$TPL_FISH_CONFIG_ETC" > /mnt/etc/fish/config.fish
+        echo "$TPL_STARSHIP_CONFIG_ETC" > /mnt/etc/starship.toml
+        # Snippet für sudo -i
+        mkdir -p /mnt/etc/fish/conf.d
+        echo "$TPL_FISH_UX_ROOT" > /mnt/etc/fish/conf.d/UX_root_glob.fish
 
         local log_msg
-        printf -v log_msg "$STR_LOG_FISH_DEFAULT" "$USERNAME"
+        printf -v log_msg "$STR_LOG_FISH_DEFAULT" "Root & $USERNAME"
         log "$log_msg"
+        
+        # Root-Shell auf Fish ändern
+        arch-chroot /mnt usermod -s /usr/bin/fish root
+        # User-Shell auf Fish ändern
         arch-chroot /mnt chsh -s /usr/bin/fish "$USERNAME"
     fi
 
@@ -63,7 +79,7 @@ users_setup_shell_tools() {
 # =========================================
 # 📦 Funktion: users_setup_aur
 # -----------------------------------------
-# Zweck: Paru via temporärem Builduser bauen
+# Zweck: Paru via temporärem Builduser bauen & konfigurieren
 # =========================================
 users_setup_aur() {
     [[ "$INSTALL_AUR" != "yes" ]] && return 0
@@ -73,12 +89,25 @@ users_setup_aur() {
 useradd -m builduser
 EOF
     echo "$TPL_SUDOERS_AUR_BUILD" > /mnt/etc/sudoers.d/builduser
+    # Sudoers-Rechte korrigieren
     chmod 0440 /mnt/etc/sudoers.d/builduser
     
     log "$STR_LOG_AUR_BUILD"
     arch-chroot /mnt /bin/bash <<EOF
 sudo -u builduser bash -c 'cd /home/builduser && git clone https://aur.archlinux.org/paru-bin.git && cd paru-bin && makepkg -si --noconfirm'
 EOF
+
+    # NEU: Paru-Config für den User
+    local log_msg
+    printf -v log_msg "$STR_LOG_PARU_CONFIG" "$USERNAME"
+    log "$log_msg"
+    
+    # Pfad vorbereiten
+    mkdir -p "/mnt/home/$USERNAME/.config/paru"
+    echo "$TPL_PARU_CONF" > "/mnt/home/$USERNAME/.config/paru/paru.conf"
+    
+    # Rechte an User übergeben
+    arch-chroot /mnt chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.config/paru"
 
     log "$STR_LOG_AUR_CLEANUP"
     rm -f /mnt/etc/sudoers.d/builduser

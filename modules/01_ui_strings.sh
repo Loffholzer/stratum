@@ -11,6 +11,7 @@
 # Zweck: Lädt alle UI-Texte in den Speicher
 # Aufgabe: Definiert Prompts, Logs und Fehlermeldungen
 # =========================================
+
 load_ui_strings() {
     # --- Allgemeines ---
     export STR_INPUT_PREFIX="${BLUE}[INPUT]${NC}"
@@ -38,7 +39,7 @@ load_ui_strings() {
     
     # --- Modul: 03_config_sys (Prompts & Optionen) ---
     export STR_PROMPT_HOSTNAME="Hostname (z.B. arch-pc): "
-    export STR_PROMPT_USERNAME="Username (z.B. max): "
+    export STR_PROMPT_USERNAME="Username (z.B. mc): "
     export STR_PROMPT_PASS_USER="User-Passwort: "
     export STR_PROMPT_PASS_CONFIRM="Passwort wiederholen: "
     
@@ -140,6 +141,7 @@ load_ui_strings() {
     
     export STR_ENV_HDR_BASICS="Chroot: Basics konfigurieren"
     export STR_LOG_TZ_LOCALE="Setze Timezone (%s) und Locales..."
+    export STR_LOG_PACMAN_TARGET="Konfiguriere Pacman im Zielsystem (Color & ILoveCandy)..."
     export STR_OK_BASICS_DONE="Basiskonfiguration im Zielsystem abgeschlossen."
     export STR_WARN_DRY_BASICS="[DRY-RUN] Chroot-Basis-Setup übersprungen."
     
@@ -150,10 +152,12 @@ load_ui_strings() {
     export STR_WARN_DRY_INITRAMFS="[DRY-RUN] mkinitcpio-Konfiguration übersprungen."
     
     export STR_ENV_HDR_BOOTLOADER="Chroot: Limine Bootloader"
-    export STR_LOG_INSTALL_LIMINE="Installiere Limine und efibootmgr..."
-    export STR_LOG_GEN_LIMINE_CONF="Generiere limine.conf (Limine v8+ Syntax)..."
-    export STR_LOG_EFI_ENTRY="Kopiere UEFI-Bootfiles und erstelle NVRAM-Eintrag..."
-    export STR_LBL_BOOT_LABEL="Arch Linux (Limine)"
+    export STR_LOG_INSTALL_LIMINE="Installiere Limine, efibootmgr und memtest86+..."
+    export STR_LOG_GEN_LIMINE_CONF="Generiere limine.conf (Splash, Farben, Memtest, Snapshot-Support)..."
+    export STR_LOG_EFI_ENTRY="Kopiere UEFI-Bootfiles, Splash und erstelle NVRAM-Eintrag..."
+    export STR_LBL_BOOT_LABEL="Arch Linux"
+    export STR_LBL_BOOT_LABEL_LTS="Arch Linux (LTS)"
+    export STR_LBL_BOOT_MEMTEST="Memtest86+ v7"
     export STR_OK_BOOTLOADER_DONE="Limine Bootloader erfolgreich installiert."
     export STR_WARN_DRY_BOOTLOADER="[DRY-RUN] Limine-Setup übersprungen."
 
@@ -161,16 +165,18 @@ load_ui_strings() {
     export STR_USR_PHASE_HEADER="Phase 5: Benutzer & Umgebung"
     
     export STR_LOG_ROOT_LOCK="Sperre Root-Account..."
-    export STR_LOG_ROOT_PASS="Setze Root-Passwort..."
+    export STR_LOG_ROOT_UX="Konfiguriere UX-Stack für Root (global in /etc)..."
     export STR_LOG_USER_CREATE="Erstelle Standard-Benutzer (%s)..."
     export STR_LOG_SUDO_SETUP="Konfiguriere Sudo für Gruppe 'wheel'..."
+    export STR_LOG_USER_UX="Setze globale UX-Einstellungen für %s..."
     
     export STR_LOG_UX_INSTALL="Installiere UX-Stack (Fish, Starship, Zoxide, Fastfetch)..."
-    export STR_LOG_FISH_DEFAULT="Setze Fish als Standard-Shell für %s..."
     export STR_LOG_TOOLS_INSTALL="Installiere CLI-Tools (eza, bat, btop)..."
+    export STR_LOG_FISH_DEFAULT="Setze Fish als Standard-Shell für %s..."
     
     export STR_LOG_AUR_TEMP_USER="Erstelle temporären AUR-Builduser..."
     export STR_LOG_AUR_BUILD="Baue und installiere Paru (AUR Helper)..."
+    export STR_LOG_PARU_CONFIG="Konfiguriere Paru für %s..."
     export STR_LOG_AUR_CLEANUP="Entferne AUR-Builduser und räume auf..."
     
     export STR_LOG_NANO_CONFIG="Wende Nano Virtuoso-Konfiguration an..."
@@ -185,12 +191,13 @@ load_ui_strings() {
     
     export STR_LOG_NM_ENABLE="Aktiviere NetworkManager..."
     export STR_LOG_BTRFS_SERVICES="Aktiviere BTRFS-Wartungsdienste (Trim & Scrub)..."
-    export STR_LOG_SNAPPER_SETUP="Installiere Snapper und erstelle Pacman-Hook..."
+    export STR_LOG_SNAPPER_SETUP="Installiere Snapper und erstelle Pacman-Pre-Hook..."
+    export STR_LOG_SNAPPER_UPDATE="Aktiviere BTRFS Snapshot-Update Dienst (CachyOS style)..."
     
     export STR_WARN_DRY_SERVICES="[DRY-RUN] Dienste-Konfiguration übersprungen."
     export STR_OK_SERVICES_DONE="Systemdienste erfolgreich konfiguriert."
 
-    # --- Modul: 99_cleanup (Abschluss & Reboot) ---
+# --- Modul: 99_cleanup (Abschluss & Reboot) ---
     export STR_CLN_PHASE_HEADER="Phase 7: Abschluss & Bereinigung"
     export STR_LOG_FINAL_UNMOUNT="Hänge Dateisysteme aus (/mnt)..."
     export STR_LOG_FINAL_LUKS="Schließe LUKS Container..."
