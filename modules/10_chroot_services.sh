@@ -30,12 +30,22 @@ EOF
 snapper_setup() {
     log "$STR_LOG_SNAPPER_SETUP"
     
-    # Snapper installieren und Grundkonfiguration erstellen
+    # Snapper installieren
 arch-chroot /mnt /bin/bash <<EOF
     pacman -S --noconfirm snapper >/dev/null 2>&1
-    umount /.snapshots 2>/dev/null || true
-    rm -rf /.snapshots
-    snapper -c root create-config /
+EOF
+
+    # Manuelles Setup der Snapper-Konfiguration, da DBus im chroot nicht läuft
+    local conf_dir="/mnt/etc/snapper/configs"
+    mkdir -p "$conf_dir"
+    echo "$TPL_SNAPPER_ROOT" > "$conf_dir/root"
+    
+    # Snapper muss wissen, welche Configs existieren
+    local sysconfig="/mnt/etc/conf.d/snapper"
+    mkdir -p /mnt/etc/conf.d
+    echo "SNAPPER_CONFIGS=\"root\"" > "$sysconfig"
+
+arch-chroot /mnt /bin/bash <<EOF
     systemctl enable snapper-timeline.timer snapper-cleanup.timer >/dev/null 2>&1
 EOF
 

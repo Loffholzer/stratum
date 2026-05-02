@@ -83,7 +83,7 @@ EOF
     log "$STR_LOG_AUR_CLEANUP"
     rm -f /mnt/etc/sudoers.d/builduser
     arch-chroot /mnt /bin/bash <<EOF
-userdel -r builduser
+userdel -r builduser 2>/dev/null
 EOF
 }
 

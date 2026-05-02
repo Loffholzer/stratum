@@ -17,6 +17,12 @@
 # Zweck: Lädt große Textblöcke und Configs in den Speicher
 # Aufgabe: Hält die Logik-Module sauber und wartbar
 # =========================================
+# =========================================
+# 📦 Funktion: load_templates
+# -----------------------------------------
+# Zweck: Lädt große Textblöcke und Configs in den Speicher
+# Aufgabe: Hält die Logik-Module sauber und wartbar
+# =========================================
 load_templates() {
     # =========================================
     # 📄 Template: ZRAM Configuration
@@ -158,4 +164,29 @@ Description = Erstelle BTRFS Snapshot (Pre-Transaction)...
 Depends = snapper
 When = PreTransaction
 Exec = /usr/bin/snapper -c root create -d \"Pacman Pre-Transaction\""
+
+    # =========================================
+    # 📄 Template: Snapper Root Config (Desktop Best-Practice)
+    # =========================================
+    export TPL_SNAPPER_ROOT="SUBVOLUME=\"/\"
+FSTYPE=\"btrfs\"
+ALLOW_USERS=\"\"
+ALLOW_GROUPS=\"wheel\"
+SYNC_ACL=\"no\"
+BACKGROUND_COMPARISON=\"yes\"
+NUMBER_CLEANUP=\"yes\"
+NUMBER_MIN_AGE=\"1800\"
+NUMBER_LIMIT=\"10\"
+NUMBER_LIMIT_IMPORTANT=\"3\"
+TIMELINE_CREATE=\"yes\"
+TIMELINE_CLEANUP=\"yes\"
+TIMELINE_MIN_AGE=\"1800\"
+TIMELINE_LIMIT_HOURLY=\"5\"
+TIMELINE_LIMIT_DAILY=\"7\"
+TIMELINE_LIMIT_WEEKLY=\"0\"
+TIMELINE_LIMIT_MONTHLY=\"0\"
+TIMELINE_LIMIT_YEARLY=\"0\"
+EMPTY_PRE_POST_CLEANUP=\"yes\"
+EMPTY_PRE_POST_MIN_AGE=\"1800\""
 }
+
