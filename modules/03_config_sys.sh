@@ -91,7 +91,7 @@ select_keyboard() {
     print_option 3 "$STR_OPT_MANUAL_SEARCH"
 
     while true; do
-        read -rp "$(echo -e "${STR_INPUT_PREFIX} STR_PROMPT_SEL_1_3")" choice
+        read -rp "$(echo -e "${STR_INPUT_PREFIX} ${STR_PROMPT_SEL_1_3}")" choice
         case "$choice" in
             1) KEYMAP="${detected:-de}"; break ;;
             2) KEYMAP="us"; break ;;
@@ -147,7 +147,7 @@ select_timezone() {
         print_option 2 "$STR_OPT_MANUAL_SEARCH"
         
         while true; do
-            read -rp "$(echo -e "${STR_INPUT_PREFIX} STR_PROMPT_SEL_1_2")" choice
+            read -rp "$(echo -e "${STR_INPUT_PREFIX} ${STR_PROMPT_SEL_1_2}")" choice
             case "$choice" in
                 1) TIMEZONE="$tz"; return 0 ;;
                 2) break ;;
@@ -186,7 +186,7 @@ select_timezone() {
 # Zweck: Systemsprache wählen
 # =========================================
 select_locale() {
-    local detected choice
+    local detected choice search selected
     
     phase_header "$STR_PHASE_LOCALE"
     log "$STR_LOG_LOCALE_HINT"
@@ -195,9 +195,10 @@ select_locale() {
 
     print_option 1 "${detected:-de_DE.UTF-8}${STR_OPT_PLUS_EN_US}"
     print_option 2 "$STR_OPT_ONLY_EN_US"
+    print_option 3 "$STR_OPT_MANUAL_SEARCH"
 
     while true; do
-        read -rp "$(echo -e "${STR_INPUT_PREFIX} STR_PROMPT_SEL_1_2")" choice
+        read -rp "$(echo -e "${STR_INPUT_PREFIX} ${STR_PROMPT_SEL_1_3}")" choice
         case "$choice" in
             1)
                 LOCALES=("${detected:-de_DE.UTF-8}" "en_US.UTF-8")
@@ -207,6 +208,33 @@ select_locale() {
                 LOCALES=("en_US.UTF-8")
                 LANG_DEFAULT="en_US.UTF-8"
                 return 0 ;;
+            3)
+                while true; do
+                    read -rp "$(echo -e "${STR_INPUT_PREFIX} $STR_PROMPT_SEARCH_LOCALE")" search
+                    [[ -z "$search" ]] && continue
+                    
+                    # Liest unterstützte Locales aus der Systemdatei
+                    mapfile -t LOCALE_RESULTS < <(grep -i "$search" /usr/share/i18n/SUPPORTED | awk '{print $1}' | sort -u)
+                    
+                    if [[ ${#LOCALE_RESULTS[@]} -eq 0 ]]; then
+                        warn "$STR_WARN_NO_HITS"
+                        continue
+                    elif (( ${#LOCALE_RESULTS[@]} > 40 )); then
+                        warn "$STR_WARN_TOO_MANY_HITS"
+                        continue
+                    fi
+
+                    print_search_results "$STR_TITLE_LOCALE_HITS" "$search" LOCALE_RESULTS
+                    read -rp "$(echo -e "${STR_INPUT_PREFIX} $STR_PROMPT_SELECT_NUM")" selected
+                    
+                    if [[ "$selected" =~ ^[0-9]+$ ]] && (( selected >= 1 && selected <= ${#LOCALE_RESULTS[@]} )); then
+                        local chosen_locale="${LOCALE_RESULTS[$((selected-1))]}"
+                        LOCALES=("$chosen_locale" "en_US.UTF-8")
+                        LANG_DEFAULT="$chosen_locale"
+                        return 0
+                    fi
+                done
+                ;;
             *) warn "$STR_WARN_INVALID_SEL" ;;
         esac
     done

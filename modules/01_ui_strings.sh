@@ -56,6 +56,9 @@ load_ui_strings() {
     export STR_LOG_LOCALE_HINT="Hinweis: en_US.UTF-8 wird immer generiert."
     export STR_OPT_PLUS_EN_US=" + en_US.UTF-8"
     export STR_OPT_ONLY_EN_US="Nur en_US.UTF-8"
+    # NEU: Variablen für die Locale-Suche
+    export STR_PROMPT_SEARCH_LOCALE="Suche (z.B. fr_FR, es_ES): "
+    export STR_TITLE_LOCALE_HITS="Locale Treffer"
 
     export STR_ASK_ROOT_LOCK="Root-Login sperren? (Sicherer, Sudo wird genutzt)"
     export STR_ASK_MULTILIB="Multilib (32-Bit) aktivieren?"
@@ -187,7 +190,7 @@ load_ui_strings() {
     export STR_WARN_DRY_SERVICES="[DRY-RUN] Dienste-Konfiguration übersprungen."
     export STR_OK_SERVICES_DONE="Systemdienste erfolgreich konfiguriert."
 
-# --- Modul: 99_cleanup (Abschluss & Reboot) ---
+    # --- Modul: 99_cleanup (Abschluss & Reboot) ---
     export STR_CLN_PHASE_HEADER="Phase 7: Abschluss & Bereinigung"
     export STR_LOG_FINAL_UNMOUNT="Hänge Dateisysteme aus (/mnt)..."
     export STR_LOG_FINAL_LUKS="Schließe LUKS Container..."
