@@ -154,6 +154,8 @@ select_timezone() {
                 *) warn "$STR_WARN_INVALID_SEL" ;;
             esac
         done
+    else
+        log "$STR_LOG_TZ_AUTO_FAIL"
     fi
 
     while true; do

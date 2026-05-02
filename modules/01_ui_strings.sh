@@ -52,11 +52,11 @@ load_ui_strings() {
     export STR_OPT_USE_RECOGNIZED_TZ="Erkannte Zeitzone nutzen"
     export STR_PROMPT_SEARCH_TZ="Suche (z.B. berlin, tokyo): "
     export STR_TITLE_TZ_HITS="Zeitzonen Treffer"
+    export STR_LOG_TZ_AUTO_FAIL="Automatische Zeitzonen-Erkennung fehlgeschlagen. Manuelle Suche erforderlich."
 
     export STR_LOG_LOCALE_HINT="Hinweis: en_US.UTF-8 wird immer generiert."
     export STR_OPT_PLUS_EN_US=" + en_US.UTF-8"
     export STR_OPT_ONLY_EN_US="Nur en_US.UTF-8"
-    # NEU: Variablen für die Locale-Suche
     export STR_PROMPT_SEARCH_LOCALE="Suche (z.B. fr_FR, es_ES): "
     export STR_TITLE_LOCALE_HITS="Locale Treffer"
 
