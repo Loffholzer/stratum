@@ -314,4 +314,140 @@ Persistent=true
 [Install]
 WantedBy=timers.target
 "
+
+    # =========================================
+    # 📄 Template: Limine Globale Config (Splash, Farben, Memtest)
+    # =========================================
+    export TPL_LIMINE_BASE="timeout: 3
+remember_last_entry: yes
+default_entry: 1
+interface_background: boot():/splash.jpg
+interface_title: Stratum OS
+
+# Farben (Violett/Orange Palette)
+term_background: 0F0014
+term_foreground: FFFFFF
+term_bold_foreground: 9E3DBA
+term_magenta: 5C036F
+term_cyan: C1461A
+"
+
+    # =========================================
+    # 📄 Template: Limine Config Main (LUKS)
+    # =========================================
+    export TPL_LIMINE_LUKS="${TPL_LIMINE_BASE}
+/$STR_LBL_BOOT_LABEL
+    protocol: linux
+    kernel_path: boot():/vmlinuz-linux
+    module_path: boot():/initramfs-linux.img
+    cmdline: cryptdevice=UUID={{ROOT_UUID}}:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet loglevel=3 udev.log_level=3
+
+/$STR_LBL_BOOT_LABEL_LTS
+    protocol: linux
+    kernel_path: boot():/vmlinuz-linux-lts
+    module_path: boot():/initramfs-linux-lts.img
+    cmdline: cryptdevice=UUID={{ROOT_UUID}}:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=@ rw quiet loglevel=3 udev.log_level=3
+
+# --- Tools ---
+/$STR_LBL_BOOT_MEMTEST
+    protocol: linux
+    kernel_path: boot():/memtest86+/memtest.efi
+"
+
+    # =========================================
+    # 📄 Template: Limine Config Main (Standard)
+    # =========================================
+    export TPL_LIMINE_STD="${TPL_LIMINE_BASE}
+/$STR_LBL_BOOT_LABEL
+    protocol: linux
+    kernel_path: uuid({{ROOT_UUID}}):/@/boot/vmlinuz-linux
+    module_path: uuid({{ROOT_UUID}}):/@/boot/initramfs-linux.img
+    cmdline: root=UUID={{ROOT_UUID}} rootflags=subvol=@ rw quiet splash
+
+/$STR_LBL_BOOT_LABEL_LTS
+    protocol: linux
+    kernel_path: uuid({{ROOT_UUID}}):/@/boot/vmlinuz-linux-lts
+    module_path: uuid({{ROOT_UUID}}):/@/boot/initramfs-linux-lts.img
+    cmdline: root=UUID={{ROOT_UUID}} rootflags=subvol=@ rw quiet splash
+
+# --- Tools ---
+/$STR_LBL_BOOT_MEMTEST
+    protocol: linux
+    kernel_path: boot():/memtest86+/memtest.efi
+"
+
+    # =========================================
+    # 📄 Template: BTRFS Snapshot-Update Skript (CachyOS style)
+    # =========================================
+    export TPL_SNAPPER_UPDATE_SCRIPT="#!/usr/bin/env bash
+
+LIMINE_CONF=\"/boot/limine.conf\"
+[[ -b /dev/mapper/cryptroot ]] && LIMINE_CONF=\"/boot/limine.conf\" || LIMINE_CONF=\"/boot/efi/limine.conf\"
+
+BOOT_PART_UUID=\"{{BOOT_PART_UUID}}\"
+ROOT_UUID=\"{{ROOT_UUID}}\"
+CRYPTROOT_UUID=\"{{CRYPTROOT_UUID}}\"
+
+SNAPSHOT_BASE=\"/@.snapshots\"
+
+# Bestehende Snapshot-Einträge entfernen
+sed -i '/# === AUTO_GENERATED_SNAPSHOTS ===/,/!d' \"\$LIMINE_CONF\"
+echo \"# === AUTO_GENERATED_SNAPSHOTS ===\" >> \"\$LIMINE_CONF\"
+
+# Nach Snapshots suchen (Snapper .snapshots Verzeichnis)
+mapfile -t SNAPSHOTS < <(btrfs subvolume list /mnt | grep \"/\.snapshots/\" | awk '{print \$NF}' | sort -r)
+
+for snap in \"\${SNAPSHOTS[@]}\"; do
+    snap_num=\$(basename \"\$snap\")
+    snap_name=\$(grep \"Pacman\" \"/\$snap/info.xml\" | head -n 1 | sed 's/.*<desc>\(.*\)<\/desc>.*/\1/')
+    [[ -z \"\$snap_name\" ]] && snap_name=\"Manuell\"
+
+    # Bootloader-Pfad berechnen
+    boot_path=\"/@/\$snap/vmlinuz-linux\"
+    init_path=\"/@/\$snap/initramfs-linux.img\"
+
+    # CMDLINE generieren (LUKS vs Standard)
+    cmdline=\"\"
+    if [[ -z \"\$CRYPTROOT_UUID\" ]]; then
+        cmdline=\"root=UUID=\$ROOT_UUID rootflags=subvol=\$snap/\$snap_num/snapshot rw quiet splash\"
+    else
+        cmdline=\"cryptdevice=UUID=\$CRYPTROOT_UUID:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=\$snap/\$snap_num/snapshot rw quiet loglevel=3 udev.log_level=3\"
+    fi
+
+    # Eintrag anfügen
+    echo \"
+/\$STR_LBL_BOOT_LABEL (Snapshot #\$snap_num: \$snap_name)
+    protocol: linux
+    kernel_path: uuid(\$BOOT_PART_UUID):\$boot_path
+    module_path: uuid(\$BOOT_PART_UUID):\$init_path
+    cmdline: \$cmdline\" >> \"\$LIMINE_CONF\"
+done
+"
+
+    # =========================================
+    # 📄 Template: Snapper Update Service
+    # =========================================
+    export TPL_SNAPPER_UPDATE_SERVICE="[Unit]
+Description=Update Limine config with BTRFS snapshots
+After=snapper-cleanup.timer snapper-timeline.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/limine-update-snapshots.sh
+"
+
+    # =========================================
+    # 📄 Template: Snapper Update Timer
+    # =========================================
+    export TPL_SNAPPER_UPDATE_TIMER="[Unit]
+Description=Run limine-update-snapshots service hourly
+
+[Timer]
+OnCalendar=hourly
+RandomizedDelaySec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+"
 }

@@ -30,7 +30,6 @@ env_chroot_basics() {
 arch-chroot /mnt /bin/bash <<EOF
     ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
     hwclock --systohc
-    ln -sf /usr/local/bin/fastfetch /bin/fastfetch
     
     # Locales generieren
     sed -i "s/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen
