@@ -102,20 +102,74 @@ print_option() {
 # =========================================
 # 📦 Funktion: print_search_results
 # -----------------------------------------
-# Zweck: Ausgabe von Array-Suchergebnissen
-# Aufgabe: Iteriert über übergebenes Array per Nameref
+# Zweck: Ausgabe von Array-Suchergebnissen in Spalten
+# Aufgabe: Dynamische Spaltenberechnung (spaltenweise sortiert)
 # =========================================
 print_search_results() {
     local title="$1"
     local search="$2"
     local -n arr_ref="$3"
-    local i=1
+    local total="${#arr_ref[@]}"
 
     phase_header "${title} (Suche: ${search})"
 
+    if (( total == 0 )); then
+        return 0
+    fi
+
+    # Längsten Eintrag ermitteln
+    local max_len=0
     for item in "${arr_ref[@]}"; do
-        print_option "$i" "$item"
-        ((i++))
+        (( ${#item} > max_len )) && max_len=${#item}
+    done
+
+    # Spaltenbreite: Max. Länge + Platz für "[XX] " (ca. 8 Zeichen) + 2 Puffer
+    local col_width=$((max_len + 10))
+    local term_width=$(tput cols 2>/dev/null || echo 80)
+    local cols=$(( term_width / col_width ))
+    
+    # Fallback, falls das Terminal extrem schmal ist
+    (( cols < 1 )) && cols=1
+
+    # Benötigte Zeilen berechnen (aufgerundet)
+    local rows=$(( (total + cols - 1) / cols ))
+
+    # Zeilenweise iterieren, aber Indizes spaltenweise (Column-Major) berechnen
+    for (( r=0; r<rows; r++ )); do
+        local line=""
+        for (( c=0; c<cols; c++ )); do
+            local idx=$(( c * rows + r ))
+            
+            # Prüfen, ob der errechnete Index noch im Array liegt
+            if (( idx < total )); then
+                local num=$((idx + 1))
+                local val="${arr_ref[$idx]}"
+                
+                # Farb-Codes verwirren die Längenberechnung von Bash.
+                # Daher formatieren wir erst roh, berechnen Padding und färben dann.
+                local raw_str
+                if (( total > 9 )); then
+                    raw_str=$(printf "  [%2d] %s" "$num" "$val")
+                else
+                    raw_str=$(printf "  [%d] %s" "$num" "$val")
+                fi
+                
+                local pad_len=$(( col_width - ${#raw_str} ))
+                (( pad_len < 0 )) && pad_len=0
+                local pad=$(printf "%*s" "$pad_len" "")
+
+                # Finale Formatierung mit den globalen Farben aus 00_utils.sh
+                local colored_str
+                if (( total > 9 )); then
+                    colored_str=$(printf "  ${CYAN}[%2d]${NC} %s" "$num" "$val")
+                else
+                    colored_str=$(printf "  ${CYAN}[%d]${NC} %s" "$num" "$val")
+                fi
+                
+                line+="${colored_str}${pad}"
+            fi
+        done
+        echo -e "$line"
     done
     echo
 }
