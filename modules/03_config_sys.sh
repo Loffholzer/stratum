@@ -213,8 +213,8 @@ select_locale() {
                     read -rp "$(echo -e "${STR_INPUT_PREFIX} $STR_PROMPT_SEARCH_LOCALE")" search
                     [[ -z "$search" ]] && continue
                     
-                    # Liest unterstützte Locales aus der Systemdatei
-                    mapfile -t LOCALE_RESULTS < <(grep -i "$search" /usr/share/i18n/SUPPORTED | awk '{print $1}' | sort -u)
+                    # Liest unterstützte Locales aus der Systemdatei (strikt gefiltert auf UTF-8)
+                    mapfile -t LOCALE_RESULTS < <(grep -i "$search" /usr/share/i18n/SUPPORTED | grep -i "UTF-8" | awk '{print $1}' | sort -u)
                     
                     if [[ ${#LOCALE_RESULTS[@]} -eq 0 ]]; then
                         warn "$STR_WARN_NO_HITS"
