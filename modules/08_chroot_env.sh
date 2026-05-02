@@ -128,6 +128,63 @@ EOF
 }
 
 # =========================================
+# 📦 Funktion: env_hardware_and_locale
+# -----------------------------------------
+# Zweck: GPU, Batterie, Manpages & Spellcheck dynamisch laden
+# =========================================
+env_hardware_and_locale() {
+    phase_header "Hardware-Erkennung & Lokalisierung"
+
+    # 1. Locale auslesen und Pakete ermitteln (z.B. 'de' aus de_DE.UTF-8)
+    local lang_code
+    lang_code=$(grep "^LANG=" /mnt/etc/locale.conf | cut -d= -f2 | cut -d_ -f1)
+    local loc_pkgs="man-db man-pages"
+    
+    log "Prüfe Sprachpakete für Sprache: [$lang_code]..."
+    if arch-chroot /mnt pacman -Sp "man-pages-$lang_code" >/dev/null 2>&1; then
+        loc_pkgs+=" man-pages-$lang_code"
+    fi
+    if arch-chroot /mnt pacman -Sp "hunspell-$lang_code" >/dev/null 2>&1; then
+        loc_pkgs+=" hunspell hunspell-$lang_code"
+    fi
+
+    # 2. Multilib Status prüfen
+    local is_multilib=false
+    grep -q "^\[multilib\]" /mnt/etc/pacman.conf && is_multilib=true
+
+    # 3. GPU erkennen
+    local gpu_pkgs=""
+    local vga_info
+    vga_info=$(lspci | grep -i vga)
+    
+    if echo "$vga_info" | grep -iq "nvidia"; then
+        warn "NVIDIA GPU erkannt. Proprietäre Treiber (Closed-Source) werden installiert!"
+        gpu_pkgs="nvidia-dkms nvidia-utils linux-headers"
+        $is_multilib && gpu_pkgs+=" lib32-nvidia-utils"
+    elif echo "$vga_info" | grep -iq "amd\|radeon"; then
+        log "AMD GPU erkannt. Open-Source Treiber werden installiert."
+        gpu_pkgs="mesa xf86-video-amdgpu vulkan-radeon"
+        $is_multilib && gpu_pkgs+=" lib32-mesa lib32-vulkan-radeon"
+    elif echo "$vga_info" | grep -iq "intel"; then
+        log "Intel GPU erkannt. Open-Source Treiber werden installiert."
+        gpu_pkgs="mesa vulkan-intel"
+        $is_multilib && gpu_pkgs+=" lib32-mesa lib32-vulkan-intel"
+    fi
+
+    # 4. Batterie erkennen
+    if ls /sys/class/power_supply/BAT* >/dev/null 2>&1; then
+        log "Batterie erkannt. power-profiles-daemon wird installiert."
+        gpu_pkgs+=" power-profiles-daemon"
+    fi
+
+    # Alles in einem Rutsch installieren
+    log "Installiere Hardwaresupport und Lokalisierungs-Tools..."
+    arch-chroot /mnt pacman -S --noconfirm $loc_pkgs $gpu_pkgs >/dev/null
+    
+    success "Hardware & Sprach-Tools eingerichtet."
+}
+
+# =========================================
 # 📦 Funktion: run_chroot_env
 # -----------------------------------------
 # Zweck: Einstiegspunkt Modul 08
@@ -137,4 +194,5 @@ run_chroot_env() {
     env_chroot_basics
     env_initramfs
     env_bootloader
+    env_hardware_and_locale
 }

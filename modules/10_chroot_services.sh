@@ -73,6 +73,36 @@ EOF
 }
 
 # =========================================
+# 📦 Funktion: services_setup_advanced
+# -----------------------------------------
+# Zweck: Firewalld, mDNS & Power Management
+# =========================================
+services_setup_advanced() {
+    log "Installiere Firewall und mDNS (Avahi)..."
+    arch-chroot /mnt pacman -S --noconfirm avahi nss-mdns firewalld >/dev/null
+    
+    log "Konfiguriere mDNS in nsswitch.conf..."
+    # Fügt mdns_minimal sicher in die Arch-Standard-Zeile ein
+    arch-chroot /mnt sed -i 's/mymachines resolve/mymachines mdns_minimal [NOTFOUND=return] resolve/' /etc/nsswitch.conf
+
+    log "Setze Firewalld Standard-Zone auf 'home'..."
+    arch-chroot /mnt firewall-offline-cmd --set-default-zone=home >/dev/null 2>&1
+
+    log "Aktiviere Systemd-Dienste..."
+arch-chroot /mnt /bin/bash <<EOF
+    systemctl enable avahi-daemon.service >/dev/null 2>&1
+    systemctl enable firewalld.service >/dev/null 2>&1
+    
+    # Prüfen, ob PPD in der Hardware-Phase (wegen Batterie) installiert wurde
+    if pacman -Qs power-profiles-daemon >/dev/null 2>&1; then
+        systemctl enable power-profiles-daemon.service >/dev/null 2>&1
+    fi
+EOF
+    
+    success "Erweiterte Netzwerkdienste konfiguriert."
+}
+
+# =========================================
 # 📦 Funktion: run_chroot_services
 # -----------------------------------------
 # Zweck: Einstiegspunkt Modul 10
@@ -87,6 +117,7 @@ run_chroot_services() {
 
     services_setup
     snapper_setup
+    services_setup_advanced
 
     success "$STR_OK_SERVICES_DONE"
 }
