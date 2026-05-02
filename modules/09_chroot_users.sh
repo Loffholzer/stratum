@@ -79,7 +79,7 @@ users_setup_shell_tools() {
 # =========================================
 # 📦 Funktion: users_setup_aur
 # -----------------------------------------
-# Zweck: Paru via temporärem Builduser bauen & konfigurieren
+# Zweck: Paru via Source bauen (Fix für libalpm Fehler)
 # =========================================
 users_setup_aur() {
     [[ "$INSTALL_AUR" != "yes" ]] && return 0
@@ -89,24 +89,20 @@ users_setup_aur() {
 useradd -m builduser
 EOF
     echo "$TPL_SUDOERS_AUR_BUILD" > /mnt/etc/sudoers.d/builduser
-    # Sudoers-Rechte korrigieren
     chmod 0440 /mnt/etc/sudoers.d/builduser
     
     log "$STR_LOG_AUR_BUILD"
+    # FIX: Wechsel von paru-bin auf paru (Source build)
     arch-chroot /mnt /bin/bash <<EOF
-sudo -u builduser bash -c 'cd /home/builduser && git clone https://aur.archlinux.org/paru-bin.git && cd paru-bin && makepkg -si --noconfirm'
+sudo -u builduser bash -c 'cd /home/builduser && git clone https://aur.archlinux.org/paru.git && cd paru && makepkg -si --noconfirm'
 EOF
 
-    # NEU: Paru-Config für den User
     local log_msg
     printf -v log_msg "$STR_LOG_PARU_CONFIG" "$USERNAME"
     log "$log_msg"
     
-    # Pfad vorbereiten
     mkdir -p "/mnt/home/$USERNAME/.config/paru"
     echo "$TPL_PARU_CONF" > "/mnt/home/$USERNAME/.config/paru/paru.conf"
-    
-    # Rechte an User übergeben
     arch-chroot /mnt chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.config/paru"
 
     log "$STR_LOG_AUR_CLEANUP"

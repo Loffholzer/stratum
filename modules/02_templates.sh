@@ -46,8 +46,7 @@ alias snapshots='snapper -c root list'
     # =========================================
     # 📄 Template: Globale Starship Config (etc/starship.toml)
     # =========================================
-    export TPL_STARSHIP_CONFIG_ETC="[add_newline]
-"
+    export TPL_STARSHIP_CONFIG_ETC="add_newline = true"
 
     # =========================================
     # 📄 Template: Fish Snippet für globale UX (für sudo -i)
@@ -131,7 +130,6 @@ fi"
     # =========================================
     # 📄 Template: Limine Globale Config (Splash, Farben, Memtest)
     # =========================================
-    # Farben angepasst an splash.jpg (Violett/Orange)
     export TPL_LIMINE_BASE="timeout: 3
 remember_last_entry: yes
 default_entry: 1
@@ -450,4 +448,19 @@ Persistent=true
 [Install]
 WantedBy=timers.target
 "
+
+    # =========================================
+    # 📄 Template: Limine Snapshot Sync Hook
+    # =========================================
+    export TPL_PACMAN_LIMINE_SYNC="[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = Aktualisiere Limine Bootmenü (Snapshots)...
+When = PostTransaction
+Exec = /usr/local/bin/limine-update-snapshots.sh"
 }

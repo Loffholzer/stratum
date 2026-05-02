@@ -87,7 +87,7 @@ EOF
 # =========================================
 # 📦 Funktion: env_bootloader
 # -----------------------------------------
-# Zweck: Limine Installation
+# Zweck: Limine Installation & Splash-Screen
 # =========================================
 env_bootloader() {
     phase_header "$STR_ENV_HDR_BOOTLOADER"
@@ -105,8 +105,13 @@ env_bootloader() {
 
     if [[ "$USE_LUKS" == "yes" ]]; then
         echo "$TPL_LIMINE_LUKS" | sed "s/{{ROOT_UUID}}/$root_uuid/g" > /mnt/boot/limine.conf
+        # Bild sauber neben die LUKS config kopieren
+        [[ -f "$BASE_DIR/splash.jpg" ]] && cp "$BASE_DIR/splash.jpg" /mnt/boot/splash.jpg
     else
+        mkdir -p /mnt/boot/efi
         echo "$TPL_LIMINE_STD" | sed "s/{{ROOT_UUID}}/$root_uuid/g" > /mnt/boot/efi/limine.conf
+        # Bild sauber neben die Standard config kopieren
+        [[ -f "$BASE_DIR/splash.jpg" ]] && cp "$BASE_DIR/splash.jpg" /mnt/boot/efi/splash.jpg
     fi
 
     log "$STR_LOG_EFI_ENTRY"
