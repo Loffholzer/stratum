@@ -133,14 +133,17 @@ EOF
 # Zweck: GPU, Batterie, Manpages & Spellcheck dynamisch laden
 # =========================================
 env_hardware_and_locale() {
-    phase_header "Hardware-Erkennung & Lokalisierung"
+    phase_header "$STR_ENV_HDR_HW_LOCALE"
 
-    # 1. Locale auslesen und Pakete ermitteln (z.B. 'de' aus de_DE.UTF-8)
+    # 1. Locale auslesen und Pakete ermitteln
     local lang_code
     lang_code=$(grep "^LANG=" /mnt/etc/locale.conf | cut -d= -f2 | cut -d_ -f1)
     local loc_pkgs="man-db man-pages"
     
-    log "Prüfe Sprachpakete für Sprache: [$lang_code]..."
+    local log_msg
+    printf -v log_msg "$STR_LOG_LANG_CHECK" "$lang_code"
+    log "$log_msg"
+    
     if arch-chroot /mnt pacman -Sp "man-pages-$lang_code" >/dev/null 2>&1; then
         loc_pkgs+=" man-pages-$lang_code"
     fi
@@ -158,30 +161,30 @@ env_hardware_and_locale() {
     vga_info=$(lspci | grep -i vga)
     
     if echo "$vga_info" | grep -iq "nvidia"; then
-        warn "NVIDIA GPU erkannt. Proprietäre Treiber (Closed-Source) werden installiert!"
+        warn "$STR_WARN_GPU_NVIDIA"
         gpu_pkgs="nvidia-dkms nvidia-utils linux-headers"
         $is_multilib && gpu_pkgs+=" lib32-nvidia-utils"
     elif echo "$vga_info" | grep -iq "amd\|radeon"; then
-        log "AMD GPU erkannt. Open-Source Treiber werden installiert."
+        log "$STR_LOG_GPU_AMD"
         gpu_pkgs="mesa xf86-video-amdgpu vulkan-radeon"
         $is_multilib && gpu_pkgs+=" lib32-mesa lib32-vulkan-radeon"
     elif echo "$vga_info" | grep -iq "intel"; then
-        log "Intel GPU erkannt. Open-Source Treiber werden installiert."
+        log "$STR_LOG_GPU_INTEL"
         gpu_pkgs="mesa vulkan-intel"
         $is_multilib && gpu_pkgs+=" lib32-mesa lib32-vulkan-intel"
     fi
 
     # 4. Batterie erkennen
     if ls /sys/class/power_supply/BAT* >/dev/null 2>&1; then
-        log "Batterie erkannt. power-profiles-daemon wird installiert."
+        log "$STR_LOG_BATTERY"
         gpu_pkgs+=" power-profiles-daemon"
     fi
 
     # Alles in einem Rutsch installieren
-    log "Installiere Hardwaresupport und Lokalisierungs-Tools..."
+    log "$STR_LOG_INSTALL_HW_LOCALE"
     arch-chroot /mnt pacman -S --noconfirm $loc_pkgs $gpu_pkgs >/dev/null
     
-    success "Hardware & Sprach-Tools eingerichtet."
+    success "$STR_OK_HW_LOCALE"
 }
 
 # =========================================

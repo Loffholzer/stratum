@@ -78,28 +78,26 @@ EOF
 # Zweck: Firewalld, mDNS & Power Management
 # =========================================
 services_setup_advanced() {
-    log "Installiere Firewall und mDNS (Avahi)..."
+    log "$STR_LOG_INSTALL_FIREWALL_MDNS"
     arch-chroot /mnt pacman -S --noconfirm avahi nss-mdns firewalld >/dev/null
     
-    log "Konfiguriere mDNS in nsswitch.conf..."
-    # Fügt mdns_minimal sicher in die Arch-Standard-Zeile ein
+    log "$STR_LOG_CONFIG_MDNS"
     arch-chroot /mnt sed -i 's/mymachines resolve/mymachines mdns_minimal [NOTFOUND=return] resolve/' /etc/nsswitch.conf
 
-    log "Setze Firewalld Standard-Zone auf 'home'..."
+    log "$STR_LOG_CONFIG_FIREWALL"
     arch-chroot /mnt firewall-offline-cmd --set-default-zone=home >/dev/null 2>&1
 
-    log "Aktiviere Systemd-Dienste..."
+    log "$STR_LOG_ENABLE_ADV_SERVICES"
 arch-chroot /mnt /bin/bash <<EOF
     systemctl enable avahi-daemon.service >/dev/null 2>&1
     systemctl enable firewalld.service >/dev/null 2>&1
     
-    # Prüfen, ob PPD in der Hardware-Phase (wegen Batterie) installiert wurde
     if pacman -Qs power-profiles-daemon >/dev/null 2>&1; then
         systemctl enable power-profiles-daemon.service >/dev/null 2>&1
     fi
 EOF
     
-    success "Erweiterte Netzwerkdienste konfiguriert."
+    success "$STR_OK_ADV_SERVICES"
 }
 
 # =========================================

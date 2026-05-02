@@ -463,4 +463,30 @@ Target = *
 Description = Aktualisiere Limine Bootmenü (Snapshots)...
 When = PostTransaction
 Exec = /usr/local/bin/limine-update-snapshots.sh"
+
+    # =========================================
+    # 📄 Template: Fish Login Handoff (Erster Start)
+    # =========================================
+    export TPL_FISH_HANDOFF="
+# Prüfen ob das Setup-Flag existiert
+if test -f ~/.config/setup_active
+    echo ''
+    echo '--------------------------------------------------'
+    echo '$STR_HANDOFF_TITLE'
+    echo '--------------------------------------------------'
+    
+    read -l -p 'echo \"$STR_HANDOFF_QUESTION\"' confirm
+
+    if [ \"\$confirm\" = \"j\" ] || [ \"\$confirm\" = \"J\" ] || [ \"\$confirm\" = \"y\" ] || [ \"\$confirm\" = \"Y\" ]
+        rm ~/.config/setup_active
+        bash ~/setup/desktop_setup.sh
+    else
+        echo ''
+        echo '$STR_HANDOFF_INFO'
+        echo '$STR_HANDOFF_PATH_INFO'
+        echo ''
+        rm ~/.config/setup_active
+    end
+end
+"
 }

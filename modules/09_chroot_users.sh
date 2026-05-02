@@ -115,28 +115,41 @@ EOF
 # =========================================
 # 📦 Funktion: users_setup_extras
 # -----------------------------------------
-# Zweck: Nano, SSH und Handoff-Skript
+# Zweck: Nano, SSH, Fonts, XDG & GUI-Handoff
 # =========================================
 users_setup_extras() {
-    if [[ "$INSTALL_EDITOR" == "yes" ]]; then
-        log "$STR_LOG_NANO_CONFIG"
-        echo "$TPL_NANO_CONFIG" > /mnt/etc/nanorc
-    fi
+    # 1. Basis-Tools (Fonts, XDG, SSH etc.)
+    log "$STR_LOG_FONTS_XDG"
+    arch-chroot /mnt pacman -S --noconfirm noto-fonts noto-fonts-emoji ttf-liberation xdg-user-dirs openssh >/dev/null
+    arch-chroot /mnt systemctl enable sshd >/dev/null
 
-    if [[ "$INSTALL_SSH" == "yes" ]]; then
-        log "$STR_LOG_SSH_INSTALL"
-        arch-chroot /mnt pacman -S --noconfirm openssh >/dev/null
-        arch-chroot /mnt systemctl enable sshd >/dev/null
-    fi
+    # 2. Setup-Ordner im Home erstellen
+    local user_home="/mnt/home/$USERNAME"
+    local setup_dir="\$user_home/setup"
+    mkdir -p "\$setup_dir"
 
-    local log_msg
-    printf -v log_msg "$STR_LOG_DESKTOP_HANDOFF" "$USERNAME"
-    log "$log_msg"
+    # 3. GUI-Skripte und Strings aus dem Repo kopieren
+    log "Kopiere GUI-Setup-Dateien in das User-Home..."
+    # Wir kopieren alles aus einem (noch zu erstellenden) 'gui'-Ordner deines Repos
+    if [ -d "$BASE_DIR/gui" ]; then
+        cp -r "$BASE_DIR/gui/"* "\$setup_dir/"
+    fi
+    # Wichtig: Die 01_strings für das Handoff-Skript mitkopieren
+    cp "$BASE_DIR/modules/01_strings.sh" "\$setup_dir/"
+
+    # 4. Handoff-Skript (das eigentliche Installationsskript) vorbereiten
+    echo "$TPL_DESKTOP_HANDOFF" > "\$setup_dir/desktop_setup.sh"
     
-    local handoff_path="/mnt/home/$USERNAME/desktop_setup.sh"
-    echo "$TPL_DESKTOP_HANDOFF" > "$handoff_path"
-    chmod +x "$handoff_path"
-    arch-chroot /mnt chown "$USERNAME:$USERNAME" "/home/$USERNAME/desktop_setup.sh"
+    # 5. Fish-Login-Hook erstellen
+    mkdir -p "\$user_home/.config/fish/conf.d"
+    echo "$TPL_FISH_HANDOFF" > "\$user_home/.config/fish/conf.d/handoff.fish"
+    
+    # 6. Setup-Flag setzen (Damit die Abfrage beim ersten Login triggert)
+    touch "\$user_home/.config/setup_active"
+
+    # 7. Rechte korrigieren (Alles muss dem User gehören)
+    arch-chroot /mnt chown -R "$USERNAME:$USERNAME" "/home/$USERNAME"
+    chmod +x "\$setup_dir/desktop_setup.sh"
 }
 
 # =========================================

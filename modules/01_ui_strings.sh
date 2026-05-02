@@ -182,6 +182,7 @@ load_ui_strings() {
     export STR_LOG_NANO_CONFIG="Wende Nano Virtuoso-Konfiguration an..."
     export STR_LOG_SSH_INSTALL="Installiere und aktiviere OpenSSH..."
     export STR_LOG_DESKTOP_HANDOFF="Erstelle Desktop-Handoff Skript für %s..."
+    export STR_LOG_FONTS_XDG="Installiere Basis-Schriften und XDG-Verzeichnisstruktur..."
     
     export STR_WARN_DRY_USERS="[DRY-RUN] User- und Tool-Setup übersprungen."
     export STR_OK_USERS_DONE="Benutzer und Umgebung erfolgreich eingerichtet."
@@ -197,7 +198,7 @@ load_ui_strings() {
     export STR_WARN_DRY_SERVICES="[DRY-RUN] Dienste-Konfiguration übersprungen."
     export STR_OK_SERVICES_DONE="Systemdienste erfolgreich konfiguriert."
 
-# --- Modul: 99_cleanup (Abschluss & Reboot) ---
+    # --- Modul: 99_cleanup (Abschluss & Reboot) ---
     export STR_CLN_PHASE_HEADER="Phase 7: Abschluss & Bereinigung"
     export STR_LOG_FINAL_UNMOUNT="Hänge Dateisysteme aus (/mnt)..."
     export STR_LOG_FINAL_LUKS="Schließe LUKS Container..."
@@ -208,4 +209,27 @@ load_ui_strings() {
     export STR_ASK_REBOOT="Möchtest du das System jetzt neu starten?"
     export STR_LOG_REBOOTING="System wird neu gestartet..."
     export STR_LOG_EXIT="Du bleibst in der Live-Umgebung. Du kannst sie mit 'reboot' verlassen."
+
+    # --- Neue Features: Hardware, Locale, Netzwerk ---
+    export STR_ENV_HDR_HW_LOCALE="Hardware-Erkennung & Lokalisierung"
+    export STR_LOG_LANG_CHECK="Prüfe Sprachpakete für Sprache: [%s]..."
+    export STR_WARN_GPU_NVIDIA="NVIDIA GPU erkannt. Proprietäre Treiber (Closed-Source) werden installiert!"
+    export STR_LOG_GPU_AMD="AMD GPU erkannt. Open-Source Treiber werden installiert."
+    export STR_LOG_GPU_INTEL="Intel GPU erkannt. Open-Source Treiber werden installiert."
+    export STR_LOG_BATTERY="Batterie erkannt. power-profiles-daemon wird installiert."
+    export STR_LOG_INSTALL_HW_LOCALE="Installiere Hardwaresupport und Lokalisierungs-Tools..."
+    export STR_OK_HW_LOCALE="Hardware & Sprach-Tools eingerichtet."
+
+    export STR_LOG_INSTALL_FIREWALL_MDNS="Installiere Firewall und mDNS (Avahi)..."
+    export STR_LOG_CONFIG_MDNS="Konfiguriere mDNS in nsswitch.conf..."
+    export STR_LOG_CONFIG_FIREWALL="Setze Firewalld Standard-Zone auf 'home'..."
+    export STR_LOG_ENABLE_ADV_SERVICES="Aktiviere Systemd-Dienste (Avahi, Firewalld, PPD)..."
+    export STR_OK_ADV_SERVICES="Erweiterte Netzwerkdienste konfiguriert."
+
+    # --- Handoff / Erster Login ---
+    export STR_HANDOFF_TITLE="WILLKOMMEN ZU STRATUM OS"
+    export STR_HANDOFF_QUESTION="Möchtest du jetzt mit der Installation der GUI (Grafikoberfläche) fortfahren? [j/N]: "
+    export STR_HANDOFF_INFO="Kein Problem! Du kannst die Installation jederzeit manuell starten."
+    export STR_HANDOFF_PATH_INFO="Die Skripte findest du hier: ~/setup/"
+    export STR_HANDOFF_STARTING="Starte GUI-Setup..."
 }
