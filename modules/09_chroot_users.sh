@@ -73,6 +73,7 @@ users_setup_aur() {
 useradd -m builduser
 EOF
     echo "$TPL_SUDOERS_AUR_BUILD" > /mnt/etc/sudoers.d/builduser
+    chmod 0440 /mnt/etc/sudoers.d/builduser
     
     log "$STR_LOG_AUR_BUILD"
     arch-chroot /mnt /bin/bash <<EOF

@@ -28,6 +28,7 @@ install_base_system() {
         wget
         curl
         networkmanager
+        terminus-font
     )
 
     # Hardware-spezifischer Microcode (aus Modul 03)

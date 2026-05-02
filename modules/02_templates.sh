@@ -11,6 +11,12 @@
 # Zweck: Lädt große Textblöcke und Configs in den Speicher
 # Aufgabe: Hält die Logik-Module sauber und wartbar
 # =========================================
+# =========================================
+# 📦 Funktion: load_templates
+# -----------------------------------------
+# Zweck: Lädt große Textblöcke und Configs in den Speicher
+# Aufgabe: Hält die Logik-Module sauber und wartbar
+# =========================================
 load_templates() {
     # =========================================
     # 📄 Template: ZRAM Configuration
@@ -90,7 +96,7 @@ fi"
     # =========================================
     # 📄 Template: Sudoers AUR Build (Temporär)
     # =========================================
-    export TPL_SUDOERS_AUR_BUILD="%wheel ALL=(ALL) NOPASSWD: ALL"
+    export TPL_SUDOERS_AUR_BUILD="builduser ALL=(ALL) NOPASSWD: ALL"
 
     # =========================================
     # 📄 Template: Limine Config (LUKS)
@@ -153,4 +159,3 @@ Depends = snapper
 When = PreTransaction
 Exec = /usr/bin/snapper -c root create -d \"Pacman Pre-Transaction\""
 }
-

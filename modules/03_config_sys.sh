@@ -6,7 +6,7 @@
 # =========================================
 
 export AUTO_MODE="${AUTO_MODE:-false}"
-export CONSOLE_FONT="${CONSOLE_FONT:-ter-v32n}"
+export CONSOLE_FONT="${CONSOLE_FONT:-ter-v24n}"
 declare -a LOCALES=()
 
 # =========================================
