@@ -1,47 +1,61 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📦 Funktion: Globaler Header / Info
-# -----------------------------------------
-# Zweck: Sicherer Systemabschluss (99_cleanup.sh)
-# Aufgabe: System aushängen, LUKS verschließen, Reboot
+# 📄 DATEI: 99_cleanup.sh
+# 💡 ZWECK: Abschluss, Unmount & Reboot
 # =========================================
+
+# =========================================
+# 📦 Funktion: cleanup_system
+# -----------------------------------------
+# Zweck: Dateisysteme aushängen und aufräumen
+# =========================================
+cleanup_system() {
+    if [[ "${DRY_RUN:-true}" == true ]]; then
+        warn "$STR_WARN_DRY_CLEANUP"
+        return 0
+    fi
+
+    log "$STR_LOG_FINAL_UNMOUNT"
+    umount -R /mnt 2>/dev/null || true
+
+    if [[ "$USE_LUKS" == "yes" && -b /dev/mapper/cryptroot ]]; then
+        log "$STR_LOG_FINAL_LUKS"
+        cryptsetup close cryptroot 2>/dev/null || true
+    fi
+    
+    success "$STR_OK_INSTALL_DONE"
+}
+
+# =========================================
+# 📦 Funktion: prompt_reboot
+# -----------------------------------------
+# Zweck: Benutzer nach Neustart fragen
+# =========================================
+prompt_reboot() {
+    if [[ "${DRY_RUN:-true}" == true ]]; then
+        return 0
+    fi
+
+    echo
+    local answer
+    answer="$(ask_yes_no "$STR_ASK_REBOOT")"
+    
+    if [[ "$answer" == "yes" ]]; then
+        log "$STR_LOG_REBOOTING"
+        reboot
+    else
+        log "$STR_LOG_EXIT"
+    fi
+}
 
 # =========================================
 # 📦 Funktion: run_cleanup
 # -----------------------------------------
-# Zweck: Zentraler Aufrufpunkt des Moduls
-# Aufgabe: Führt den finalen Cleanup-Prozess durch
+# Zweck: Einstiegspunkt Modul 99
 # =========================================
 run_cleanup() {
-    header "Phase 99: Cleanup & Abschluss"
-
-    if [[ "${DRY_RUN:-true}" == true ]]; then
-        success "DRY-RUN erfolgreich beendet. Keine Änderungen vorgenommen."
-        return 0
-    fi
-
-    log "Hänge Dateisysteme unter /mnt rekursiv aus..."
-    umount -R /mnt 2>/dev/null || true
-
-    if [[ "$USE_LUKS" == "yes" ]]; then
-        log "Schließe LUKS Container (cryptroot)..."
-        cryptsetup close cryptroot 2>/dev/null || true
-    fi
-
-    echo -e "\n${BOLD}${GREEN}=========================================${NC}"
-    echo -e "${BOLD}${GREEN} 🎉 INSTALLATION ERFOLGREICH ABGESCHLOSSEN 🎉${NC}"
-    echo -e "${BOLD}${GREEN}=========================================${NC}\n"
-
-    echo -e "Die neue Arch Linux Umgebung ist bereit."
-    echo -e "Bitte entferne das Installationsmedium und starte das System neu.\n"
-
-    local reboot_choice
-    read -rp "$(echo -e "${BLUE}[INPUT]${NC} Jetzt neu starten? (j/n): ")" reboot_choice
-    if [[ "${reboot_choice,,}" =~ ^(j|ja|y|yes)$ ]]; then
-        log "System wird neu gestartet..."
-        reboot
-    else
-        log "Kein automatischer Neustart. Du befindest dich weiterhin im Live-System."
-    fi
+    header "$STR_CLN_PHASE_HEADER"
+    cleanup_system
+    prompt_reboot
 }
