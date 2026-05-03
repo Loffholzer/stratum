@@ -233,7 +233,6 @@ Exec = /usr/bin/snapper -c root create -d \"Pacman Pre-Transaction\""
 LIMINE_CONF=\"/boot/limine.conf\"
 [[ -b /dev/mapper/cryptroot ]] && LIMINE_CONF=\"/boot/limine.conf\" || LIMINE_CONF=\"/boot/efi/limine.conf\"
 
-BOOT_PART_UUID=\"{{BOOT_PART_UUID}}\"
 ROOT_UUID=\"{{ROOT_UUID}}\"
 CRYPTROOT_UUID=\"{{CRYPTROOT_UUID}}\"
 
@@ -244,32 +243,30 @@ sed -i '/# === AUTO_GENERATED_SNAPSHOTS ===/,\$d' \"\$LIMINE_CONF\"
 echo \"# === AUTO_GENERATED_SNAPSHOTS ===\" >> \"\$LIMINE_CONF\"
 
 # Nach Snapshots suchen (Snapper .snapshots Verzeichnis)
-mapfile -t SNAPSHOTS < <(btrfs subvolume list / | grep \"/\.snapshots/\" | awk '{print \$NF}' | sort -r)
+mapfile -t SNAPSHOTS < <(btrfs subvolume list / | awk '{print \$NF}' | grep '^@\.snapshots/.*/snapshot$' | sort -t'/' -k2 -nr)
 
 for snap in \"\${SNAPSHOTS[@]}\"; do
-    snap_num=\$(basename \"\$snap\")
-    snap_name=\$(grep \"Pacman\" \"/\$snap/info.xml\" | head -n 1 | sed 's/.*<desc>\(.*\)<\/desc>.*/\1/')
-    [[ -z \"\$snap_name\" ]] && snap_name=\"Manuell\"
+    snap_num=\$(echo \"\$snap\" | cut -d'/' -f2)
+    [[ -z \"\$snap_num\" ]] && continue
 
-    # Bootloader-Pfad berechnen
-    boot_path=\"/@/\$snap/vmlinuz-linux\"
-    init_path=\"/@/\$snap/initramfs-linux.img\"
+    snap_name=\$(awk -F'[<>]' '/description/{print \$3}' \"/.snapshots/\$snap_num/info.xml\" 2>/dev/null | head -n 1)
+    [[ -z \"\$snap_name\" ]] && snap_name=\"System-Snapshot\"
 
-    # CMDLINE generieren (LUKS vs Standard)
-    cmdline=\"\"
     if [[ -z \"\$CRYPTROOT_UUID\" ]]; then
-        cmdline=\"root=UUID=\$ROOT_UUID rootflags=subvol=\$snap/\$snap_num/snapshot rw quiet splash\"
-    else
-        cmdline=\"cryptdevice=UUID=\$CRYPTROOT_UUID:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=\$snap/\$snap_num/snapshot rw quiet loglevel=3 udev.log_level=3\"
-    fi
-
-    # Eintrag anfügen
-    echo \"
-/$STR_LBL_BOOT_LABEL (Snapshot #\$snap_num: \$snap_name)
+        echo \"
+/\$STR_LBL_BOOT_LABEL (Snapshot #\$snap_num: \$snap_name)
     protocol: linux
-    kernel_path: uuid(\$BOOT_PART_UUID):\$boot_path
-    module_path: uuid(\$BOOT_PART_UUID):\$init_path
-    cmdline: \$cmdline\" >> \"\$LIMINE_CONF\"
+    kernel_path: uuid(\$ROOT_UUID):/\$snap/boot/vmlinuz-linux
+    module_path: uuid(\$ROOT_UUID):/\$snap/boot/initramfs-linux.img
+    cmdline: root=UUID=\$ROOT_UUID rootflags=subvol=\$snap rw quiet splash\" >> \"\$LIMINE_CONF\"
+    else
+        echo \"
+/\$STR_LBL_BOOT_LABEL (Snapshot #\$snap_num: \$snap_name)
+    protocol: linux
+    kernel_path: boot():/vmlinuz-linux
+    module_path: boot():/initramfs-linux.img
+    cmdline: cryptdevice=UUID=\$CRYPTROOT_UUID:cryptroot root=/dev/mapper/cryptroot rootflags=subvol=\$snap rw quiet loglevel=3 udev.log_level=3\" >> \"\$LIMINE_CONF\"
+    fi
 done
 "
 

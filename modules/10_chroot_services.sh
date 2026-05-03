@@ -34,9 +34,7 @@ EOF
 snapper_setup() {
     log "$STR_LOG_SNAPPER_SETUP"
     
-arch-chroot /mnt /bin/bash <<EOF
-    pacman -S --noconfirm snapper >/dev/null 2>&1
-EOF
+    arch-chroot /mnt pacman -S --needed --noconfirm snapper >/dev/null 2>&1
 
     local conf_dir="/mnt/etc/snapper/configs"
     mkdir -p "$conf_dir"
@@ -57,13 +55,11 @@ EOF
     echo "$TPL_PACMAN_LIMINE_SYNC" > "$hook_dir/99-limine-snapshots.hook"
 
     log "$STR_LOG_SNAPPER_UPDATE"
-    local root_uuid esp_uuid crypt_root_uuid=""
+    local root_uuid crypt_root_uuid=""
     root_uuid=$(blkid -s UUID -o value "$PART_ROOT")
-    esp_uuid=$(blkid -s UUID -o value "$PART_EFI")
     [[ "$USE_LUKS" == "yes" ]] && crypt_root_uuid="$root_uuid"
 
-    echo "$TPL_SNAPPER_UPDATE_SCRIPT" | sed "s/{{BOOT_PART_UUID}}/$esp_uuid/g" \
-                                      | sed "s/{{ROOT_UUID}}/$root_uuid/g" \
+    echo "$TPL_SNAPPER_UPDATE_SCRIPT" | sed "s/{{ROOT_UUID}}/$root_uuid/g" \
                                       | sed "s/{{CRYPTROOT_UUID}}/$crypt_root_uuid/g" \
                                       > /mnt/usr/local/bin/limine-update-snapshots.sh
     chmod +x /mnt/usr/local/bin/limine-update-snapshots.sh
@@ -71,9 +67,7 @@ EOF
     echo "$TPL_SNAPPER_UPDATE_SERVICE" > /mnt/etc/systemd/system/limine-update-snapshots.service
     echo "$TPL_SNAPPER_UPDATE_TIMER" > /mnt/etc/systemd/system/limine-update-snapshots.timer
 
-arch-chroot /mnt /bin/bash <<EOF
-    systemctl enable limine-update-snapshots.timer >/dev/null 2>&1
-EOF
+    arch-chroot /mnt systemctl enable limine-update-snapshots.timer >/dev/null 2>&1
 }
 
 # =========================================
