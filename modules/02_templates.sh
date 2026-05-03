@@ -66,12 +66,7 @@ Devel
 Provides
 # UX
 BottomUp
-NoSudoLoop
-# Pacman Color Integration
-Color = auto
-# ILoveCandy Integration
-ParallelDownloads = 5
-BottomUp
+SudoLoop
 "
 
     # =========================================
