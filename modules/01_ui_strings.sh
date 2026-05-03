@@ -39,7 +39,7 @@ load_ui_strings() {
     
     # --- Modul: 03_config_sys (Prompts & Optionen) ---
     export STR_PROMPT_HOSTNAME="Hostname (z.B. arch-pc): "
-    export STR_PROMPT_USERNAME="Username (z.B. mc): "
+    export STR_PROMPT_USERNAME="Username (z.B. max): "
     export STR_PROMPT_PASS_USER="User-Passwort: "
     export STR_PROMPT_PASS_CONFIRM="Passwort wiederholen: "
     

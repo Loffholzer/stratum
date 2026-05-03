@@ -322,14 +322,22 @@ collect_sys_config() {
 
     while true; do
         read -rp "$(echo -e "${STR_INPUT_PREFIX} $STR_PROMPT_HOSTNAME")" HOSTNAME
-        validate_hostname_value "$HOSTNAME" && break
-        warn "$STR_WARN_HOSTNAME_RULES"
+        if validate_hostname_value "$HOSTNAME"; then
+            [[ "$(ask_yes_no "$STR_ASK_CONFIRM_INPUT")" == "yes" ]] && break
+        else
+            warn "$STR_WARN_HOSTNAME_RULES"
+        fi
+        echo
     done
 
     while true; do
         read -rp "$(echo -e "${STR_INPUT_PREFIX} $STR_PROMPT_USERNAME")" USERNAME
-        validate_username_value "$USERNAME" && break
-        warn "$STR_WARN_USERNAME_RULES"
+        if validate_username_value "$USERNAME"; then
+            [[ "$(ask_yes_no "$STR_ASK_CONFIRM_INPUT")" == "yes" ]] && break
+        else
+            warn "$STR_WARN_USERNAME_RULES"
+        fi
+        echo
     done
 
     ask_user_password

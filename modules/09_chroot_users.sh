@@ -36,7 +36,7 @@ echo "$USERNAME:$USER_PASSWORD" | chpasswd
 EOF
 
     log "$STR_LOG_SUDO_SETUP"
-    arch-chroot /mnt pacman -S --noconfirm sudo >/dev/null
+    arch-chroot /mnt pacman -S --needed --noconfirm sudo >/dev/null
     # Wheel-Gruppe in sudoers freischalten
     arch-chroot /mnt sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 }
@@ -49,7 +49,7 @@ EOF
 users_setup_shell_tools() {
     if [[ "$INSTALL_SHELL" == "yes" ]]; then
         log "$STR_LOG_UX_INSTALL"
-        arch-chroot /mnt pacman -S --noconfirm fish starship zoxide fastfetch >/dev/null
+        arch-chroot /mnt pacman -S --needed --noconfirm fish starship zoxide fastfetch >/dev/null
         
         # UX global konfigurieren (Root erbt dies)
         log "$STR_LOG_ROOT_UX"
@@ -72,7 +72,7 @@ users_setup_shell_tools() {
 
     if [[ "$INSTALL_TOOLS" == "yes" ]]; then
         log "$STR_LOG_TOOLS_INSTALL"
-        arch-chroot /mnt pacman -S --noconfirm eza bat btop >/dev/null
+        arch-chroot /mnt pacman -S --needed --noconfirm eza bat btop >/dev/null
     fi
 }
 
@@ -121,19 +121,19 @@ users_setup_extras() {
     # 1. Nano Config
     if [[ "$INSTALL_EDITOR" == "yes" ]]; then
         log "$STR_LOG_NANO_CONFIG"
-        echo "$TPL_NANO_CONFIG" > /mnt/etc/nanorc
+        echo "$TPL_NANO_CONFIG" >> /mnt/etc/nanorc
     fi
 
     # 2. SSH Setup
     if [[ "$INSTALL_SSH" == "yes" ]]; then
         log "$STR_LOG_SSH_INSTALL"
-        arch-chroot /mnt pacman -S --noconfirm openssh >/dev/null
+        arch-chroot /mnt pacman -S --needed --noconfirm openssh >/dev/null
         arch-chroot /mnt systemctl enable sshd >/dev/null
     fi
 
     # 3. Basis-Schriften und XDG-Ordner
     log "$STR_LOG_FONTS_XDG"
-    arch-chroot /mnt pacman -S --noconfirm noto-fonts noto-fonts-emoji ttf-liberation xdg-user-dirs >/dev/null
+    arch-chroot /mnt pacman -S --needed --noconfirm noto-fonts noto-fonts-emoji ttf-liberation xdg-user-dirs >/dev/null
 
     # 4. Setup-Ordner im Home erstellen
     local target_setup="/mnt/home/$USERNAME/setup"

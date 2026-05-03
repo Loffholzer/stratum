@@ -14,6 +14,10 @@ services_setup() {
     log "$STR_LOG_NM_ENABLE"
     log "$STR_LOG_BTRFS_SERVICES"
     
+    # ZRAM Konfiguration anwenden
+    arch-chroot /mnt pacman -S --needed --noconfirm zram-generator >/dev/null 2>&1
+    echo "$TPL_ZRAM_CONF" > /mnt/etc/systemd/zram-generator.conf
+
     # Gebündelte Ausführung der systemd-Befehle im chroot
 arch-chroot /mnt /bin/bash <<EOF
     systemctl enable NetworkManager >/dev/null 2>&1
@@ -79,7 +83,7 @@ EOF
 # =========================================
 services_setup_advanced() {
     log "$STR_LOG_INSTALL_FIREWALL_MDNS"
-    arch-chroot /mnt pacman -S --noconfirm avahi nss-mdns firewalld >/dev/null
+    arch-chroot /mnt pacman -S --needed --noconfirm avahi nss-mdns firewalld >/dev/null
     
     log "$STR_LOG_CONFIG_MDNS"
     arch-chroot /mnt sed -i 's/mymachines resolve/mymachines mdns_minimal [NOTFOUND=return] resolve/' /etc/nsswitch.conf
