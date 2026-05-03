@@ -30,16 +30,18 @@ end
 
 # Starship & Zoxide global einbinden, falls installiert
 if type -q starship; starship init fish | source; end
-if type -q zoxide; zoxide init fish | source; end
+if type -q zoxide; zoxide init fish --cmd cd | source; end
 
 alias ls='eza --icons --group-directories-first'
-alias ll='eza -la --icons --group-directories-first'
-alias la='eza -laa --icons --group-directories-first'
+alias ll='eza -l --icons --group-directories-first'
+alias la='eza -la --icons --group-directories-first'
 alias cat='bat --theme=\"Monokai Extended\"'
 alias top='btop'
-alias cd='z'
+alias mkdir='mkdir -p'
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
 alias update='sudo pacman -Syu'
-alias parus='paru -Syu'
 alias snapshots='snapper -c root list'
 "
 
