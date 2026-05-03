@@ -21,6 +21,13 @@ setup_colors() {
     export CYAN='\033[1;36m'
     export BOLD='\033[1m'
     export NC='\033[0m'
+
+    # UI Prefixes für konsistentes Logging
+    export STR_INPUT_PREFIX="${BLUE}[INPUT]${NC}"
+    export STR_INFO_PREFIX="${BLUE}[INFO]${NC}"
+    export STR_OK_PREFIX="${GREEN}[OK]${NC}"
+    export STR_WARN_PREFIX="${YELLOW}[WARN]${NC}"
+    export STR_ERR_PREFIX="${RED}[ERROR]${NC}"
 }
 
 # =========================================
@@ -54,7 +61,7 @@ phase_header() {
 # Aufgabe: Prefix [INFO] in Blau mit Text
 # =========================================
 log() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+    echo -e "${STR_INFO_PREFIX} $1"
 }
 
 # =========================================
@@ -64,7 +71,7 @@ log() {
 # Aufgabe: Prefix [OK] in Grün mit Text
 # =========================================
 success() {
-    echo -e "${GREEN}[OK]${NC} $1"
+    echo -e "${STR_OK_PREFIX} $1"
 }
 
 # =========================================
@@ -75,7 +82,7 @@ success() {
 # =========================================
 warn() {
     ((WARN_COUNT++))
-    echo -e "${YELLOW}[WARN]${NC} $1" >&2
+    echo -e "${STR_WARN_PREFIX} $1" >&2
 }
 
 # =========================================
@@ -86,7 +93,7 @@ warn() {
 # =========================================
 error() {
     ((ERR_COUNT++))
-    echo -e "${RED}[ERROR]${NC} $1" >&2
+    echo -e "${STR_ERR_PREFIX} $1" >&2
 }
 
 # =========================================
@@ -107,10 +114,10 @@ run_cmd() {
     if [[ -n "$err_out" ]]; then
         if [[ $exit_code -ne 0 ]]; then
             ((ERR_COUNT++))
-            echo -e "${RED}${err_out}${NC}" >&2
+            echo -e "${STR_ERR_PREFIX} ${err_out}" >&2
         else
             ((WARN_COUNT++))
-            echo -e "${YELLOW}${err_out}${NC}" >&2
+            echo -e "${STR_WARN_PREFIX} ${err_out}" >&2
         fi
     fi
     return $exit_code

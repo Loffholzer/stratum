@@ -76,10 +76,10 @@ env_initramfs() {
     printf -v log_msg "$STR_LOG_HOOKS_DEF" "$hooks"
     log "$log_msg"
 
-arch-chroot /mnt /bin/bash <<EOF
-    sed -i "s/^HOOKS=(.*/HOOKS=($hooks)/" /etc/mkinitcpio.conf
-    mkinitcpio -P >/dev/null
-EOF
+    # Hooks in die Konfiguration schreiben
+    arch-chroot /mnt sed -i "s/^HOOKS=(.*/HOOKS=($hooks)/" /etc/mkinitcpio.conf
+    # Kernel-Images bauen und Warnungen mit run_cmd abfangen
+    run_cmd arch-chroot /mnt mkinitcpio -P
 
     success "$STR_OK_INITRAMFS_DONE"
 }
