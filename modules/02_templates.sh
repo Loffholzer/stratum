@@ -133,12 +133,14 @@ fi"
     export TPL_LIMINE_BASE="timeout: 3
 remember_last_entry: yes
 default_entry: 1
+
+# Hintergrundbild
 background_path: boot():/splash.jpg
 
 # Farben
 term_background: 00000000
 term_foreground: FFFFFF
-term_palette: 000000,ff5555,55ff55,ffff55,5c036f,aa00aa,c1461a,ffffff,555555,ff5555,55ff55,ffff55,9e3dba,ff55ff,ff8c00,ffffff
+term_palette: 000000;ff5555;55ff55;ffff55;5c036f;aa00aa;c1461a;ffffff;555555;ff5555;55ff55;ffff55;9e3dba;ff55ff;ff8c00;ffffff
 "
 
     # =========================================
@@ -250,11 +252,11 @@ CRYPTROOT_UUID=\"{{CRYPTROOT_UUID}}\"
 SNAPSHOT_BASE=\"/@.snapshots\"
 
 # Bestehende Snapshot-Einträge entfernen
-sed -i '/# === AUTO_GENERATED_SNAPSHOTS ===/,/!d' \"\$LIMINE_CONF\"
+sed -i '/# === AUTO_GENERATED_SNAPSHOTS ===/,\$d' \"\$LIMINE_CONF\"
 echo \"# === AUTO_GENERATED_SNAPSHOTS ===\" >> \"\$LIMINE_CONF\"
 
 # Nach Snapshots suchen (Snapper .snapshots Verzeichnis)
-mapfile -t SNAPSHOTS < <(btrfs subvolume list /mnt | grep \"/\.snapshots/\" | awk '{print \$NF}' | sort -r)
+mapfile -t SNAPSHOTS < <(btrfs subvolume list / | grep \"/\.snapshots/\" | awk '{print \$NF}' | sort -r)
 
 for snap in \"\${SNAPSHOTS[@]}\"; do
     snap_num=\$(basename \"\$snap\")

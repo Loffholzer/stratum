@@ -83,7 +83,7 @@ EOF
 # =========================================
 services_setup_advanced() {
     log "$STR_LOG_INSTALL_FIREWALL_MDNS"
-    arch-chroot /mnt pacman -S --color=always --needed --noconfirm avahi nss-mdns firewalld >/dev/null
+    run_cmd arch-chroot /mnt pacman -S --color=always --needed --noconfirm avahi nss-mdns firewalld
     
     log "$STR_LOG_CONFIG_MDNS"
     arch-chroot /mnt sed -i 's/mymachines resolve/mymachines mdns_minimal [NOTFOUND=return] resolve/' /etc/nsswitch.conf
@@ -118,8 +118,8 @@ run_chroot_services() {
     fi
 
     services_setup
-    snapper_setup
     services_setup_advanced
+    snapper_setup
 
     success "$STR_OK_SERVICES_DONE"
 }
