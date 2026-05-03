@@ -28,6 +28,26 @@ cleanup_system() {
 }
 
 # =========================================
+# 📦 Funktion: show_issue_summary
+# -----------------------------------------
+# Zweck: Ausgabe der gesammelten Fehler & Warnungen
+# =========================================
+show_issue_summary() {
+    echo
+    if (( ERR_COUNT == 0 && WARN_COUNT == 0 )); then
+        success "$STR_LOG_PERFECT_RUN"
+    else
+        local msg
+        printf -v msg "$STR_LOG_ISSUE_SUMMARY" "$ERR_COUNT" "$WARN_COUNT"
+        if (( ERR_COUNT > 0 )); then
+            echo -e "${RED}${BOLD}[STATISTIK]${NC} $msg"
+        else
+            echo -e "${YELLOW}${BOLD}[STATISTIK]${NC} $msg"
+        fi
+    fi
+}
+
+# =========================================
 # 📦 Funktion: prompt_reboot
 # -----------------------------------------
 # Zweck: Benutzer nach Neustart fragen
@@ -57,5 +77,6 @@ prompt_reboot() {
 run_cleanup() {
     header "$STR_CLN_PHASE_HEADER"
     cleanup_system
+    show_issue_summary
     prompt_reboot
 }

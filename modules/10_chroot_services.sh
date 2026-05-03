@@ -83,7 +83,7 @@ EOF
 # =========================================
 services_setup_advanced() {
     log "$STR_LOG_INSTALL_FIREWALL_MDNS"
-    arch-chroot /mnt pacman -S --needed --noconfirm avahi nss-mdns firewalld >/dev/null
+    arch-chroot /mnt pacman -S --color=always --needed --noconfirm avahi nss-mdns firewalld >/dev/null
     
     log "$STR_LOG_CONFIG_MDNS"
     arch-chroot /mnt sed -i 's/mymachines resolve/mymachines mdns_minimal [NOTFOUND=return] resolve/' /etc/nsswitch.conf

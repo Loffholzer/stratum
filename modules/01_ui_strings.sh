@@ -61,6 +61,7 @@ load_ui_strings() {
     export STR_PROMPT_SEARCH_LOCALE="Suche (z.B. fr_FR, es_ES): "
     export STR_TITLE_LOCALE_HITS="Locale Treffer"
 
+    export STR_ASK_CONFIRM_INPUT="Eingabe korrekt?"
     export STR_ASK_ROOT_LOCK="Root-Login sperren? (Sicherer, Sudo wird genutzt)"
     export STR_ASK_MULTILIB="Multilib (32-Bit) aktivieren?"
     export STR_ASK_SHELL_UX="UX-Stack (Fish, Starship, Zoxide) installieren?"
@@ -106,6 +107,10 @@ load_ui_strings() {
     export STR_LBL_LANG="Sprache:"
     export STR_LBL_DISK="Laufwerk:"
     export STR_LBL_LUKS="LUKS:"
+    export STR_LBL_IDENTITY="Identität:"
+    export STR_LBL_CPU="CPU-Ucode:"
+    export STR_LBL_ROOT="Root-Sperre:"
+    export STR_LBL_MULTILIB="Multilib:"
 
     # --- Modul: 05_prep ---
     export STR_PREP_HEADER="Phase 1: Live-Umgebung vorbereiten"
@@ -208,6 +213,9 @@ load_ui_strings() {
     export STR_WARN_DRY_CLEANUP="[DRY-RUN] Bereinigung übersprungen."
     export STR_OK_INSTALL_DONE="Installation von Arch Linux erfolgreich abgeschlossen!"
     
+    export STR_LOG_ISSUE_SUMMARY="Fehler: %d | Warnungen: %d"
+    export STR_LOG_PERFECT_RUN="Perfekter Durchlauf! (0 Fehler, 0 Warnungen)"
+
     export STR_ASK_REBOOT="Möchtest du das System jetzt neu starten?"
     export STR_LOG_REBOOTING="System wird neu gestartet..."
     export STR_LOG_EXIT="Du bleibst in der Live-Umgebung. Du kannst sie mit 'reboot' verlassen."

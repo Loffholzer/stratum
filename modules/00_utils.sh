@@ -74,6 +74,7 @@ success() {
 # Aufgabe: Prefix [WARN] in Gelb mit Text auf STDERR
 # =========================================
 warn() {
+    ((WARN_COUNT++))
     echo -e "${YELLOW}[WARN]${NC} $1" >&2
 }
 
@@ -84,7 +85,35 @@ warn() {
 # Aufgabe: Prefix [ERROR] in Rot mit Text auf STDERR
 # =========================================
 error() {
+    ((ERR_COUNT++))
     echo -e "${RED}[ERROR]${NC} $1" >&2
+}
+
+# =========================================
+# 📦 Funktion: run_cmd
+# -----------------------------------------
+# Zweck: Führt Befehle stumm aus, zeigt Fehler aber ROT an
+# Aufgabe: Verhindert, dass echte Fehlermeldungen übersehen werden
+# =========================================
+run_cmd() {
+    local err_out
+    local exit_code
+    
+    # Fange Fehlerausgabe (stderr) ein, werfe Standardausgabe (stdout) weg
+    err_out=$("$@" 2>&1 >/dev/null)
+    exit_code=$?
+    
+    # Wenn der Befehl gemeckert hat, zeige es farbig an!
+    if [[ -n "$err_out" ]]; then
+        if [[ $exit_code -ne 0 ]]; then
+            ((ERR_COUNT++))
+            echo -e "${RED}${err_out}${NC}" >&2
+        else
+            ((WARN_COUNT++))
+            echo -e "${YELLOW}${err_out}${NC}" >&2
+        fi
+    fi
+    return $exit_code
 }
 
 # =========================================
@@ -182,6 +211,8 @@ print_search_results() {
 # =========================================
 run_utils() {
     setup_colors
+    export WARN_COUNT=0
+    export ERR_COUNT=0
     tput reset 2>/dev/null || clear
     log "Utilities geladen. (Terminal initialisiert)"
 }
