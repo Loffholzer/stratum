@@ -152,8 +152,8 @@ users_setup_extras() {
     fi
 
     # 6. Basis-Strings für die Vererbung an die GUI mitgeben
-    if [ -f "$BASE_DIR/modules/01_strings.sh" ]; then
-        cp "$BASE_DIR/modules/01_strings.sh" "$target_setup/"
+    if [ -f "$BASE_DIR/modules/01_ui_strings.sh" ]; then
+        cp "$BASE_DIR/modules/01_ui_strings.sh" "$target_setup/"
     fi
 
     # 7. Fish-Login-Hook erstellen (Handoff)

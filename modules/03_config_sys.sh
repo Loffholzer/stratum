@@ -6,7 +6,7 @@
 # =========================================
 
 export AUTO_MODE="${AUTO_MODE:-false}"
-export CONSOLE_FONT="${CONSOLE_FONT:-ter-v24n}"
+export CONSOLE_FONT="${CONSOLE_FONT:-ter-v24b}"
 declare -a LOCALES=()
 
 # =========================================
@@ -91,7 +91,7 @@ select_keyboard() {
     print_option 3 "$STR_OPT_MANUAL_SEARCH"
 
     while true; do
-        read -rp "$(echo -e "${STR_INPUT_PREFIX} ${STR_PROMPT_SEL_1_3}")" choice
+        read -rp "$(echo -e "${STR_INPUT_PREFIX} $STR_PROMPT_SEL_1_3")" choice
         case "$choice" in
             1) KEYMAP="${detected:-de}"; break ;;
             2) KEYMAP="us"; break ;;
@@ -147,7 +147,7 @@ select_timezone() {
         print_option 2 "$STR_OPT_MANUAL_SEARCH"
         
         while true; do
-            read -rp "$(echo -e "${STR_INPUT_PREFIX} ${STR_PROMPT_SEL_1_2}")" choice
+            read -rp "$(echo -e "${STR_INPUT_PREFIX} $STR_PROMPT_SEL_1_2")" choice
             case "$choice" in
                 1) TIMEZONE="$tz"; return 0 ;;
                 2) break ;;
@@ -200,7 +200,7 @@ select_locale() {
     print_option 3 "$STR_OPT_MANUAL_SEARCH"
 
     while true; do
-        read -rp "$(echo -e "${STR_INPUT_PREFIX} ${STR_PROMPT_SEL_1_3}")" choice
+        read -rp "$(echo -e "${STR_INPUT_PREFIX} $STR_PROMPT_SEL_1_2")" choice
         case "$choice" in
             1)
                 LOCALES=("${detected:-de_DE.UTF-8}" "en_US.UTF-8")

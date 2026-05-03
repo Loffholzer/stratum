@@ -30,6 +30,8 @@ install_base_system() {
         networkmanager
         terminus-font
         memtest86+
+        pciutils
+        rust
     )
 
     # Hardware-spezifischer Microcode (aus Modul 03)
