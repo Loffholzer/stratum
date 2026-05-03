@@ -75,19 +75,10 @@ BottomUp
 "
 
     # =========================================
-    # 📄 Template: Nano Virtuoso Configuration
+    # 📄 Template: Micro Editor Environment
     # =========================================
-    export TPL_NANO_CONFIG="
-set linenumbers
-set mouse
-set autoindent
-set tabsize 4
-set tabstospaces
-set softwrap
-set indicator
-set minibar
-
-include \"/usr/share/nano/*.nanorc\""
+    export TPL_MICRO_ENV="export EDITOR=micro
+export VISUAL=micro"
 
     # =========================================
     # 📄 Template: Desktop Handoff Skript
@@ -130,17 +121,17 @@ fi"
     # =========================================
     # 📄 Template: Limine Globale Config (Splash, Farben, Memtest)
     # =========================================
-    export TPL_LIMINE_BASE="timeout: 3
-remember_last_entry: yes
+    export TPL_LIMINE_BASE="timeout: 5
+remember_last_entry: no
 default_entry: 1
 
 # Hintergrundbild
-background_path: boot():/splash.jpg
+wallpaper: boot():/splash.jpg
+wallpaper_style: stretched
 
 # Farben
-term_background: 00000000
-term_foreground: FFFFFF
-term_palette: 000000;ff5555;55ff55;ffff55;5c036f;aa00aa;c1461a;ffffff;555555;ff5555;55ff55;ffff55;9e3dba;ff55ff;ff8c00;ffffff
+term_background: FF000000
+term_foreground: FFB000
 "
 
     # =========================================
@@ -162,8 +153,8 @@ term_palette: 000000;ff5555;55ff55;ffff55;5c036f;aa00aa;c1461a;ffffff;555555;ff5
 
 # --- Tools ---
 /$STR_LBL_BOOT_MEMTEST
-    protocol: linux
-    kernel_path: boot():/memtest86+/memtest.efi
+    protocol: efi
+    path: boot():/memtest86+/memtest.efi
 "
 
     # =========================================
@@ -185,8 +176,8 @@ term_palette: 000000;ff5555;55ff55;ffff55;5c036f;aa00aa;c1461a;ffffff;555555;ff5
 
 # --- Tools ---
 /$STR_LBL_BOOT_MEMTEST
-    protocol: linux
-    kernel_path: boot():/memtest86+/memtest.efi
+    protocol: efi
+    path: uuid({{ROOT_UUID}}):/@/boot/memtest86+/memtest.efi
 "
 
     # =========================================

@@ -23,13 +23,13 @@ install_base_system() {
         linux-lts-headers
         linux-firmware
         btrfs-progs
-        nano
+        micro
         git
         wget
         curl
         networkmanager
         terminus-font
-        memtest86+
+        memtest86+-efi
         pciutils
         rust
     )

@@ -67,7 +67,7 @@ load_ui_strings() {
     export STR_ASK_SHELL_UX="UX-Stack (Fish, Starship, Zoxide) installieren?"
     export STR_ASK_TOOLS="CLI-Tools (eza, bat, btop) installieren?"
     export STR_ASK_AUR="AUR-Helper (Paru) installieren?"
-    export STR_ASK_EDITOR="Nano Virtuoso-Config anwenden?"
+    export STR_ASK_EDITOR="Micro als Standard-Editor setzen?"
     export STR_ASK_SSH="OpenSSH installieren und aktivieren?"
 
     # --- Modul: 03_config_sys (Micro-Texte & Warnungen) ---
@@ -183,8 +183,8 @@ load_ui_strings() {
     export STR_LOG_AUR_BUILD="Baue und installiere Paru (AUR Helper)..."
     export STR_LOG_PARU_CONFIG="Konfiguriere Paru für %s..."
     export STR_LOG_AUR_CLEANUP="Entferne AUR-Builduser und räume auf..."
-    
-    export STR_LOG_NANO_CONFIG="Wende Nano Virtuoso-Konfiguration an..."
+
+    export STR_LOG_MICRO_CONFIG="Setze Micro als Standard-Editor (EDITOR)..."
     export STR_LOG_SSH_INSTALL="Installiere und aktiviere OpenSSH..."
     export STR_LOG_DESKTOP_HANDOFF="Erstelle Desktop-Handoff Skript für %s..."
     export STR_LOG_FONTS_XDG="Installiere Basis-Schriften und XDG-Verzeichnisstruktur..."

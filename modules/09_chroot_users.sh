@@ -120,8 +120,8 @@ EOF
 users_setup_extras() {
     # 1. Nano Config
     if [[ "$INSTALL_EDITOR" == "yes" ]]; then
-        log "$STR_LOG_NANO_CONFIG"
-        echo "$TPL_NANO_CONFIG" >> /mnt/etc/nanorc
+        log "$STR_LOG_MICRO_CONFIG"
+        echo "$TPL_MICRO_ENV" > /mnt/etc/profile.d/micro.sh
     fi
 
     # 2. SSH Setup
