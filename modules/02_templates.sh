@@ -245,6 +245,11 @@ echo \"# === AUTO_GENERATED_SNAPSHOTS ===\" >> \"\$LIMINE_CONF\"
 # Nach Snapshots suchen (Snapper .snapshots Verzeichnis)
 mapfile -t SNAPSHOTS < <(btrfs subvolume list / | awk '{print \$NF}' | grep '^@\.snapshots/.*/snapshot$' | sort -t'/' -k2 -nr)
 
+if [[ \${#SNAPSHOTS[@]} -gt 0 ]]; then
+    echo "" >> "\$LIMINE_CONF"
+    echo "/Snapshots" >> "\$LIMINE_CONF"
+fi
+
 for snap in \"\${SNAPSHOTS[@]}\"; do
     snap_num=\$(echo \"\$snap\" | cut -d'/' -f2)
     [[ -z \"\$snap_num\" ]] && continue
@@ -254,14 +259,14 @@ for snap in \"\${SNAPSHOTS[@]}\"; do
 
     if [[ -z \"\$CRYPTROOT_UUID\" ]]; then
         echo \"
-/\$STR_LBL_BOOT_LABEL (Snapshot #\$snap_num: \$snap_name)
+//${STR_LBL_BOOT_LABEL} (Snapshot #\$snap_num: \$snap_name)
     protocol: linux
     kernel_path: uuid(\$ROOT_UUID):/\$snap/boot/vmlinuz-linux
     module_path: uuid(\$ROOT_UUID):/\$snap/boot/initramfs-linux.img
     cmdline: root=UUID=\$ROOT_UUID rootflags=subvol=\$snap rw quiet splash\" >> \"\$LIMINE_CONF\"
     else
         echo \"
-/\$STR_LBL_BOOT_LABEL (Snapshot #\$snap_num: \$snap_name)
+//${STR_LBL_BOOT_LABEL} (Snapshot #\$snap_num: \$snap_name)
     protocol: linux
     kernel_path: boot():/vmlinuz-linux
     module_path: boot():/initramfs-linux.img
