@@ -120,8 +120,6 @@ show_summary() {
     echo -e "  ${CYAN}${STR_LBL_KEY}${NC}     $KEYMAP"
     echo -e "  ${CYAN}${STR_LBL_TZ}${NC}     $TIMEZONE"
     echo -e "  ${CYAN}${STR_LBL_LANG}${NC}      $LANG_DEFAULT"
-    echo -e "  ${CYAN}${STR_LBL_ROOT}${NC}  $DISABLE_ROOT"
-    echo -e "  ${CYAN}${STR_LBL_MULTILIB}${NC}     $ENABLE_MULTILIB"
     echo -e "  ${CYAN}${STR_LBL_DISK}${NC}     $DISK"
     echo -e "  ${CYAN}${STR_LBL_LUKS}${NC}         $USE_LUKS"
     echo

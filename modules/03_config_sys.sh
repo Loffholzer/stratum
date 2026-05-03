@@ -343,13 +343,13 @@ collect_sys_config() {
     ask_user_password
 
     echo
-    DISABLE_ROOT="$(ask_yes_no "$STR_ASK_ROOT_LOCK")"
-    ENABLE_MULTILIB="$(ask_yes_no "$STR_ASK_MULTILIB")"
-    INSTALL_SHELL="$(ask_yes_no "$STR_ASK_SHELL_UX")"
-    INSTALL_TOOLS="$(ask_yes_no "$STR_ASK_TOOLS")"
-    INSTALL_AUR="$(ask_yes_no "$STR_ASK_AUR")"
-    INSTALL_EDITOR="$(ask_yes_no "$STR_ASK_EDITOR")"
-    INSTALL_SSH="$(ask_yes_no "$STR_ASK_SSH")"
+    DISABLE_ROOT="yes"
+    ENABLE_MULTILIB="yes"
+    INSTALL_SHELL="yes"
+    INSTALL_TOOLS="yes"
+    INSTALL_AUR="yes"
+    INSTALL_EDITOR="yes"
+    INSTALL_SSH="yes"
 }
 
 # =========================================

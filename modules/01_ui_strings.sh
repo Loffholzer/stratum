@@ -62,13 +62,6 @@ load_ui_strings() {
     export STR_TITLE_LOCALE_HITS="Locale Treffer"
 
     export STR_ASK_CONFIRM_INPUT="Eingabe korrekt?"
-    export STR_ASK_ROOT_LOCK="Root-Login sperren? (Sicherer, Sudo wird genutzt)"
-    export STR_ASK_MULTILIB="Multilib (32-Bit) aktivieren?"
-    export STR_ASK_SHELL_UX="UX-Stack (Fish, Starship, Zoxide) installieren?"
-    export STR_ASK_TOOLS="CLI-Tools (eza, bat, btop) installieren?"
-    export STR_ASK_AUR="AUR-Helper (Paru) installieren?"
-    export STR_ASK_EDITOR="Micro als Standard-Editor setzen?"
-    export STR_ASK_SSH="OpenSSH installieren und aktivieren?"
 
     # --- Modul: 03_config_sys (Micro-Texte & Warnungen) ---
     export STR_LOG_INTEL_CPU="Intel CPU erkannt."
@@ -109,8 +102,6 @@ load_ui_strings() {
     export STR_LBL_LUKS="LUKS:"
     export STR_LBL_IDENTITY="Identität:"
     export STR_LBL_CPU="CPU-Ucode:"
-    export STR_LBL_ROOT="Root-Sperre:"
-    export STR_LBL_MULTILIB="Multilib:"
 
     # --- Modul: 05_prep ---
     export STR_PREP_HEADER="Phase 1: Live-Umgebung vorbereiten"
