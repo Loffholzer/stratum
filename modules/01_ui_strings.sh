@@ -93,8 +93,6 @@ load_ui_strings() {
     export STR_LOG_USER_ABORT="Abbruch durch Benutzer."
     export STR_OPT_PROF_STD="Standard (BTRFS Subvolumes, unverschlüsselt)"
     export STR_OPT_PROF_LUKS="LUKS (BTRFS auf LUKS2, verschlüsselt)"
-    export STR_LBL_HOST="Hostname:"
-    export STR_LBL_USER="Username:"
     export STR_LBL_KEY="Tastatur:"
     export STR_LBL_TZ="Zeitzone:"
     export STR_LBL_LANG="Sprache:"
