@@ -187,6 +187,8 @@ load_ui_strings() {
     export STR_WARN_DRY_USERS="[DRY-RUN] User- und Tool-Setup übersprungen."
     export STR_OK_USERS_DONE="Benutzer und Umgebung erfolgreich eingerichtet."
 
+    export STR_LOG_COPY_ASSETS="Kopiere System-Assets und bereite GUI-Handoff vor..."
+
     # --- Modul: 10_chroot_services (Dienste & Wartung) ---
     export STR_SRV_PHASE_HEADER="Phase 6: Dienste & Systemwartung"
     

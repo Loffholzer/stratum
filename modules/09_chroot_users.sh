@@ -115,41 +115,60 @@ EOF
 # =========================================
 # 📦 Funktion: users_setup_extras
 # -----------------------------------------
-# Zweck: Nano, SSH, Fonts, XDG & GUI-Handoff
+# Zweck: Nano, SSH, Fonts, XDG, Assets & GUI-Handoff
 # =========================================
 users_setup_extras() {
-    # 1. Basis-Tools (Fonts, XDG, SSH etc.)
-    log "$STR_LOG_FONTS_XDG"
-    arch-chroot /mnt pacman -S --noconfirm noto-fonts noto-fonts-emoji ttf-liberation xdg-user-dirs openssh >/dev/null
-    arch-chroot /mnt systemctl enable sshd >/dev/null
-
-    # 2. Setup-Ordner im Home erstellen
-    local user_home="/mnt/home/$USERNAME"
-    local setup_dir="\$user_home/setup"
-    mkdir -p "\$setup_dir"
-
-    # 3. GUI-Skripte und Strings aus dem Repo kopieren
-    log "Kopiere GUI-Setup-Dateien in das User-Home..."
-    # Wir kopieren alles aus einem (noch zu erstellenden) 'gui'-Ordner deines Repos
-    if [ -d "$BASE_DIR/gui" ]; then
-        cp -r "$BASE_DIR/gui/"* "\$setup_dir/"
+    # 1. Nano Config
+    if [[ "$INSTALL_EDITOR" == "yes" ]]; then
+        log "$STR_LOG_NANO_CONFIG"
+        echo "$TPL_NANO_CONFIG" > /mnt/etc/nanorc
     fi
-    # Wichtig: Die 01_strings für das Handoff-Skript mitkopieren
-    cp "$BASE_DIR/modules/01_strings.sh" "\$setup_dir/"
 
-    # 4. Handoff-Skript (das eigentliche Installationsskript) vorbereiten
-    echo "$TPL_DESKTOP_HANDOFF" > "\$setup_dir/desktop_setup.sh"
-    
-    # 5. Fish-Login-Hook erstellen
-    mkdir -p "\$user_home/.config/fish/conf.d"
-    echo "$TPL_FISH_HANDOFF" > "\$user_home/.config/fish/conf.d/handoff.fish"
-    
-    # 6. Setup-Flag setzen (Damit die Abfrage beim ersten Login triggert)
-    touch "\$user_home/.config/setup_active"
+    # 2. SSH Setup
+    if [[ "$INSTALL_SSH" == "yes" ]]; then
+        log "$STR_LOG_SSH_INSTALL"
+        arch-chroot /mnt pacman -S --noconfirm openssh >/dev/null
+        arch-chroot /mnt systemctl enable sshd >/dev/null
+    fi
 
-    # 7. Rechte korrigieren (Alles muss dem User gehören)
+    # 3. Basis-Schriften und XDG-Ordner
+    log "$STR_LOG_FONTS_XDG"
+    arch-chroot /mnt pacman -S --noconfirm noto-fonts noto-fonts-emoji ttf-liberation xdg-user-dirs >/dev/null
+
+    # 4. Setup-Ordner im Home erstellen
+    local target_setup="/mnt/home/$USERNAME/setup"
+    mkdir -p "$target_setup"
+
+    # 5. Asset-Transfer & Renaming (aus src_gui_setup)
+    log "$STR_LOG_COPY_ASSETS"
+    if [ -d "$BASE_DIR/src_gui_setup" ]; then
+        # Kopiert den kompletten Inhalt (inkl. des neuen modules/ Ordners)
+        cp -r "$BASE_DIR/src_gui_setup/"* "$target_setup/" 2>/dev/null || true
+        
+        # Die Dummy-Datei im Ziel umbenennen zu install.sh
+        if [ -f "$target_setup/setup_entrypoint.sh" ]; then
+            mv "$target_setup/setup_entrypoint.sh" "$target_setup/install.sh"
+        fi
+    fi
+
+    # 6. Basis-Strings für die Vererbung an die GUI mitgeben
+    if [ -f "$BASE_DIR/modules/01_strings.sh" ]; then
+        cp "$BASE_DIR/modules/01_strings.sh" "$target_setup/"
+    fi
+
+    # 7. Fish-Login-Hook erstellen (Handoff)
+    local user_home="/mnt/home/$USERNAME"
+    mkdir -p "$user_home/.config/fish/conf.d"
+    echo "$TPL_FISH_HANDOFF" > "$user_home/.config/fish/conf.d/handoff.fish"
+    
+    # 8. Setup-Flag setzen
+    touch "$user_home/.config/setup_active"
+
+    # 9. Rechte korrigieren & Skript ausführbar machen
     arch-chroot /mnt chown -R "$USERNAME:$USERNAME" "/home/$USERNAME"
-    chmod +x "\$setup_dir/desktop_setup.sh"
+    if [ -f "$target_setup/install.sh" ]; then
+        chmod +x "$target_setup/install.sh"
+    fi
 }
 
 # =========================================
