@@ -9,3 +9,36 @@
 
 # Hier kommen in der neuen Branch die Templates (z.B. SDDM-Theme) hinein.
 export TPL_GUI_DUMMY="dummy"
+
+# =========================================
+# 📄 Template: Firefox Enterprise Policies
+# =========================================
+export TPL_FF_POLICIES='{
+  "policies": {
+    "DisableTelemetry": true,
+    "DisableFirefoxStudies": true,
+    "DisablePocket": true,
+    "DisableAppUpdate": true,
+    "PasswordManagerEnabled": false,
+    "OfferToSaveLogins": false,
+    "AutofillAddressEnabled": false,
+    "AutofillCreditCardEnabled": false,
+    "Preferences": {
+      "dom.security.https_only_mode": true,
+      "browser.contentblocking.category": "strict",
+      "privacy.donottrackheader.enabled": true
+    },
+    "SearchEngines": {
+      "Default": "Brave",
+      "Add": [
+        {
+          "Name": "Brave",
+          "URLTemplate": "https://search.brave.com/search?q={searchTerms}",
+          "Method": "GET",
+          "IconURL": "https://cdn.search.brave.com/serp/v2/_app/imgs/logo.svg",
+          "Alias": "!b"
+        }
+      ]
+    }
+  }
+}'
