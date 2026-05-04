@@ -49,6 +49,6 @@ This script is provided "as is", without warranty of any kind. Use at your own r
 
 ## ⚖️ License / Lizenz (MIT)
 
-Copyright (c) 2026 Loffholzer
+Copyright (c) 2024 Loffholzer
 
 Distributed under the MIT License. See `LICENSE` for more information.
