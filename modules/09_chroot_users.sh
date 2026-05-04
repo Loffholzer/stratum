@@ -14,9 +14,9 @@ users_setup_accounts() {
     log "$STR_LOG_ROOT_LOCK"
     # Root entsperren, Passwort setzen (für sudo -i), dann sperren
     arch-chroot /mnt /bin/bash <<EOF
-passwd -u root
+passwd -u root >/dev/null 2>&1
 echo "root:$USER_PASSWORD" | chpasswd
-passwd -l root
+passwd -l root >/dev/null 2>&1
 EOF
 
     local log_msg
@@ -29,7 +29,7 @@ echo "$USERNAME:$USER_PASSWORD" | chpasswd
 EOF
 
     log "$STR_LOG_SUDO_SETUP"
-    arch-chroot /mnt pacman -S --needed --noconfirm sudo >/dev/null
+    arch-chroot /mnt pacman -S --needed --noconfirm sudo >/dev/null 2>&1
     # Wheel-Gruppe in sudoers freischalten
     arch-chroot /mnt sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 }
@@ -57,9 +57,9 @@ users_setup_shell_tools() {
     log "$log_msg"
     
     # Root-Shell auf Fish ändern
-    arch-chroot /mnt usermod -s /usr/bin/fish root
+    arch-chroot /mnt usermod -s /usr/bin/fish root >/dev/null 2>&1
     # User-Shell auf Fish ändern
-    arch-chroot /mnt chsh -s /usr/bin/fish "$USERNAME"
+    arch-chroot /mnt chsh -s /usr/bin/fish "$USERNAME" >/dev/null 2>&1
 
     log "$STR_LOG_TOOLS_INSTALL"
     arch-chroot /mnt pacman -S --needed --noconfirm eza bat btop >/dev/null

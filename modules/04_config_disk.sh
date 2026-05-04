@@ -115,13 +115,15 @@ select_install_profile() {
 show_summary() {
     header "$STR_SUMMARY_HEADER"
     
-    echo -e "  ${CYAN}${STR_LBL_IDENTITY}${NC}    $USERNAME@$HOSTNAME"
-    echo -e "  ${CYAN}${STR_LBL_CPU}${NC}    ${MICROCODE_PKG:-(Keiner / Unbekannt)}"
-    echo -e "  ${CYAN}${STR_LBL_KEY}${NC}     $KEYMAP"
-    echo -e "  ${CYAN}${STR_LBL_TZ}${NC}     $TIMEZONE"
-    echo -e "  ${CYAN}${STR_LBL_LANG}${NC}      $LANG_DEFAULT"
-    echo -e "  ${CYAN}${STR_LBL_DISK}${NC}     $DISK"
-    echo -e "  ${CYAN}${STR_LBL_LUKS}${NC}         $USE_LUKS"
+    # printf mit %-15s füllt den Platz rechts automatisch mit Leerzeichen auf,
+    # sodass die Werte immer exakt untereinander stehen, egal wie lang das Label ist.
+    printf "  ${CYAN}%-15s${NC} %s\n" "$STR_LBL_IDENTITY" "$USERNAME@$HOSTNAME"
+    printf "  ${CYAN}%-15s${NC} %s\n" "$STR_LBL_CPU" "${MICROCODE_PKG:-$STR_OPT_UNKNOWN}"
+    printf "  ${CYAN}%-15s${NC} %s\n" "$STR_LBL_KEY" "$KEYMAP"
+    printf "  ${CYAN}%-15s${NC} %s\n" "$STR_LBL_TZ" "$TIMEZONE"
+    printf "  ${CYAN}%-15s${NC} %s\n" "$STR_LBL_LANG" "$LANG_DEFAULT"
+    printf "  ${CYAN}%-15s${NC} %s\n" "$STR_LBL_DISK" "$DISK"
+    printf "  ${CYAN}%-15s${NC} %s\n" "$STR_LBL_LUKS" "$USE_LUKS"
     echo
     
     # printf formatiert die Variable %s aus der Sprachdatei sauber mit dem Laufwerksnamen
