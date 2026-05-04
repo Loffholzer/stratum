@@ -304,13 +304,6 @@ collect_sys_config() {
         TIMEZONE="Europe/Berlin"
         LOCALES=("en_US.UTF-8")
         LANG_DEFAULT="en_US.UTF-8"
-        DISABLE_ROOT="yes"
-        ENABLE_MULTILIB="yes"
-        INSTALL_SHELL="yes"
-        INSTALL_TOOLS="yes"
-        INSTALL_AUR="yes"
-        INSTALL_EDITOR="yes"
-        INSTALL_SSH="yes"
         return 0
     fi
 
@@ -341,15 +334,6 @@ collect_sys_config() {
     done
 
     ask_user_password
-
-    echo
-    DISABLE_ROOT="yes"
-    ENABLE_MULTILIB="yes"
-    INSTALL_SHELL="yes"
-    INSTALL_TOOLS="yes"
-    INSTALL_AUR="yes"
-    INSTALL_EDITOR="yes"
-    INSTALL_SSH="yes"
 }
 
 # =========================================
@@ -359,8 +343,7 @@ collect_sys_config() {
 # =========================================
 export_sys_config() {
     export KEYMAP TIMEZONE LANG_DEFAULT HOSTNAME USERNAME USER_PASSWORD
-    export DISABLE_ROOT ENABLE_MULTILIB MICROCODE_PKG
-    export INSTALL_SHELL INSTALL_TOOLS INSTALL_AUR INSTALL_EDITOR INSTALL_SSH
+    export MICROCODE_PKG
     export EXPORTED_LOCALES="${LOCALES[*]}"
 }
 

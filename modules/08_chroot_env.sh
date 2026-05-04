@@ -48,6 +48,12 @@ arch-chroot /mnt /bin/bash <<EOF
     # Pacman konfigurieren (Color & ILoveCandy)
     sed -i 's/^#Para/Para/' /etc/pacman.conf
     sed -i 's/^#Color/Color\nILoveCandy/' /etc/pacman.conf
+
+    # Vision: Multilib-Repository standardmäßig aktivieren (Best-Practice)
+    sed -i '/^#\[multilib\]/,/^#Include = \/etc\/pacman.d\/mirrorlist/ s/^#//' /etc/pacman.conf
+    
+    # WICHTIG: Pacman-Datenbanken nach der Multilib-Aktivierung synchronisieren!
+    pacman -Sy >/dev/null 2>&1
 EOF
 
     success "$STR_OK_BASICS_DONE"

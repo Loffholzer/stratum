@@ -78,39 +78,6 @@ SudoLoop
 export VISUAL=micro"
 
     # =========================================
-    # 📄 Template: Desktop Handoff Skript
-    # =========================================
-    export TPL_DESKTOP_HANDOFF="#!/usr/bin/env bash
-
-BLUE='\033[1;34m'
-GREEN='\033[1;32m'
-CYAN='\033[1;36m'
-NC='\033[0m'
-
-clear
-echo -e \"\${BLUE}=========================================\${NC}\"
-echo -e \"\${CYAN} 🚀 Willkommen in deinem neuen Arch Linux!\${NC}\"
-echo -e \"\${BLUE}=========================================\${NC}\n\"
-
-echo \"Dies ist das Post-Install-Skript für die grafische Oberfläche (GUI).\"
-echo
-
-read -rp \"Möchtest du das Desktop-Setup jetzt starten? (j/n): \" start_choice
-if [[ \"\${start_choice,,}\" =~ ^(j|ja|y|yes)$ ]]; then
-    echo -e \"\n\${GREEN}[OK] Desktop-Setup wird geladen...\${NC}\"
-    sleep 2
-
-    echo
-    read -rp \"Setup abgeschlossen. Skript löschen? (j/n): \" del_choice
-    if [[ \"\${del_choice,,}\" =~ ^(j|ja|y|yes)$ ]]; then
-        rm -- \"\$0\"
-        echo -e \"\${GREEN}[OK] Skript entfernt.\${NC}\"
-    fi
-else
-    echo -e \"\nSetup übersprungen.\"
-fi"
-
-    # =========================================
     # 📄 Template: Sudoers AUR Build (Temporär)
     # =========================================
     export TPL_SUDOERS_AUR_BUILD="builduser ALL=(ALL) NOPASSWD: ALL"

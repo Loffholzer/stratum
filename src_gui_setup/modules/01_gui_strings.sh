@@ -15,6 +15,7 @@ export NC='\033[0m'
 
 export STR_GUI_INFO_PREFIX="${BLUE}[INFO]${NC}"
 export STR_GUI_ERR_PREFIX="${RED}[FEHLER]${NC}"
+export STR_GUI_OK_PREFIX="${GREEN}[OK]${NC}"
 
 export STR_GUI_MENU_TITLE="${BOLD}${CYAN} 🚀 DESKTOP-UMGEBUNG AUSWÄHLEN${NC}"
 export STR_GUI_MENU_SUB="Wähle deine bevorzugte Oberfläche für die Installation:"
@@ -28,3 +29,7 @@ export STR_GUI_LOG_START_COSMIC="${STR_GUI_INFO_PREFIX} Bereite Installation von
 export STR_GUI_LOG_EXIT="${STR_GUI_INFO_PREFIX} Setup wird beendet. Viel Spaß mit deinem Basis-System!"
 
 export STR_GUI_ERR_INVALID="${STR_GUI_ERR_PREFIX} Ungültige Auswahl. Bitte versuche es erneut."
+export STR_GUI_ERR_SUDO="${STR_GUI_ERR_PREFIX} Bitte starte das Setup mit sudo: sudo ./install.sh"
+
+export STR_GUI_DUMMY_KDE="KDE Plasma Installations-Dummy erfolgreich aufgerufen."
+export STR_GUI_DUMMY_COSMIC="COSMIC Desktop Installations-Dummy erfolgreich aufgerufen."

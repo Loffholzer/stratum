@@ -8,11 +8,10 @@
 # =========================================
 # 📦 Funktion: load_ui_strings
 # -----------------------------------------
-# Zweck: Lädt alle UI-Texte in den Speicher
-# Aufgabe: Definiert Prompts, Logs und Fehlermeldungen
+# Zweck: Deutschsprachige Strings (DE)
 # =========================================
 
-load_ui_strings() {
+load_strings_de() {
     # --- Allgemeines ---
     export STR_PROMPT_SEL_1_2="Auswahl [1-2]: "
     export STR_PROMPT_SEL_1_3="Auswahl [1-3]: "
@@ -203,4 +202,235 @@ load_ui_strings() {
     export STR_HANDOFF_INFO="Kein Problem! Du kannst die Installation jederzeit manuell starten."
     export STR_HANDOFF_PATH_INFO="Die Skripte findest du hier: ~/setup/"
     export STR_HANDOFF_STARTING="Starte GUI-Setup..."
+}
+
+# =========================================
+# 📦 Funktion: load_strings_en
+# -----------------------------------------
+# Zweck: Englischsprachige Strings (EN)
+# =========================================
+load_strings_en() {
+    # --- General ---
+    export STR_PROMPT_SEL_1_2="Selection [1-2]: "
+    export STR_PROMPT_SEL_1_3="Selection [1-3]: "
+    export STR_PROMPT_YN="(y/n)"
+    export STR_WARN_YES_NO="Please answer with y/n."
+    export STR_WARN_INVALID_SEL="Invalid selection."
+    export STR_PROMPT_SELECT_NUM="Select number (0 to abort): "
+    export STR_LOG_USER_ABORT="Aborted by user."
+
+    # --- Module 03: System Configuration ---
+    export STR_SYS_HEADER="System Configuration"
+    export STR_ERR_ROOT_REQ="Root privileges required."
+    export STR_ERR_UEFI_REQ="UEFI environment strictly required."
+    export STR_LOG_INTEL_CPU="Intel CPU detected."
+    export STR_LOG_AMD_CPU="AMD CPU detected."
+    export STR_WARN_UNKNOWN_CPU="Unknown CPU. No microcode."
+    export STR_ERR_AUTO_DRY_RUN="AUTO_MODE cannot run with DRY_RUN=false!"
+    export STR_LOG_AUTO_ACTIVE="AUTO-MODE active. Skipping inputs."
+
+    # Keyboard
+    export STR_PHASE_KEYMAP="Keyboard Layout"
+    export STR_OPT_AUTO="(Automatic)"
+    export STR_OPT_US_STD="us (Standard)"
+    export STR_OPT_MANUAL_SEARCH="Manual search"
+    export STR_PROMPT_SEARCH_KEYMAP="Search (e.g., us, fr): "
+    export STR_TITLE_KEYMAP_HITS="Keymap Matches"
+    export STR_WARN_KEYMAP_LIVE_FAIL="Could not set layout in live system."
+    export STR_WARN_NO_HITS="No matches."
+    export STR_WARN_TOO_MANY_HITS="Too many matches. Please refine."
+
+    # Timezone
+    export STR_PHASE_TIMEZONE="Timezone"
+    export STR_LOG_RECOGNIZED="Detected: "
+    export STR_OPT_USE_RECOGNIZED_TZ="Use detected timezone"
+    export STR_PROMPT_SEARCH_TZ="Search (e.g., berlin, tokyo): "
+    export STR_TITLE_TZ_HITS="Timezone Matches"
+    export STR_LOG_TZ_AUTO_FAIL="Automatic timezone detection failed. Manual search required."
+
+    # Locale
+    export STR_PHASE_LOCALE="System Language (Locale)"
+    export STR_LOG_LOCALE_HINT="Note: en_US.UTF-8 is always generated."
+    export STR_OPT_PLUS_EN_US=" + en_US.UTF-8"
+    export STR_OPT_ONLY_EN_US="Only en_US.UTF-8"
+    export STR_PROMPT_SEARCH_LOCALE="Search (e.g., fr_FR, es_ES): "
+    export STR_TITLE_LOCALE_HITS="Locale Matches"
+
+    # Identity
+    export STR_PHASE_IDENTITY="Identity & Modules"
+    export STR_PROMPT_HOSTNAME="Hostname (e.g., arch-pc): "
+    export STR_PROMPT_USERNAME="Username (e.g., max): "
+    export STR_PROMPT_PASS_USER="User password: "
+    export STR_PROMPT_PASS_CONFIRM="Repeat password: "
+    export STR_ASK_CONFIRM_INPUT="Input correct?"
+    export STR_WARN_HOSTNAME_RULES="Allowed: a-z, 0-9, hyphen."
+    export STR_WARN_USERNAME_RULES="Allowed: a-z, 0-9, underscore. Starts with a letter."
+    export STR_ERR_PASS_MISMATCH="Passwords do not match."
+
+    # --- Module 04: Drive Configuration ---
+    export STR_DISK_HEADER="Drive Configuration"
+    export STR_PHASE_DISK_SEL="Select Target Drive"
+    export STR_PHASE_PROFIL_SEL="Disk Setup / Encryption"
+    export STR_PROMPT_LUKS_PASS="LUKS password (encryption): "
+    export STR_ERR_NO_DISK="No suitable drives found."
+    export STR_LOG_FOUND_DISKS="Found drives:"
+    export STR_OPT_PROF_STD="Standard (BTRFS subvolumes, unencrypted)"
+    export STR_OPT_PROF_LUKS="LUKS (BTRFS on LUKS2, encrypted)"
+
+    # Summary
+    export STR_SUMMARY_HEADER="Summary (Point of no Return)"
+    export STR_WARN_DELETE="WARNING: All data on %s will be irrevocably DELETED!"
+    export STR_ASK_START_INSTALL="Start installation now?"
+    export STR_LBL_KEY="Keyboard:"
+    export STR_LBL_TZ="Timezone:"
+    export STR_LBL_LANG="Language:"
+    export STR_LBL_DISK="Drive:"
+    export STR_LBL_LUKS="LUKS:"
+    export STR_LBL_IDENTITY="Identity:"
+    export STR_LBL_CPU="CPU ucode:"
+
+    # --- Phases ---
+    export STR_PREP_HEADER="Phase 1: Prepare Live Environment"
+    export STR_LOG_TIME_SYNC="Synchronizing system time..."
+    export STR_LOG_PACMAN_OPT="Optimizing Pacman config (ParallelDownloads & Color)..."
+    export STR_LOG_REFLECTOR="Searching for fastest mirrors with Reflector..."
+    export STR_WARN_DRY_PREP="[DRY-RUN] Live environment setup skipped."
+
+    export STR_DISK_PHASE_HEADER="Phase 2: Partitioning & Filesystems"
+    export STR_LOG_UNMOUNT="Unmounting existing partitions on %s..."
+    export STR_LOG_WIPE="Wiping filesystem signatures on %s..."
+    export STR_LOG_PARTITION="Creating GPT layout on %s..."
+    export STR_LOG_FORMAT_EFI="Formatting EFI partition (%s) as FAT32..."
+    export STR_LOG_LUKS_SKIP="LUKS encryption skipped."
+    export STR_LOG_LUKS_FORMAT="LUKS Setup: Formatting %s with LUKS2..."
+    export STR_LOG_LUKS_OPEN="LUKS Setup: Opening container 'cryptroot'..."
+    export STR_LOG_FORMAT_BTRFS="Creating BTRFS filesystem on %s..."
+    export STR_LOG_SUBVOL="Creating BTRFS subvolumes..."
+    export STR_LOG_MOUNT="Mounting subvolumes to /mnt..."
+    export STR_WARN_DRY_DISK="[DRY-RUN] Partitioning skipped."
+    export STR_OK_DISK_DONE="Drive successfully prepared."
+
+    export STR_BASE_PHASE_HEADER="Phase 3: Base System (Pacstrap)"
+    export STR_LOG_PACSTRAP="Running pacstrap (core system, kernel, firmware)..."
+    export STR_LOG_FSTAB="Generating fstab..."
+    export STR_WARN_DRY_BASE="[DRY-RUN] Pacstrap skipped."
+    export STR_OK_BASE_DONE="Base system successfully installed."
+
+    export STR_ENV_PHASE_HEADER="Phase 4: Target System Environment"
+    export STR_ENV_HDR_BASICS="Chroot: Configure Basics"
+    export STR_LOG_TZ_LOCALE="Setting timezone (%s) and locales..."
+    export STR_LOG_PACMAN_TARGET="Configuring Pacman in target system (Color & ILoveCandy)..."
+    export STR_OK_BASICS_DONE="Basic configuration completed."
+    export STR_WARN_DRY_BASICS="[DRY-RUN] Chroot basics setup skipped."
+    export STR_ENV_HDR_INITRAMFS="Chroot: Initramfs (mkinitcpio)"
+    export STR_LOG_HOOK_LUKS="LUKS Profile: Adding 'encrypt' hook after 'block'."
+    export STR_LOG_HOOKS_DEF="Defined hooks: %s"
+    export STR_OK_INITRAMFS_DONE="Initramfs images successfully generated."
+    export STR_WARN_DRY_INITRAMFS="[DRY-RUN] mkinitcpio configuration skipped."
+    export STR_ENV_HDR_BOOTLOADER="Chroot: Limine Bootloader"
+    export STR_LOG_INSTALL_LIMINE="Installing Limine, efibootmgr, and memtest86+..."
+    export STR_LOG_GEN_LIMINE_CONF="Generating limine.conf (Splash, Colors, Memtest, Snapshot support)..."
+    export STR_LOG_EFI_ENTRY="Copying UEFI bootfiles, splash, and creating NVRAM entry..."
+    export STR_LBL_BOOT_LABEL="Arch Linux"
+    export STR_LBL_BOOT_LABEL_LTS="Arch Linux (LTS)"
+    export STR_LBL_BOOT_MEMTEST="Memtest86+ v7"
+    export STR_OK_BOOTLOADER_DONE="Limine Bootloader successfully installed."
+    export STR_WARN_DRY_BOOTLOADER="[DRY-RUN] Limine setup skipped."
+    export STR_ENV_HDR_HW_LOCALE="Hardware Detection & Localization"
+    export STR_LOG_LANG_CHECK="Checking language packages for: [%s]..."
+    export STR_WARN_GPU_NVIDIA="NVIDIA GPU detected. Proprietary drivers (closed-source) will be installed!"
+    export STR_LOG_GPU_AMD="AMD GPU detected. Open-source drivers will be installed."
+    export STR_LOG_GPU_INTEL="Intel GPU detected. Open-source drivers will be installed."
+    export STR_LOG_BATTERY="Battery detected. power-profiles-daemon will be installed."
+    export STR_LOG_INSTALL_HW_LOCALE="Installing hardware support and localization tools..."
+    export STR_OK_HW_LOCALE="Hardware & language tools configured."
+
+    export STR_USR_PHASE_HEADER="Phase 5: Users & Environment"
+    export STR_LOG_ROOT_LOCK="Locking root account..."
+    export STR_LOG_USER_CREATE="Creating standard user (%s)..."
+    export STR_LOG_SUDO_SETUP="Configuring sudo for 'wheel' group..."
+    export STR_LOG_UX_INSTALL="Installing UX stack (Fish, Starship, Zoxide, Fastfetch)..."
+    export STR_LOG_ROOT_UX="Configuring UX stack for root (globally in /etc)..."
+    export STR_LOG_FISH_DEFAULT="Setting Fish as default shell for %s..."
+    export STR_LOG_TOOLS_INSTALL="Installing CLI tools (eza, bat, btop)..."
+    export STR_LOG_AUR_TEMP_USER="Creating temporary AUR build user..."
+    export STR_LOG_AUR_BUILD="Building and installing Paru (AUR Helper)..."
+    export STR_LOG_PARU_CONFIG="Configuring Paru for %s..."
+    export STR_LOG_AUR_CLEANUP="Removing AUR build user and cleaning up..."
+    export STR_LOG_MICRO_CONFIG="Setting Micro as default editor (EDITOR)..."
+    export STR_LOG_SSH_INSTALL="Installing and enabling OpenSSH..."
+    export STR_LOG_FONTS_XDG="Installing base fonts and XDG directory structure..."
+    export STR_LOG_COPY_ASSETS="Copying system assets and preparing GUI handoff..."
+    export STR_WARN_DRY_USERS="[DRY-RUN] User and tool setup skipped."
+    export STR_OK_USERS_DONE="Users and environment successfully configured."
+
+    export STR_SRV_PHASE_HEADER="Phase 6: Services & System Maintenance"
+    export STR_LOG_NM_ENABLE="Enabling NetworkManager..."
+    export STR_LOG_BTRFS_SERVICES="Enabling BTRFS maintenance services (Trim & Scrub)..."
+    export STR_LOG_INSTALL_FIREWALL_MDNS="Installing firewall and mDNS (Avahi)..."
+    export STR_LOG_CONFIG_MDNS="Configuring mDNS in nsswitch.conf..."
+    export STR_LOG_CONFIG_FIREWALL="Setting Firewalld default zone to 'home'..."
+    export STR_LOG_ENABLE_ADV_SERVICES="Enabling Systemd services (Avahi, Firewalld, PPD)..."
+    export STR_OK_ADV_SERVICES="Advanced network services configured."
+    export STR_LOG_SNAPPER_SETUP="Installing Snapper and creating Pacman pre-hook..."
+    export STR_LOG_SNAPPER_UPDATE="Enabling BTRFS snapshot update service (CachyOS style)..."
+    export STR_WARN_DRY_SERVICES="[DRY-RUN] Services configuration skipped."
+    export STR_OK_SERVICES_DONE="System services successfully configured."
+
+    export STR_CLN_PHASE_HEADER="Phase 7: Completion & Cleanup"
+    export STR_LOG_FINAL_UNMOUNT="Unmounting filesystems (/mnt)..."
+    export STR_LOG_FINAL_LUKS="Closing LUKS container..."
+    export STR_WARN_DRY_CLEANUP="[DRY-RUN] Cleanup skipped."
+    export STR_OK_INSTALL_DONE="Arch Linux installation successfully completed!"
+    export STR_LOG_ISSUE_SUMMARY="Errors: %d | Warnings: %d"
+    export STR_LOG_PERFECT_RUN="Installation completed perfectly (0 errors, 0 warnings)."
+    export STR_ASK_REBOOT="Do you want to reboot the system now?"
+    export STR_LOG_REBOOTING="System is rebooting..."
+    export STR_LOG_EXIT="You remain in the live environment. You can leave it with 'reboot'."
+
+    # Handoff
+    export STR_HANDOFF_TITLE="WELCOME TO STRATUM OS"
+    export STR_HANDOFF_QUESTION="Do you want to proceed with the GUI installation now? [y/N]: "
+    export STR_HANDOFF_INFO="No problem! You can start the installation manually at any time."
+    export STR_HANDOFF_PATH_INFO="You can find the scripts here: ~/setup/"
+    export STR_HANDOFF_STARTING="Starting GUI setup..."
+}
+
+# =========================================
+# 📦 Funktion: load_ui_strings
+# -----------------------------------------
+# Zweck: Sprachabfrage & Hauptcontroller
+# =========================================
+load_ui_strings() {
+    if [[ "${AUTO_MODE:-false}" == "true" ]]; then
+        load_strings_en
+        return 0
+    fi
+
+    echo -e "\n${BLUE}=========================================${NC}"
+    echo -e "${BOLD}${CYAN} 🌐 SELECT INSTALLER LANGUAGE / SPRACHE WÄHLEN${NC}"
+    echo -e "${BLUE}=========================================${NC}\n"
+    echo -e "  ${CYAN}[1]${NC} English"
+    echo -e "  ${CYAN}[2]${NC} Deutsch\n"
+
+    local choice
+    while true; do
+        read -rp "$(echo -e "${BLUE}[INPUT]${NC} Selection / Auswahl [1-2]: ")" choice
+        case "$choice" in
+            1) 
+                load_strings_en
+                break 
+                ;;
+            2) 
+                load_strings_de
+                break 
+                ;;
+            *) 
+                echo -e "${RED}[ERROR]${NC} Invalid selection / Ungültige Auswahl." >&2 
+                ;;
+        esac
+    done
+    
+    # Terminal aufräumen, um sauber ins Modul 03 zu starten
+    clear
 }

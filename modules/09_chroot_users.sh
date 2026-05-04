@@ -11,20 +11,13 @@
 # Zweck: Root und Standard-Benutzer anlegen
 # =========================================
 users_setup_accounts() {
-    if [[ "$DISABLE_ROOT" == "yes" ]]; then
-        log "$STR_LOG_ROOT_LOCK"
-        # Root entsperren, Passwort setzen (für sudo -i), dann sperren
-        arch-chroot /mnt /bin/bash <<EOF
+    log "$STR_LOG_ROOT_LOCK"
+    # Root entsperren, Passwort setzen (für sudo -i), dann sperren
+    arch-chroot /mnt /bin/bash <<EOF
 passwd -u root
 echo "root:$USER_PASSWORD" | chpasswd
 passwd -l root
 EOF
-    else
-        log "$STR_LOG_ROOT_PASS"
-        arch-chroot /mnt /bin/bash <<EOF
-echo "root:$USER_PASSWORD" | chpasswd
-EOF
-    fi
 
     local log_msg
     printf -v log_msg "$STR_LOG_USER_CREATE" "$USERNAME"
@@ -47,33 +40,29 @@ EOF
 # Zweck: UX-Stack global konfigurieren (für Root & User)
 # =========================================
 users_setup_shell_tools() {
-    if [[ "$INSTALL_SHELL" == "yes" ]]; then
-        log "$STR_LOG_UX_INSTALL"
-        arch-chroot /mnt pacman -S --needed --noconfirm fish starship zoxide fastfetch >/dev/null
-        
-        # UX global konfigurieren (Root erbt dies)
-        log "$STR_LOG_ROOT_UX"
-        mkdir -p /mnt/etc/fish
-        echo "$TPL_FISH_CONFIG_ETC" > /mnt/etc/fish/config.fish
-        echo "$TPL_STARSHIP_CONFIG_ETC" > /mnt/etc/starship.toml
-        # Snippet für sudo -i
-        mkdir -p /mnt/etc/fish/conf.d
-        echo "$TPL_FISH_UX_ROOT" > /mnt/etc/fish/conf.d/UX_root_glob.fish
+    log "$STR_LOG_UX_INSTALL"
+    arch-chroot /mnt pacman -S --needed --noconfirm fish starship zoxide fastfetch >/dev/null
+    
+    # UX global konfigurieren (Root erbt dies)
+    log "$STR_LOG_ROOT_UX"
+    mkdir -p /mnt/etc/fish
+    echo "$TPL_FISH_CONFIG_ETC" > /mnt/etc/fish/config.fish
+    echo "$TPL_STARSHIP_CONFIG_ETC" > /mnt/etc/starship.toml
+    # Snippet für sudo -i
+    mkdir -p /mnt/etc/fish/conf.d
+    echo "$TPL_FISH_UX_ROOT" > /mnt/etc/fish/conf.d/UX_root_glob.fish
 
-        local log_msg
-        printf -v log_msg "$STR_LOG_FISH_DEFAULT" "Root & $USERNAME"
-        log "$log_msg"
-        
-        # Root-Shell auf Fish ändern
-        arch-chroot /mnt usermod -s /usr/bin/fish root
-        # User-Shell auf Fish ändern
-        arch-chroot /mnt chsh -s /usr/bin/fish "$USERNAME"
-    fi
+    local log_msg
+    printf -v log_msg "$STR_LOG_FISH_DEFAULT" "Root & $USERNAME"
+    log "$log_msg"
+    
+    # Root-Shell auf Fish ändern
+    arch-chroot /mnt usermod -s /usr/bin/fish root
+    # User-Shell auf Fish ändern
+    arch-chroot /mnt chsh -s /usr/bin/fish "$USERNAME"
 
-    if [[ "$INSTALL_TOOLS" == "yes" ]]; then
-        log "$STR_LOG_TOOLS_INSTALL"
-        arch-chroot /mnt pacman -S --needed --noconfirm eza bat btop >/dev/null
-    fi
+    log "$STR_LOG_TOOLS_INSTALL"
+    arch-chroot /mnt pacman -S --needed --noconfirm eza bat btop >/dev/null
 }
 
 # =========================================
@@ -82,8 +71,6 @@ users_setup_shell_tools() {
 # Zweck: Paru via Source bauen (Fix für libalpm Fehler)
 # =========================================
 users_setup_aur() {
-    [[ "$INSTALL_AUR" != "yes" ]] && return 0
-
     log "$STR_LOG_AUR_TEMP_USER"
     arch-chroot /mnt /bin/bash <<EOF
 useradd -m builduser
@@ -119,17 +106,13 @@ EOF
 # =========================================
 users_setup_extras() {
     # 1. Nano Config
-    if [[ "$INSTALL_EDITOR" == "yes" ]]; then
-        log "$STR_LOG_MICRO_CONFIG"
-        echo "$TPL_MICRO_ENV" > /mnt/etc/profile.d/micro.sh
-    fi
+    log "$STR_LOG_MICRO_CONFIG"
+    echo "$TPL_MICRO_ENV" > /mnt/etc/profile.d/micro.sh
 
     # 2. SSH Setup
-    if [[ "$INSTALL_SSH" == "yes" ]]; then
-        log "$STR_LOG_SSH_INSTALL"
-        arch-chroot /mnt pacman -S --needed --noconfirm openssh >/dev/null
-        arch-chroot /mnt systemctl enable sshd >/dev/null
-    fi
+    log "$STR_LOG_SSH_INSTALL"
+    arch-chroot /mnt pacman -S --needed --noconfirm openssh >/dev/null
+    arch-chroot /mnt systemctl enable sshd >/dev/null
 
     # 3. Basis-Schriften und XDG-Ordner
     log "$STR_LOG_FONTS_XDG"
@@ -151,20 +134,15 @@ users_setup_extras() {
         fi
     fi
 
-    # 6. Basis-Strings für die Vererbung an die GUI mitgeben
-    if [ -f "$BASE_DIR/modules/01_ui_strings.sh" ]; then
-        cp "$BASE_DIR/modules/01_ui_strings.sh" "$target_setup/"
-    fi
-
-    # 7. Fish-Login-Hook erstellen (Handoff)
+    # 6. Fish-Login-Hook erstellen (Handoff)
     local user_home="/mnt/home/$USERNAME"
     mkdir -p "$user_home/.config/fish/conf.d"
     echo "$TPL_FISH_HANDOFF" > "$user_home/.config/fish/conf.d/handoff.fish"
     
-    # 8. Setup-Flag setzen
+    # 7. Setup-Flag setzen
     touch "$user_home/.config/setup_active"
 
-    # 9. Rechte korrigieren & Skript ausführbar machen
+    # 8. Rechte korrigieren & Skript ausführbar machen
     arch-chroot /mnt chown -R "$USERNAME:$USERNAME" "/home/$USERNAME"
     if [ -f "$target_setup/install.sh" ]; then
         chmod +x "$target_setup/install.sh"
