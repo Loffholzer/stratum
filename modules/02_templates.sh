@@ -296,7 +296,7 @@ if test -f ~/.config/setup_active
     if [ \"\$confirm\" = \"j\" ] || [ \"\$confirm\" = \"J\" ] || [ \"\$confirm\" = \"y\" ] || [ \"\$confirm\" = \"Y\" ]
         rm ~/.config/setup_active
         # Startet die install.sh im setup Ordner
-        bash ~/setup/install.sh
+        sudo bash ~/setup/install.sh
     else
         echo ''
         echo '$STR_HANDOFF_INFO'
