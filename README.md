@@ -42,6 +42,8 @@ This script is provided "as is", without warranty of any kind. Use at your own r
 * **Bootloader:** Limine v8+ (Modern, minimalist, with snapshot boot support).
 * **Performance:** ZRAM configuration, optimized Pacman settings, automatic hardware detection (Microcode/GPU).
 * **Maintenance:** Integrated Snapper setup with automatic Pacman hooks for system rollbacks.
+* **Localization:** Fully bilingual installer (English / Deutsch).
+* **Modularity:** Seamless "Handoff" to an independent Post-Install GUI Framework via Fish Shell.
 
 ---
 
