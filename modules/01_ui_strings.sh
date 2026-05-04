@@ -89,7 +89,7 @@ load_strings_de() {
     export STR_LBL_LANG="Sprache:"
     export STR_LBL_DISK="Laufwerk:"
     export STR_LBL_LUKS="LUKS:"
-    export STR_LBL_IDENTITY="Identität:"
+    export STR_LBL_IDENTITY="Benutzer:"
     export STR_LBL_CPU="CPU-Ucode:"
 
     # --- Modul 05: Live-Umgebung ---
