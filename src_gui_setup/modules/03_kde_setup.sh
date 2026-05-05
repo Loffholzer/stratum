@@ -306,14 +306,45 @@ kde_remove_packages() {
     echo -e "\n${STR_GUI_LOG_KDE_RM_PKGS}"
     
     local installed_pkgs=()
+    
     for pkg in "${KDE_PKGS[@]}"; do
-        if pacman -Qq "$pkg" >/dev/null 2>&1; then
-            installed_pkgs+=("$pkg")
+        # Wenn das Paket eine Gruppe ist, extrahiere die Mitglieder
+        local pkg_list
+        if pacman -Sgq "$pkg" >/dev/null 2>&1; then
+            pkg_list=$(pacman -Sgq "$pkg")
+        else
+            pkg_list="$pkg"
         fi
+        
+        for p in $pkg_list; do
+            if pacman -Qq "$p" >/dev/null 2>&1; then
+                installed_pkgs+=("$p")
+            fi
+        done
     done
 
     if [[ ${#installed_pkgs[@]} -gt 0 ]]; then
-        pacman -Rs --noconfirm "${installed_pkgs[@]}" 2>/dev/null || true
+        # Duplikate filtern und Pakete als Abhängigkeit markieren (flexibel machen)
+        installed_pkgs=($(printf "%s\n" "${installed_pkgs[@]}" | sort -u))
+        pacman -D --asdeps "${installed_pkgs[@]}" >/dev/null 2>&1 || true
+
+        # Schnittmenge: Welche unserer Pakete sind jetzt sichere "Leaves" (Waisen)?
+        local leaves_to_remove=()
+        local orphans
+        orphans=$(pacman -Qdtq 2>/dev/null || true)
+        
+        if [[ -n "$orphans" ]]; then
+            for p in "${installed_pkgs[@]}"; do
+                if echo "$orphans" | grep -q "^${p}$"; then
+                    leaves_to_remove+=("$p")
+                fi
+            done
+        fi
+
+        # Sicheres Löschen: Pacman entfernt diese Leaves und zieht nutzlose Abhängigkeiten via -Rs mit ab
+        if [[ ${#leaves_to_remove[@]} -gt 0 ]]; then
+            pacman -Rs --noconfirm "${leaves_to_remove[@]}" >/dev/null 2>&1 || true
+        fi
     fi
 }
 
