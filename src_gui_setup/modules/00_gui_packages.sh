@@ -16,5 +16,5 @@ export KDE_OOTB_PKGS=(firefox thunderbird ufw gufw)
 
 # --- COSMIC Desktop ---
 # COSMIC ist sehr modular, wir brauchen Session, Greeter, Applets und Core-Apps.
-export COSMIC_PKGS=(cosmic-session cosmic-greeter cosmic-applets cosmic-workspaces cosmic-bg cosmic-comp cosmic-panel cosmic-osd cosmic-term cosmic-files cosmic-edit cosmic-randr xdg-desktop-portal-cosmic)
-export COSMIC_OOTB_PKGS=(firefox thunderbird gnome-keyring evince file-roller ufw gufw)
+export COSMIC_PKGS=(cosmic-session cosmic-greeter cosmic-applets cosmic-workspaces cosmic-bg cosmic-comp cosmic-panel cosmic-osd cosmic-files cosmic-randr xdg-desktop-portal-cosmic)
+export COSMIC_OOTB_PKGS=(firefox thunderbird gnome-keyring evince file-roller alacritty ufw gufw)
