@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: 05_prep.sh
+# 📄 DATEI: 06_prep.sh
 # 💡 ZWECK: Live-System Vorbereitung (Pacman, Reflector)
 # =========================================
 
@@ -33,7 +33,7 @@ prep_live_env() {
 # =========================================
 # 📦 Funktion: run_prep
 # -----------------------------------------
-# Zweck: Einstiegspunkt Modul 05
+# Zweck: Einstiegspunkt Modul 06
 # =========================================
 run_prep() {
     header "$STR_PREP_HEADER"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: 03_config_sys.sh
+# 📄 DATEI: 04_config_sys.sh
 # 💡 ZWECK: Systemkonfiguration erfassen
 # =========================================
 
@@ -350,7 +350,7 @@ export_sys_config() {
 # =========================================
 # 📦 Funktion: run_config_sys
 # -----------------------------------------
-# Zweck: Einstiegspunkt des Moduls
+# Zweck: Einstiegspunkt Modul 04
 # =========================================
 run_config_sys() {
     collect_sys_config

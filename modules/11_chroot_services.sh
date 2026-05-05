@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: chroot_services.sh
-# 💡 ZWECK: Systemdienste, BTRFS-Wartung & CachyOS Snapshots
+# 📄 DATEI: 11_chroot_services.sh
+#  ZWECK: Systemdienste, BTRFS-Wartung & CachyOS Snapshots
 # =========================================
 
 # =========================================
@@ -15,7 +15,7 @@ services_setup() {
     log "$STR_LOG_BTRFS_SERVICES"
     
     # ZRAM Konfiguration anwenden
-    arch-chroot /mnt pacman -S --needed --noconfirm zram-generator >/dev/null 2>&1
+    arch-chroot /mnt pacman -S --needed --noconfirm "${ZRAM_PKGS[@]}" >/dev/null 2>&1
     echo "$TPL_ZRAM_CONF" > /mnt/etc/systemd/zram-generator.conf
 
     # Gebündelte Ausführung der systemd-Befehle im chroot
@@ -34,7 +34,7 @@ EOF
 snapper_setup() {
     log "$STR_LOG_SNAPPER_SETUP"
     
-    arch-chroot /mnt pacman -S --needed --noconfirm snapper >/dev/null 2>&1
+    arch-chroot /mnt pacman -S --needed --noconfirm "${SNAPPER_PKGS[@]}" >/dev/null 2>&1
 
     local conf_dir="/mnt/etc/snapper/configs"
     mkdir -p "$conf_dir"
@@ -77,7 +77,7 @@ EOF
 # =========================================
 services_setup_advanced() {
     log "$STR_LOG_INSTALL_FIREWALL_MDNS"
-    run_cmd arch-chroot /mnt pacman -S --color=always --needed --noconfirm avahi nss-mdns firewalld
+    run_cmd arch-chroot /mnt pacman -S --color=always --needed --noconfirm "${NETWORK_SERVICES_PKGS[@]}"
     
     log "$STR_LOG_CONFIG_MDNS"
     arch-chroot /mnt sed -i 's/mymachines resolve/mymachines mdns_minimal [NOTFOUND=return] resolve/' /etc/nsswitch.conf
@@ -101,7 +101,7 @@ EOF
 # =========================================
 # 📦 Funktion: run_chroot_services
 # -----------------------------------------
-# Zweck: Einstiegspunkt Modul 10
+# Zweck: Einstiegspunkt Modul 11
 # =========================================
 run_chroot_services() {
     phase_header "$STR_SRV_PHASE_HEADER"

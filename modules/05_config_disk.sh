@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: 04_config_disk.sh
+# 📄 DATEI: 05_config_disk.sh
 # 💡 ZWECK: Laufwerksauswahl & Verschlüsselung
 # =========================================
 
@@ -143,7 +143,7 @@ show_summary() {
 # =========================================
 # 📦 Funktion: run_config_disk
 # -----------------------------------------
-# Zweck: Einstiegspunkt Modul 04
+# Zweck: Einstiegspunkt Modul 05
 # =========================================
 run_config_disk() {
     if [[ "$AUTO_MODE" == true ]]; then

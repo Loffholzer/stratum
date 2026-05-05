@@ -13,6 +13,11 @@ if [ -f "$SETUP_DIR/modules/01_gui_strings.sh" ]; then
     source "$SETUP_DIR/modules/01_gui_strings.sh"
 fi
 
+# 1.5 Lade GUI Paketlisten
+if [ -f "$SETUP_DIR/modules/00_gui_packages.sh" ]; then
+    source "$SETUP_DIR/modules/00_gui_packages.sh"
+fi
+
 # 2. Root-Rechte prüfen
 if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
     echo -e "${STR_GUI_ERR_SUDO}"

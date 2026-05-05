@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: 09_chroot_users.sh
+# 📄 DATEI: 10_chroot_users.sh
 # 💡 ZWECK: Benutzer, Sudo, Shell & AUR
 # =========================================
 
@@ -29,7 +29,7 @@ echo "$USERNAME:$USER_PASSWORD" | chpasswd
 EOF
 
     log "$STR_LOG_SUDO_SETUP"
-    arch-chroot /mnt pacman -S --needed --noconfirm sudo >/dev/null 2>&1
+    arch-chroot /mnt pacman -S --needed --noconfirm "${SUDO_PKGS[@]}" >/dev/null 2>&1
     # Wheel-Gruppe in sudoers freischalten
     arch-chroot /mnt sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 }
@@ -41,7 +41,7 @@ EOF
 # =========================================
 users_setup_shell_tools() {
     log "$STR_LOG_UX_INSTALL"
-    arch-chroot /mnt pacman -S --needed --noconfirm fish starship zoxide fastfetch >/dev/null
+    arch-chroot /mnt pacman -S --needed --noconfirm "${UX_PKGS[@]}" >/dev/null
     
     # UX global konfigurieren (Root erbt dies)
     log "$STR_LOG_ROOT_UX"
@@ -62,7 +62,7 @@ users_setup_shell_tools() {
     arch-chroot /mnt chsh -s /usr/bin/fish "$USERNAME" >/dev/null 2>&1
 
     log "$STR_LOG_TOOLS_INSTALL"
-    arch-chroot /mnt pacman -S --needed --noconfirm eza bat btop >/dev/null
+    arch-chroot /mnt pacman -S --needed --noconfirm "${CLI_TOOLS_PKGS[@]}" >/dev/null
 }
 
 # =========================================
@@ -111,12 +111,12 @@ users_setup_extras() {
 
     # 2. SSH Setup
     log "$STR_LOG_SSH_INSTALL"
-    arch-chroot /mnt pacman -S --needed --noconfirm openssh >/dev/null
+    arch-chroot /mnt pacman -S --needed --noconfirm "${SSH_PKGS[@]}" >/dev/null
     arch-chroot /mnt systemctl enable sshd >/dev/null
 
     # 3. Basis-Schriften und XDG-Ordner
     log "$STR_LOG_FONTS_XDG"
-    arch-chroot /mnt pacman -S --needed --noconfirm noto-fonts noto-fonts-emoji ttf-liberation xdg-user-dirs >/dev/null
+    arch-chroot /mnt pacman -S --needed --noconfirm "${FONTS_XDG_PKGS[@]}" >/dev/null
 
     # 4. Setup-Ordner im Home erstellen
     local target_setup="/mnt/home/$USERNAME/setup"
@@ -152,7 +152,7 @@ users_setup_extras() {
 # =========================================
 # 📦 Funktion: run_chroot_users
 # -----------------------------------------
-# Zweck: Einstiegspunkt Modul 09
+# Zweck: Einstiegspunkt Modul 10
 # =========================================
 run_chroot_users() {
     header "$STR_USR_PHASE_HEADER"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: 01_ui_strings.sh
+# 📄 DATEI: 02_ui_strings.sh
 # 💡 ZWECK: Zentrale UI-Texte & Lokalisierung (DE)
 # =========================================
 
@@ -22,7 +22,7 @@ load_strings_de() {
     export STR_PROMPT_SELECT_NUM="Nummer wählen (0 für Abbruch): "
     export STR_LOG_USER_ABORT="Abbruch durch Benutzer."
 
-    # --- Modul 03: Systemkonfiguration ---
+    # --- Modul 04: Systemkonfiguration ---
     export STR_SYS_HEADER="System-Konfiguration"
     export STR_ERR_ROOT_REQ="Ausführung als Root erforderlich."
     export STR_ERR_UEFI_REQ="UEFI-Umgebung zwingend erforderlich."
@@ -70,7 +70,7 @@ load_strings_de() {
     export STR_WARN_USERNAME_RULES="Erlaubt: a-z, 0-9, Unterstrich. Beginnend mit Buchstabe."
     export STR_ERR_PASS_MISMATCH="Passwörter stimmen nicht überein."
 
-    # --- Modul 04: Laufwerkskonfiguration ---
+    # --- Modul 05: Laufwerkskonfiguration ---
     export STR_DISK_HEADER="Laufwerkskonfiguration"
     export STR_PHASE_DISK_SEL="Ziellaufwerk auswählen"
     export STR_PHASE_PROFIL_SEL="Disk-Setup / Verschlüsselung"
@@ -92,14 +92,14 @@ load_strings_de() {
     export STR_LBL_IDENTITY="Benutzer:"
     export STR_LBL_CPU="CPU-Ucode:"
 
-    # --- Modul 05: Live-Umgebung ---
+    # --- Modul 06: Live-Umgebung ---
     export STR_PREP_HEADER="Phase 1: Live-Umgebung vorbereiten"
     export STR_LOG_TIME_SYNC="Synchronisiere Systemzeit..."
     export STR_LOG_PACMAN_OPT="Optimiere Pacman-Konfiguration (ParallelDownloads & Color)..."
     export STR_LOG_REFLECTOR="Suche schnellste Mirrors mit Reflector..."
     export STR_WARN_DRY_PREP="[DRY-RUN] Live-Umgebung Setup übersprungen."
 
-    # --- Modul 06: Partitionierung ---
+    # --- Modul 07: Partitionierung ---
     export STR_DISK_PHASE_HEADER="Phase 2: Partitionierung & Dateisysteme"
     export STR_LOG_UNMOUNT="Unmounte existierende Partitionen auf %s..."
     export STR_LOG_WIPE="Lösche Dateisystem-Signaturen (Wipe) auf %s..."
@@ -114,14 +114,14 @@ load_strings_de() {
     export STR_WARN_DRY_DISK="[DRY-RUN] Partitionierung übersprungen."
     export STR_OK_DISK_DONE="Laufwerk erfolgreich vorbereitet."
 
-    # --- Modul 07: Grundsystem ---
+    # --- Modul 08: Grundsystem ---
     export STR_BASE_PHASE_HEADER="Phase 3: Grundsystem (Pacstrap)"
     export STR_LOG_PACSTRAP="Starte Pacstrap (Kernsystem, Kernel, Firmware)..."
     export STR_LOG_FSTAB="Generiere fstab..."
     export STR_WARN_DRY_BASE="[DRY-RUN] Pacstrap übersprungen."
     export STR_OK_BASE_DONE="Grundsystem erfolgreich installiert."
 
-    # --- Modul 08: Zielsystem-Umgebung ---
+    # --- Modul 09: Zielsystem-Umgebung ---
     export STR_ENV_PHASE_HEADER="Phase 4: Zielsystem-Umgebung"
     export STR_ENV_HDR_BASICS="Chroot: Basics konfigurieren"
     export STR_LOG_TZ_LOCALE="Setze Timezone (%s) und Locales..."
@@ -151,7 +151,7 @@ load_strings_de() {
     export STR_LOG_INSTALL_HW_LOCALE="Installiere Hardwaresupport und Lokalisierungs-Tools..."
     export STR_OK_HW_LOCALE="Hardware & Sprach-Tools eingerichtet."
 
-    # --- Modul 09: Benutzer & Umgebung ---
+    # --- Modul 10: Benutzer & Umgebung ---
     export STR_USR_PHASE_HEADER="Phase 5: Benutzer & Umgebung"
     export STR_LOG_ROOT_LOCK="Sperre Root-Account..."
     export STR_LOG_USER_CREATE="Erstelle Standard-Benutzer (%s)..."
@@ -171,7 +171,7 @@ load_strings_de() {
     export STR_WARN_DRY_USERS="[DRY-RUN] User- und Tool-Setup übersprungen."
     export STR_OK_USERS_DONE="Benutzer und Umgebung erfolgreich eingerichtet."
 
-    # --- Modul 10: Dienste & Wartung ---
+    # --- Modul 11: Dienste & Wartung ---
     export STR_SRV_PHASE_HEADER="Phase 6: Dienste & Systemwartung"
     export STR_LOG_NM_ENABLE="Aktiviere NetworkManager..."
     export STR_LOG_BTRFS_SERVICES="Aktiviere BTRFS-Wartungsdienste (Trim & Scrub)..."
@@ -221,7 +221,7 @@ load_strings_en() {
     export STR_PROMPT_SELECT_NUM="Select number (0 to abort): "
     export STR_LOG_USER_ABORT="Aborted by user."
 
-    # --- Module 03: System Configuration ---
+    # --- Module 04: System Configuration ---
     export STR_SYS_HEADER="System Configuration"
     export STR_ERR_ROOT_REQ="Root privileges required."
     export STR_ERR_UEFI_REQ="UEFI environment strictly required."
@@ -269,7 +269,7 @@ load_strings_en() {
     export STR_WARN_USERNAME_RULES="Allowed: a-z, 0-9, underscore. Starts with a letter."
     export STR_ERR_PASS_MISMATCH="Passwords do not match."
 
-    # --- Module 04: Drive Configuration ---
+    # --- Module 05: Drive Configuration ---
     export STR_DISK_HEADER="Drive Configuration"
     export STR_PHASE_DISK_SEL="Select Target Drive"
     export STR_PHASE_PROFIL_SEL="Disk Setup / Encryption"
@@ -433,6 +433,6 @@ load_ui_strings() {
         esac
     done
     
-    # Terminal aufräumen, um sauber ins Modul 03 zu starten
+    # Terminal aufräumen, um sauber ins Modul 04 zu starten
     clear
 }

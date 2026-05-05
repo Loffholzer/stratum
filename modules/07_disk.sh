@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: 06_disk.sh
+# 📄 DATEI: 07_disk.sh
 # 💡 ZWECK: Festplattenpartitionierung & LUKS
 # =========================================
 
@@ -139,7 +139,7 @@ format_and_mount() {
 # =========================================
 # 📦 Funktion: run_disk
 # -----------------------------------------
-# Zweck: Einstiegspunkt Modul 06
+# Zweck: Einstiegspunkt Modul 07
 # =========================================
 run_disk() {
     header "$STR_DISK_PHASE_HEADER"

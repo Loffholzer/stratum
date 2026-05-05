@@ -41,21 +41,22 @@ load_module() {
 # =========================================
 main() {
     # 0. Core-Framework (Farben, Sprache, Templates)
-    load_module "00_utils.sh" "run_utils"
-    load_module "01_ui_strings.sh" "load_ui_strings"
-    load_module "02_templates.sh" "load_templates"
+    load_module "00_packages.sh" "load_base_packages"
+    load_module "01_utils.sh" "run_utils"
+    load_module "02_ui_strings.sh" "load_ui_strings"
+    load_module "03_templates.sh" "load_templates"
 
     # 1. Konfiguration
-    load_module "03_config_sys.sh" "run_config_sys"
-    load_module "04_config_disk.sh" "run_config_disk"
+    load_module "04_config_sys.sh" "run_config_sys"
+    load_module "05_config_disk.sh" "run_config_disk"
 
     # 2. Installation
-    load_module "05_prep.sh" "run_prep"
-    load_module "06_disk.sh" "run_disk"
-    load_module "07_base.sh" "run_base"
-    load_module "08_chroot_env.sh" "run_chroot_env"
-    load_module "09_chroot_users.sh" "run_chroot_users"
-    load_module "10_chroot_services.sh" "run_chroot_services"
+    load_module "06_prep.sh" "run_prep"
+    load_module "07_disk.sh" "run_disk"
+    load_module "08_base.sh" "run_base"
+    load_module "09_chroot_env.sh" "run_chroot_env"
+    load_module "10_chroot_users.sh" "run_chroot_users"
+    load_module "11_chroot_services.sh" "run_chroot_services"
 
     # 3. Abschluss
     load_module "99_cleanup.sh" "run_cleanup"

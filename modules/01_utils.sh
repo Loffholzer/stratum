@@ -3,7 +3,7 @@
 # =========================================
 # 📦 Funktion: Globaler Header / Info
 # -----------------------------------------
-# Zweck: Globale Hilfsfunktionen und UI (00_utils.sh)
+# Zweck: Globale Hilfsfunktionen und UI (01_utils.sh)
 # Aufgabe: Farben, Logging und UI-Elemente bereitstellen
 # =========================================
 

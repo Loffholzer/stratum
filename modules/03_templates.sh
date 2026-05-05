@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: 02_templates.sh
+# 📄 DATEI: 03_templates.sh
 # 💡 ZWECK: Zentrale Konfigurations-Templates
 # =========================================
 

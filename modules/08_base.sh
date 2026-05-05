@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =========================================
-# 📄 DATEI: 07_base.sh
+# 📄 DATEI: 08_base.sh
 # 💡 ZWECK: Installation des Arch Grundsystems
 # =========================================
 
@@ -13,26 +13,8 @@
 install_base_system() {
     log "$STR_LOG_PACSTRAP"
 
-    # Basis-Pakete definieren
-    local pkgs=(
-        base
-        base-devel
-        linux
-        linux-lts
-        linux-headers
-        linux-lts-headers
-        linux-firmware
-        btrfs-progs
-        micro
-        git
-        wget
-        curl
-        networkmanager
-        terminus-font
-        memtest86+-efi
-        pciutils
-        rust
-    )
+    # Basis-Pakete aus den globalen Arrays laden
+    local pkgs=("${BASE_PKGS[@]}")
 
     # Hardware-spezifischer Microcode (aus Modul 03)
     if [[ -n "$MICROCODE_PKG" ]]; then
@@ -65,7 +47,7 @@ generate_fstab() {
 # =========================================
 # 📦 Funktion: run_base
 # -----------------------------------------
-# Zweck: Einstiegspunkt Modul 07
+# Zweck: Einstiegspunkt Modul 08
 # =========================================
 run_base() {
     header "$STR_BASE_PHASE_HEADER"
