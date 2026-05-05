@@ -59,9 +59,23 @@ declare -a OOTB_PKGS=(
     "seahorse"
 )
 
+declare -a GAMING_PKGS=(
+    "steam"
+    "lutris"
+    "wine-staging"
+    "winetricks"
+    "gamemode"
+    "lib32-gamemode"
+    "mangohud"
+    "lib32-mangohud"
+    "protonup-qt"
+    "vulkan-tools"
+)
+
 export ENABLE_BLUETOOTH=false
 export ENABLE_QEMU_GA=false
 export INSTALL_OOTB=false
+export INSTALL_GAMING=false
 export PURGE_CONFIGS=false
 
 # =========================================
@@ -78,6 +92,25 @@ cosmic_ask_ootb() {
         case "${choice,,}" in
             j|ja|y|yes) INSTALL_OOTB=true; break ;;
             n|nein|no)  INSTALL_OOTB=false; break ;;
+            *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
+        esac
+    done
+}
+
+# =========================================
+# 📦 Funktion: cosmic_ask_gaming
+# -----------------------------------------
+# Zweck: Fragt den Benutzer nach Gaming-Tools
+# Aufgabe: Setzt das Flag für die Installation des Gaming-Stacks
+# =========================================
+cosmic_ask_gaming() {
+    echo -e "\n${STR_GUI_ASK_GAMING}"
+    local choice
+    while true; do
+        read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
+        case "${choice,,}" in
+            j|ja|y|yes) INSTALL_GAMING=true; break ;;
+            n|nein|no)  INSTALL_GAMING=false; break ;;
             *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
         esac
     done
@@ -153,6 +186,37 @@ cosmic_install_ootb() {
     echo -e "\n${STR_GUI_LOG_OOTB_PKGS}"
     cosmic_detect_browser_mail_lang
     pacman -S --needed --noconfirm "${OOTB_PKGS[@]}" || true
+}
+
+# =========================================
+# 📦 Funktion: cosmic_install_gaming
+# -----------------------------------------
+# Zweck: Installiert den Gaming-Stack und 32-Bit Treiber
+# Aufgabe: Aktiviert Multilib, erkennt die GPU und führt pacman aus
+# =========================================
+cosmic_install_gaming() {
+    [[ "$INSTALL_GAMING" != "true" ]] && return 0
+    echo -e "\n${STR_GUI_LOG_GAMING_SETUP}"
+
+    if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
+        echo -e "  -> ${STR_GUI_LOG_GAMING_MULTILIB}"
+        sed -i '/^#\[multilib\]/{s/^#//;n;s/^#//}' /etc/pacman.conf
+        pacman -Sy >/dev/null 2>&1 || true
+    fi
+
+    local gpu_pkgs=()
+    if lspci 2>/dev/null | grep -iq "VGA.*NVIDIA"; then
+        echo -e "  -> ${STR_GUI_LOG_GAMING_NVIDIA}"
+        gpu_pkgs+=("lib32-nvidia-utils")
+    elif lspci 2>/dev/null | grep -iq "VGA.*AMD"; then
+        echo -e "  -> ${STR_GUI_LOG_GAMING_AMD}"
+        gpu_pkgs+=("lib32-mesa" "lib32-vulkan-radeon")
+    elif lspci 2>/dev/null | grep -iq "VGA.*Intel"; then
+        echo -e "  -> ${STR_GUI_LOG_GAMING_INTEL}"
+        gpu_pkgs+=("lib32-mesa" "lib32-vulkan-intel")
+    fi
+
+    pacman -S --needed --noconfirm "${GAMING_PKGS[@]}" "${gpu_pkgs[@]}" || true
 }
 
 # =========================================
@@ -250,9 +314,11 @@ cosmic_cleanup() {
 run_cosmic_setup() {
     echo -e "\n${STR_GUI_COSMIC_PHASE}\n"
     cosmic_ask_ootb
+    cosmic_ask_gaming
     cosmic_detect_hardware
     cosmic_install_packages
     cosmic_install_ootb
+    cosmic_install_gaming
     cosmic_configure_firefox
     cosmic_configure_wayland
     cosmic_configure_keyboard

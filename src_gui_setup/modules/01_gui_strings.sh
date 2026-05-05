@@ -44,6 +44,12 @@ export STR_GUI_ASK_DEEP_CLEAN="${STR_GUI_INFO_PREFIX} Möchtest du auch alle ben
 export STR_GUI_LOG_DEEP_CLEAN="${STR_GUI_INFO_PREFIX} Entferne benutzerspezifische Konfigurationsdateien..."
 export STR_GUI_ERR_GUI_RUNNING="${STR_GUI_ERR_PREFIX} Abbruch! Diese grafische Oberfläche läuft gerade aktiv. Bitte wechsle in ein TTY (z.B. Strg+Alt+F3), um sie sicher zu deinstallieren."
 export STR_GUI_LOG_CLEANUP="${STR_GUI_INFO_PREFIX} Bereinige Pacman-Cache..."
+export STR_GUI_ASK_GAMING="${STR_GUI_INFO_PREFIX} Möchtest du den Gaming-Stack (Steam, Lutris, Wine, Gamemode, ProtonUp-Qt) installieren?"
+export STR_GUI_LOG_GAMING_SETUP="${STR_GUI_INFO_PREFIX} Konfiguriere Gaming-Umgebung und 32-Bit Bibliotheken..."
+export STR_GUI_LOG_GAMING_MULTILIB="${STR_GUI_INFO_PREFIX} Aktiviere [multilib] Repository in pacman.conf..."
+export STR_GUI_LOG_GAMING_NVIDIA="${STR_GUI_INFO_PREFIX} NVIDIA GPU erkannt: Installiere lib32-nvidia-utils..."
+export STR_GUI_LOG_GAMING_AMD="${STR_GUI_INFO_PREFIX} AMD GPU erkannt: Installiere lib32-vulkan-radeon..."
+export STR_GUI_LOG_GAMING_INTEL="${STR_GUI_INFO_PREFIX} Intel GPU erkannt: Installiere lib32-vulkan-intel..."
 
 # --- Modul: 03_kde_setup ---
 export STR_GUI_KDE_PHASE="${BOLD}${CYAN}--- KDE Plasma Installation ---${NC}"
