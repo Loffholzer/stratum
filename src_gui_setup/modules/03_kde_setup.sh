@@ -6,77 +6,6 @@
 # Zweck: Installation & Konfiguration von KDE Plasma
 # =========================================
 
-declare -a KDE_PKGS=(
-    "plasma-desktop"
-    "sddm"
-    "konsole"
-    "dolphin"
-    "power-profiles-daemon"
-    "networkmanager-qt"
-    "xdg-desktop-portal-kde"
-    "xorg-xwayland"
-    "qt6-wayland"
-)
-
-declare -a AUDIO_PKGS=(
-    "pipewire"
-    "pipewire-audio"
-    "pipewire-pulse"
-    "pipewire-alsa"
-    "pipewire-jack"
-    "wireplumber"
-)
-
-declare -a OOTB_PKGS=(
-    "firefox"
-    "thunderbird"
-    "noto-fonts"
-    "noto-fonts-emoji"
-    "ttf-liberation"
-    "ttf-jetbrains-mono-nerd"
-    "ark"
-    "unzip"
-    "unrar"
-    "zip"
-    "p7zip"
-    "okular"
-    "gwenview"
-    "kimageformats"
-    "qt6-imageformats"
-    "haruna"
-    "ffmpeg"
-    "gst-plugins-good"
-    "gst-plugins-bad"
-    "gst-plugins-ugly"
-    "gst-libav"
-    "discover"
-    "packagekit-qt6"
-    "flatpak"
-    "flatseal"
-    "kcalc"
-    "spectacle"
-    "kinfocenter"
-    "partitionmanager"
-    "isoimagewriter"
-    "cups"
-    "print-manager"
-    "gnome-keyring"
-    "seahorse"
-)
-
-declare -a GAMING_PKGS=(
-    "steam"
-    "lutris"
-    "wine-staging"
-    "winetricks"
-    "gamemode"
-    "lib32-gamemode"
-    "mangohud"
-    "lib32-mangohud"
-    "protonup-qt"
-    "vulkan-tools"
-)
-
 export ENABLE_BLUETOOTH=false
 export ENABLE_QEMU_GA=false
 export INSTALL_OOTB=false
@@ -142,7 +71,7 @@ kde_detect_browser_mail_lang() {
         for pkg in "firefox-i18n-${lang_code}" "thunderbird-i18n-${lang_code}"; do
             if pacman -Sp "$pkg" >/dev/null 2>&1; then
                 echo -e "  -> ${STR_GUI_LOG_LANG_PKG_FOUND}: ${pkg}"
-                OOTB_PKGS+=("$pkg")
+                KDE_OOTB_PKGS+=("$pkg")
             fi
         done
     fi
@@ -189,7 +118,7 @@ kde_install_ootb() {
     
     echo -e "\n${STR_GUI_LOG_OOTB_PKGS}"
     kde_detect_browser_mail_lang
-    pacman -S --needed --noconfirm "${OOTB_PKGS[@]}" || true
+    pacman -S --needed --noconfirm "${KDE_OOTB_PKGS[@]}" || true
 }
 
 # =========================================

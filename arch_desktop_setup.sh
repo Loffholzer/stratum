@@ -24,6 +24,7 @@ case "$START_GUI" in
 esac
 
 echo "[ INFO ] Synchronisiere Paketdatenbanken..."
+sudo pacman -Sy archlinux-keyring --noconfirm
 sudo pacman -Syu --noconfirm
 
 # ------------------------------------------------------------------------------

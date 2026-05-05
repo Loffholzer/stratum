@@ -33,6 +33,15 @@ export STR_GUI_LOG_START_RM_KDE="${STR_GUI_INFO_PREFIX} Bereite Deinstallation v
 export STR_GUI_LOG_START_RM_COSMIC="${STR_GUI_INFO_PREFIX} Bereite Deinstallation von COSMIC Desktop vor..."
 export STR_GUI_LOG_EXIT="${STR_GUI_INFO_PREFIX} Setup wird beendet. Viel Spaß mit deinem Basis-System!"
 
+# --- Whiptail Menü (Ohne ANSI-Farben) ---
+export STR_WT_TITLE="Stratum OS - Desktop Setup"
+export STR_WT_MSG="Wähle deine bevorzugte Oberfläche für die Installation:"
+export STR_WT_OPT_1="KDE Plasma (Empfohlen)"
+export STR_WT_OPT_2="COSMIC Desktop (Next-Gen Rust)"
+export STR_WT_OPT_3="KDE Plasma deinstallieren"
+export STR_WT_OPT_4="COSMIC Desktop deinstallieren"
+export STR_WT_OPT_0="Setup beenden"
+
 export STR_GUI_ERR_INVALID="${STR_GUI_ERR_PREFIX} Ungültige Auswahl. Bitte versuche es erneut."
 export STR_GUI_ERR_SUDO="${STR_GUI_ERR_PREFIX} Bitte starte das Setup mit sudo: sudo ./install.sh"
 
