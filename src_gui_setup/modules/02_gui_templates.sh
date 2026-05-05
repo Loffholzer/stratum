@@ -42,3 +42,15 @@ export TPL_FF_POLICIES='{
     }
   }
 }'
+
+# =========================================
+# 📄 Template: Wayland Environment Profile
+# =========================================
+export TPL_WAYLAND_ENV="# Stratum OS - Global Wayland Settings
+
+# Erzwingt natives Wayland für Firefox (falls nicht ohnehin Default)
+export MOZ_ENABLE_WAYLAND=1
+
+# Erzwingt natives Wayland für moderne Electron-Apps (VSCode, Discord, Obsidian)
+export ELECTRON_OZONE_PLATFORM_HINT=auto
+"

@@ -38,6 +38,12 @@ export STR_GUI_ERR_SUDO="${STR_GUI_ERR_PREFIX} Bitte starte das Setup mit sudo: 
 
 export STR_GUI_DUMMY_KDE="KDE Plasma Installations-Dummy erfolgreich aufgerufen."
 export STR_GUI_DUMMY_COSMIC="COSMIC Desktop Installations-Dummy erfolgreich aufgerufen."
+export STR_GUI_LOG_WAYLAND_ENV="${STR_GUI_INFO_PREFIX} Schreibe globale Wayland-Umgebungsvariablen (Firefox & Electron)..."
+export STR_GUI_LOG_KEYMAP="${STR_GUI_INFO_PREFIX} Synchronisiere Tastaturlayout für Login-Screen (Greeter)..."
+export STR_GUI_ASK_DEEP_CLEAN="${STR_GUI_INFO_PREFIX} Möchtest du auch alle benutzerspezifischen Konfigurationen (Dotfiles) dieser GUI aus deinem Home-Verzeichnis löschen?"
+export STR_GUI_LOG_DEEP_CLEAN="${STR_GUI_INFO_PREFIX} Entferne benutzerspezifische Konfigurationsdateien..."
+export STR_GUI_ERR_GUI_RUNNING="${STR_GUI_ERR_PREFIX} Abbruch! Diese grafische Oberfläche läuft gerade aktiv. Bitte wechsle in ein TTY (z.B. Strg+Alt+F3), um sie sicher zu deinstallieren."
+export STR_GUI_LOG_CLEANUP="${STR_GUI_INFO_PREFIX} Bereinige Pacman-Cache..."
 
 # --- Modul: 03_kde_setup ---
 export STR_GUI_KDE_PHASE="${BOLD}${CYAN}--- KDE Plasma Installation ---${NC}"
@@ -59,7 +65,7 @@ export STR_GUI_LOG_VM_DETECTED="${STR_GUI_INFO_PREFIX} Virtuelle Maschine erkann
 export STR_GUI_LOG_BT_DETECTED="${STR_GUI_INFO_PREFIX} Bluetooth-Controller erkannt. Füge BlueZ-Stack hinzu..."
 export STR_GUI_LOG_AUDIO="${STR_GUI_INFO_PREFIX} Konfiguriere modernes Audio-Setup (PipeWire & WirePlumber)..."
 export STR_GUI_LOG_OOTB_ASK="${STR_GUI_INFO_PREFIX} Möchtest du Out-of-the-Box Apps (Firefox, Fonts, Gnome-Keyring, Evince, Archive-Tools) mitinstallieren?"
-export STR_GUI_LOG_FF_LANG_FOUND="${STR_GUI_INFO_PREFIX} Passendes Firefox-Sprachpaket gefunden und zur Installation markiert"
+export STR_GUI_LOG_LANG_PKG_FOUND="${STR_GUI_INFO_PREFIX} Passendes Sprachpaket gefunden und zur Installation markiert"
 export STR_GUI_LOG_OOTB_PKGS="${STR_GUI_INFO_PREFIX} Lade und installiere Out-of-the-Box Anwendungen..."
 export STR_GUI_LOG_FF_POLICY="${STR_GUI_INFO_PREFIX} Wende gehärtete Firefox Enterprise Policies an (Brave, HTTPS-Only, Telemetry-Off)..."
 export STR_GUI_LOG_COSMIC_PKGS="${STR_GUI_INFO_PREFIX} Lade und installiere COSMIC Core-Pakete und Greeter..."

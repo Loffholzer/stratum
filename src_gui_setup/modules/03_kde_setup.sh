@@ -29,11 +29,37 @@ declare -a AUDIO_PKGS=(
 
 declare -a OOTB_PKGS=(
     "firefox"
+    "thunderbird"
     "noto-fonts"
     "noto-fonts-emoji"
     "ttf-liberation"
-    "evince"
-    "file-roller"
+    "ttf-jetbrains-mono-nerd"
+    "ark"
+    "unzip"
+    "unrar"
+    "zip"
+    "p7zip"
+    "okular"
+    "gwenview"
+    "kimageformats"
+    "qt6-imageformats"
+    "haruna"
+    "ffmpeg"
+    "gst-plugins-good"
+    "gst-plugins-bad"
+    "gst-plugins-ugly"
+    "gst-libav"
+    "discover"
+    "packagekit-qt6"
+    "flatpak"
+    "flatseal"
+    "kcalc"
+    "spectacle"
+    "kinfocenter"
+    "partitionmanager"
+    "isoimagewriter"
+    "cups"
+    "print-manager"
     "gnome-keyring"
     "seahorse"
 )
@@ -41,6 +67,7 @@ declare -a OOTB_PKGS=(
 export ENABLE_BLUETOOTH=false
 export ENABLE_QEMU_GA=false
 export INSTALL_OOTB=false
+export PURGE_CONFIGS=false
 
 # =========================================
 # 📦 Funktion: kde_ask_ootb
@@ -62,14 +89,14 @@ kde_ask_ootb() {
 }
 
 # =========================================
-# 📦 Funktion: kde_detect_firefox_lang
+# 📦 Funktion: kde_detect_browser_mail_lang
 # -----------------------------------------
-# Zweck: Ermittelt das passende Firefox Sprachpaket
+# Zweck: Ermittelt passende Sprachpakete für Browser und Mail
+# Aufgabe: Sucht i18n Pakete für Firefox und Thunderbird
 # =========================================
-kde_detect_firefox_lang() {
+kde_detect_browser_mail_lang() {
     local sys_lang
     local lang_code
-    local ff_pkg
 
     if [[ -f /etc/locale.conf ]]; then
         sys_lang=$(source /etc/locale.conf 2>/dev/null && echo "$LANG")
@@ -78,11 +105,13 @@ kde_detect_firefox_lang() {
     fi
 
     lang_code="${sys_lang%%_*}"
-    [[ -n "$lang_code" ]] && ff_pkg="firefox-i18n-${lang_code}"
-
-    if [[ -n "$ff_pkg" ]] && pacman -Sp "$ff_pkg" >/dev/null 2>&1; then
-        echo -e "  -> ${STR_GUI_LOG_FF_LANG_FOUND}: ${ff_pkg}"
-        OOTB_PKGS+=("$ff_pkg")
+    if [[ -n "$lang_code" ]]; then
+        for pkg in "firefox-i18n-${lang_code}" "thunderbird-i18n-${lang_code}"; do
+            if pacman -Sp "$pkg" >/dev/null 2>&1; then
+                echo -e "  -> ${STR_GUI_LOG_LANG_PKG_FOUND}: ${pkg}"
+                OOTB_PKGS+=("$pkg")
+            fi
+        done
     fi
 }
 
@@ -120,12 +149,13 @@ kde_detect_hardware() {
 # 📦 Funktion: kde_install_ootb
 # -----------------------------------------
 # Zweck: Installiert die Out-of-the-Box Anwendungen
+# Aufgabe: Führt pacman mit dem OOTB Array aus
 # =========================================
 kde_install_ootb() {
     [[ "$INSTALL_OOTB" != "true" ]] && return 0
     
     echo -e "\n${STR_GUI_LOG_OOTB_PKGS}"
-    kde_detect_firefox_lang
+    kde_detect_browser_mail_lang
     pacman -S --needed --noconfirm "${OOTB_PKGS[@]}" || true
 }
 
@@ -141,6 +171,36 @@ kde_configure_firefox() {
     source "$(dirname "${BASH_SOURCE[0]}")/02_gui_templates.sh"
     mkdir -p /etc/firefox/policies
     echo "$TPL_FF_POLICIES" > /etc/firefox/policies/policies.json
+}
+
+# =========================================
+# 📦 Funktion: kde_configure_wayland
+# -----------------------------------------
+# Zweck: Setzt systemweite Wayland-Variablen
+# Aufgabe: Schreibt Profile-Script für Electron & Firefox
+# =========================================
+kde_configure_wayland() {
+    echo -e "\n${STR_GUI_LOG_WAYLAND_ENV}"
+    source "$(dirname "${BASH_SOURCE[0]}")/02_gui_templates.sh"
+    echo "$TPL_WAYLAND_ENV" > /etc/profile.d/stratum_wayland.sh
+    chmod +x /etc/profile.d/stratum_wayland.sh
+}
+
+# =========================================
+# 📦 Funktion: kde_configure_keyboard
+# -----------------------------------------
+# Zweck: Synchronisiert das Konsolen-Layout mit der GUI
+# Aufgabe: Setzt das X11/Wayland Keymap für den SDDM-Greeter
+# =========================================
+kde_configure_keyboard() {
+    if [[ -f /etc/vconsole.conf ]]; then
+        local sys_keymap
+        sys_keymap=$(grep "^KEYMAP=" /etc/vconsole.conf | cut -d'=' -f2)
+        if [[ -n "$sys_keymap" ]]; then
+            echo -e "\n${STR_GUI_LOG_KEYMAP} (${sys_keymap})"
+            localectl set-x11-keymap "$sys_keymap" 2>/dev/null || true
+        fi
+    fi
 }
 
 # =========================================
@@ -171,12 +231,25 @@ kde_enable_services() {
     
     [[ "$ENABLE_BLUETOOTH" == true ]] && systemctl enable bluetooth.service
     [[ "$ENABLE_QEMU_GA" == true ]] && systemctl enable qemu-guest-agent.service
+    [[ "$INSTALL_OOTB" == true ]] && systemctl enable cups.service 2>/dev/null || true
+}
+
+# =========================================
+# 📦 Funktion: kde_cleanup
+# -----------------------------------------
+# Zweck: Bereinigt den Pacman-Cache nach der Installation
+# Aufgabe: Führt pacman -Scc aus, um Speicherplatz freizugeben
+# =========================================
+kde_cleanup() {
+    echo -e "\n${STR_GUI_LOG_CLEANUP}"
+    pacman -Scc --noconfirm >/dev/null 2>&1 || true
 }
 
 # =========================================
 # 📦 Funktion: run_kde_setup
 # -----------------------------------------
 # Zweck: Haupt-Einsprungpunkt für die KDE-Installation
+# Aufgabe: Triggert Erkennung, Installation und Dienstaktivierung in Reihenfolge
 # =========================================
 run_kde_setup() {
     echo -e "\n${STR_GUI_KDE_PHASE}\n"
@@ -185,8 +258,30 @@ run_kde_setup() {
     kde_install_packages
     kde_install_ootb
     kde_configure_firefox
+    kde_configure_wayland
+    kde_configure_keyboard
     kde_enable_services
+    kde_cleanup
     echo -e "\n${STR_GUI_OK_KDE}"
+}
+
+# =========================================
+# 📦 Funktion: kde_ask_deep_clean
+# -----------------------------------------
+# Zweck: Fragt, ob User-Configs (Dotfiles) gelöscht werden sollen
+# Aufgabe: Setzt das Flag PURGE_CONFIGS basierend auf User-Eingabe
+# =========================================
+kde_ask_deep_clean() {
+    echo -e "\n${STR_GUI_ASK_DEEP_CLEAN}"
+    local choice
+    while true; do
+        read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
+        case "${choice,,}" in
+            j|ja|y|yes) PURGE_CONFIGS=true; break ;;
+            n|nein|no)  PURGE_CONFIGS=false; break ;;
+            *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
+        esac
+    done
 }
 
 # =========================================
@@ -209,17 +304,59 @@ kde_disable_services() {
 # =========================================
 kde_remove_packages() {
     echo -e "\n${STR_GUI_LOG_KDE_RM_PKGS}"
-    pacman -Rs --noconfirm "${KDE_PKGS[@]}" 2>/dev/null || true
+    
+    local installed_pkgs=()
+    for pkg in "${KDE_PKGS[@]}"; do
+        if pacman -Qq "$pkg" >/dev/null 2>&1; then
+            installed_pkgs+=("$pkg")
+        fi
+    done
+
+    if [[ ${#installed_pkgs[@]} -gt 0 ]]; then
+        pacman -Rs --noconfirm "${installed_pkgs[@]}" 2>/dev/null || true
+    fi
+}
+
+# =========================================
+# 📦 Funktion: kde_purge_configs
+# -----------------------------------------
+# Zweck: Löscht KDE-spezifische Configs aus dem Home-Verzeichnis
+# Aufgabe: Ermittelt den echten User und bereinigt .config, .local und .cache
+# =========================================
+kde_purge_configs() {
+    [[ "$PURGE_CONFIGS" != "true" ]] && return 0
+    echo -e "\n${STR_GUI_LOG_DEEP_CLEAN}"
+    
+    local target_user="${SUDO_USER:-$USER}"
+    local target_home
+    target_home=$(getent passwd "$target_user" | cut -d: -f6)
+
+    if [[ -d "$target_home" ]]; then
+        find "${target_home}/.config" -maxdepth 1 -name "plasma*" -exec rm -rf {} + 2>/dev/null || true
+        find "${target_home}/.config" -maxdepth 1 -name "k*rc" -exec rm -rf {} + 2>/dev/null || true
+        rm -f "${target_home}/.config/kdeglobals" 2>/dev/null || true
+        rm -rf "${target_home}/.local/share/plasma" 2>/dev/null || true
+        rm -rf "${target_home}/.cache/plasma" 2>/dev/null || true
+    fi
 }
 
 # =========================================
 # 📦 Funktion: remove_kde_setup
 # -----------------------------------------
 # Zweck: Haupt-Einsprungpunkt für die KDE-Deinstallation
+# Aufgabe: Führt den sicheren Deinstallations-Ablauf durch
 # =========================================
 remove_kde_setup() {
     echo -e "\n${STR_GUI_KDE_RM_PHASE}\n"
+    
+    if [[ "${XDG_CURRENT_DESKTOP,,}" == *"kde"* ]]; then
+        echo -e "${STR_GUI_ERR_GUI_RUNNING}" >&2
+        return 1
+    fi
+    
+    kde_ask_deep_clean
     kde_disable_services
     kde_remove_packages
+    kde_purge_configs
     echo -e "\n${STR_GUI_OK_RM_KDE}"
 }

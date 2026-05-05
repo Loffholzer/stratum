@@ -34,55 +34,60 @@ echo -e "${STR_GUI_OPT_EXIT}"
 echo -e "${BLUE}=========================================${NC}"
 
 # Farben im Prompt erzwingen durch Evaluierung via Subshell
-read -rp "$(echo -e "${STR_GUI_PROMPT}")" gui_choice
+while true; do
+    read -rp "$(echo -e "${STR_GUI_PROMPT}")" gui_choice
 
-case $gui_choice in
-    1)
-        echo -e "\n${STR_GUI_LOG_START_KDE}"
-        if [[ -f "$SETUP_DIR/modules/03_kde_setup.sh" ]]; then
-            source "$SETUP_DIR/modules/03_kde_setup.sh"
-            run_kde_setup
-        else
-            echo -e "${STR_GUI_ERR_PREFIX} Modul 03_kde_setup.sh nicht gefunden."
-            exit 1
-        fi
-        ;;
-    2)
-        echo -e "\n${STR_GUI_LOG_START_COSMIC}"
-        if [[ -f "$SETUP_DIR/modules/04_cosmic_setup.sh" ]]; then
-            source "$SETUP_DIR/modules/04_cosmic_setup.sh"
-            run_cosmic_setup
-        else
-            echo -e "${STR_GUI_ERR_PREFIX} Modul 04_cosmic_setup.sh nicht gefunden."
-            exit 1
-        fi
-        ;;
-    3)
-        echo -e "\n${STR_GUI_LOG_START_RM_KDE}"
-        if [[ -f "$SETUP_DIR/modules/03_kde_setup.sh" ]]; then
-            source "$SETUP_DIR/modules/03_kde_setup.sh"
-            remove_kde_setup
-        else
-            echo -e "${STR_GUI_ERR_PREFIX} Modul 03_kde_setup.sh nicht gefunden."
-            exit 1
-        fi
-        ;;
-    4)
-        echo -e "\n${STR_GUI_LOG_START_RM_COSMIC}"
-        if [[ -f "$SETUP_DIR/modules/04_cosmic_setup.sh" ]]; then
-            source "$SETUP_DIR/modules/04_cosmic_setup.sh"
-            remove_cosmic_setup
-        else
-            echo -e "${STR_GUI_ERR_PREFIX} Modul 04_cosmic_setup.sh nicht gefunden."
-            exit 1
-        fi
-        ;;
-    0)
-        echo -e "\n${STR_GUI_LOG_EXIT}"
-        exit 0
-        ;;
-    *)
-        echo -e "\n${STR_GUI_ERR_INVALID}"
-        exit 1
-        ;;
-esac
+    case $gui_choice in
+        1)
+            echo -e "\n${STR_GUI_LOG_START_KDE}"
+            if [[ -f "$SETUP_DIR/modules/03_kde_setup.sh" ]]; then
+                source "$SETUP_DIR/modules/03_kde_setup.sh"
+                run_kde_setup
+                break
+            else
+                echo -e "${STR_GUI_ERR_PREFIX} Modul 03_kde_setup.sh nicht gefunden." >&2
+                exit 1
+            fi
+            ;;
+        2)
+            echo -e "\n${STR_GUI_LOG_START_COSMIC}"
+            if [[ -f "$SETUP_DIR/modules/04_cosmic_setup.sh" ]]; then
+                source "$SETUP_DIR/modules/04_cosmic_setup.sh"
+                run_cosmic_setup
+                break
+            else
+                echo -e "${STR_GUI_ERR_PREFIX} Modul 04_cosmic_setup.sh nicht gefunden." >&2
+                exit 1
+            fi
+            ;;
+        3)
+            echo -e "\n${STR_GUI_LOG_START_RM_KDE}"
+            if [[ -f "$SETUP_DIR/modules/03_kde_setup.sh" ]]; then
+                source "$SETUP_DIR/modules/03_kde_setup.sh"
+                remove_kde_setup
+                break
+            else
+                echo -e "${STR_GUI_ERR_PREFIX} Modul 03_kde_setup.sh nicht gefunden." >&2
+                exit 1
+            fi
+            ;;
+        4)
+            echo -e "\n${STR_GUI_LOG_START_RM_COSMIC}"
+            if [[ -f "$SETUP_DIR/modules/04_cosmic_setup.sh" ]]; then
+                source "$SETUP_DIR/modules/04_cosmic_setup.sh"
+                remove_cosmic_setup
+                break
+            else
+                echo -e "${STR_GUI_ERR_PREFIX} Modul 04_cosmic_setup.sh nicht gefunden." >&2
+                exit 1
+            fi
+            ;;
+        0)
+            echo -e "\n${STR_GUI_LOG_EXIT}"
+            exit 0
+            ;;
+        *)
+            echo -e "${STR_GUI_ERR_INVALID}" >&2
+            ;;
+    esac
+done

@@ -13,6 +13,10 @@ declare -a COSMIC_PKGS=(
     "xorg-xwayland"
     "polkit"
     "power-profiles-daemon"
+    "cosmic-term"
+    "cosmic-files"
+    "cosmic-edit"
+    "cosmic-store"
 )
 
 declare -a AUDIO_PKGS=(
@@ -26,19 +30,39 @@ declare -a AUDIO_PKGS=(
 
 declare -a OOTB_PKGS=(
     "firefox"
+    "thunderbird"
     "noto-fonts"
     "noto-fonts-emoji"
     "ttf-liberation"
-    "evince"
+    "ttf-jetbrains-mono-nerd"
     "file-roller"
+    "unzip"
+    "unrar"
+    "zip"
+    "p7zip"
+    "evince"
+    "loupe"
+    "celluloid"
+    "ffmpeg"
+    "gst-plugins-good"
+    "gst-plugins-bad"
+    "gst-plugins-ugly"
+    "gst-libav"
+    "flatpak"
+    "flatseal"
+    "gnome-calculator"
+    "gnome-disk-utility"
+    "popsicle"
+    "cups"
+    "system-config-printer"
     "gnome-keyring"
     "seahorse"
-    "ttf-jetbrains-mono-nerd"
 )
 
 export ENABLE_BLUETOOTH=false
 export ENABLE_QEMU_GA=false
 export INSTALL_OOTB=false
+export PURGE_CONFIGS=false
 
 # =========================================
 # 📦 Funktion: cosmic_ask_ootb
@@ -60,15 +84,14 @@ cosmic_ask_ootb() {
 }
 
 # =========================================
-# 📦 Funktion: cosmic_detect_firefox_lang
+# 📦 Funktion: cosmic_detect_browser_mail_lang
 # -----------------------------------------
-# Zweck: Ermittelt das passende Firefox Sprachpaket
-# Aufgabe: Liest System-Locale und prüft Pacman auf das i18n Paket
+# Zweck: Ermittelt passende Sprachpakete für Browser und Mail
+# Aufgabe: Sucht i18n Pakete für Firefox und Thunderbird
 # =========================================
-cosmic_detect_firefox_lang() {
+cosmic_detect_browser_mail_lang() {
     local sys_lang
     local lang_code
-    local ff_pkg
 
     # Locale sicher aus dem installierten System lesen
     if [[ -f /etc/locale.conf ]]; then
@@ -79,13 +102,13 @@ cosmic_detect_firefox_lang() {
 
     # Sprachcode extrahieren (z.B. 'de' aus 'de_DE.UTF-8')
     lang_code="${sys_lang%%_*}"
-    
-    [[ -n "$lang_code" ]] && ff_pkg="firefox-i18n-${lang_code}"
-
-    # Prüfen ob das Paket im Repo existiert (-Sp testet ohne Download)
-    if [[ -n "$ff_pkg" ]] && pacman -Sp "$ff_pkg" >/dev/null 2>&1; then
-        echo -e "  -> ${STR_GUI_LOG_FF_LANG_FOUND}: ${ff_pkg}"
-        OOTB_PKGS+=("$ff_pkg")
+    if [[ -n "$lang_code" ]]; then
+        for pkg in "firefox-i18n-${lang_code}" "thunderbird-i18n-${lang_code}"; do
+            if pacman -Sp "$pkg" >/dev/null 2>&1; then
+                echo -e "  -> ${STR_GUI_LOG_LANG_PKG_FOUND}: ${pkg}"
+                OOTB_PKGS+=("$pkg")
+            fi
+        done
     fi
 }
 
@@ -128,7 +151,7 @@ cosmic_install_ootb() {
     [[ "$INSTALL_OOTB" != "true" ]] && return 0
     
     echo -e "\n${STR_GUI_LOG_OOTB_PKGS}"
-    cosmic_detect_firefox_lang
+    cosmic_detect_browser_mail_lang
     pacman -S --needed --noconfirm "${OOTB_PKGS[@]}" || true
 }
 
@@ -144,6 +167,36 @@ cosmic_configure_firefox() {
     source "$(dirname "${BASH_SOURCE[0]}")/02_gui_templates.sh"
     mkdir -p /etc/firefox/policies
     echo "$TPL_FF_POLICIES" > /etc/firefox/policies/policies.json
+}
+
+# =========================================
+# 📦 Funktion: cosmic_configure_wayland
+# -----------------------------------------
+# Zweck: Setzt systemweite Wayland-Variablen
+# Aufgabe: Schreibt Profile-Script für Electron & Firefox
+# =========================================
+cosmic_configure_wayland() {
+    echo -e "\n${STR_GUI_LOG_WAYLAND_ENV}"
+    source "$(dirname "${BASH_SOURCE[0]}")/02_gui_templates.sh"
+    echo "$TPL_WAYLAND_ENV" > /etc/profile.d/stratum_wayland.sh
+    chmod +x /etc/profile.d/stratum_wayland.sh
+}
+
+# =========================================
+# 📦 Funktion: cosmic_configure_keyboard
+# -----------------------------------------
+# Zweck: Synchronisiert das Konsolen-Layout mit der GUI
+# Aufgabe: Setzt das X11/Wayland Keymap für den cosmic-greeter
+# =========================================
+cosmic_configure_keyboard() {
+    if [[ -f /etc/vconsole.conf ]]; then
+        local sys_keymap
+        sys_keymap=$(grep "^KEYMAP=" /etc/vconsole.conf | cut -d'=' -f2)
+        if [[ -n "$sys_keymap" ]]; then
+            echo -e "\n${STR_GUI_LOG_KEYMAP} (${sys_keymap})"
+            localectl set-x11-keymap "$sys_keymap" 2>/dev/null || true
+        fi
+    fi
 }
 
 # =========================================
@@ -174,6 +227,18 @@ cosmic_enable_services() {
     
     [[ "$ENABLE_BLUETOOTH" == true ]] && systemctl enable bluetooth.service
     [[ "$ENABLE_QEMU_GA" == true ]] && systemctl enable qemu-guest-agent.service
+    [[ "$INSTALL_OOTB" == true ]] && systemctl enable cups.service 2>/dev/null || true
+}
+
+# =========================================
+# 📦 Funktion: cosmic_cleanup
+# -----------------------------------------
+# Zweck: Bereinigt den Pacman-Cache nach der Installation
+# Aufgabe: Führt pacman -Scc aus, um Speicherplatz freizugeben
+# =========================================
+cosmic_cleanup() {
+    echo -e "\n${STR_GUI_LOG_CLEANUP}"
+    pacman -Scc --noconfirm >/dev/null 2>&1 || true
 }
 
 # =========================================
@@ -189,8 +254,30 @@ run_cosmic_setup() {
     cosmic_install_packages
     cosmic_install_ootb
     cosmic_configure_firefox
+    cosmic_configure_wayland
+    cosmic_configure_keyboard
     cosmic_enable_services
+    cosmic_cleanup
     echo -e "\n${STR_GUI_OK_COSMIC}"
+}
+
+# =========================================
+# 📦 Funktion: cosmic_ask_deep_clean
+# -----------------------------------------
+# Zweck: Fragt, ob User-Configs (Dotfiles) gelöscht werden sollen
+# Aufgabe: Setzt das Flag PURGE_CONFIGS basierend auf User-Eingabe
+# =========================================
+cosmic_ask_deep_clean() {
+    echo -e "\n${STR_GUI_ASK_DEEP_CLEAN}"
+    local choice
+    while true; do
+        read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
+        case "${choice,,}" in
+            j|ja|y|yes) PURGE_CONFIGS=true; break ;;
+            n|nein|no)  PURGE_CONFIGS=false; break ;;
+            *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
+        esac
+    done
 }
 
 # =========================================
@@ -213,17 +300,58 @@ cosmic_disable_services() {
 # =========================================
 cosmic_remove_packages() {
     echo -e "\n${STR_GUI_LOG_COSMIC_RM_PKGS}"
-    pacman -Rs --noconfirm "${COSMIC_PKGS[@]}" 2>/dev/null || true
+    
+    local installed_pkgs=()
+    for pkg in "${COSMIC_PKGS[@]}"; do
+        if pacman -Qq "$pkg" >/dev/null 2>&1; then
+            installed_pkgs+=("$pkg")
+        fi
+    done
+
+    if [[ ${#installed_pkgs[@]} -gt 0 ]]; then
+        pacman -Rs --noconfirm "${installed_pkgs[@]}" 2>/dev/null || true
+    fi
+}
+
+# =========================================
+# 📦 Funktion: cosmic_purge_configs
+# -----------------------------------------
+# Zweck: Löscht COSMIC-spezifische Configs aus dem Home-Verzeichnis
+# Aufgabe: Ermittelt den echten User und bereinigt .config, .local und .cache
+# =========================================
+cosmic_purge_configs() {
+    [[ "$PURGE_CONFIGS" != "true" ]] && return 0
+    echo -e "\n${STR_GUI_LOG_DEEP_CLEAN}"
+    
+    local target_user="${SUDO_USER:-$USER}"
+    local target_home
+    target_home=$(getent passwd "$target_user" | cut -d: -f6)
+
+    if [[ -d "$target_home" ]]; then
+        rm -rf "${target_home}/.config/cosmic" 2>/dev/null || true
+        rm -rf "${target_home}/.local/state/cosmic" 2>/dev/null || true
+        rm -rf "${target_home}/.local/share/cosmic" 2>/dev/null || true
+        rm -rf "${target_home}/.cache/cosmic" 2>/dev/null || true
+    fi
 }
 
 # =========================================
 # 📦 Funktion: remove_cosmic_setup
 # -----------------------------------------
 # Zweck: Haupt-Einsprungpunkt für die COSMIC-Deinstallation
+# Aufgabe: Führt den sicheren Deinstallations-Ablauf durch
 # =========================================
 remove_cosmic_setup() {
     echo -e "\n${STR_GUI_COSMIC_RM_PHASE}\n"
+    
+    if [[ "${XDG_CURRENT_DESKTOP,,}" == *"cosmic"* ]]; then
+        echo -e "${STR_GUI_ERR_GUI_RUNNING}" >&2
+        return 1
+    fi
+    
+    cosmic_ask_deep_clean
     cosmic_disable_services
     cosmic_remove_packages
+    cosmic_purge_configs
     echo -e "\n${STR_GUI_OK_RM_COSMIC}"
 }
