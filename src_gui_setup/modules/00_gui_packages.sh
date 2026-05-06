@@ -29,3 +29,5 @@ export XFCE_OOTB_PKGS=(firefox thunderbird cups ufw gufw)
 
 # --- Zusätzliche Anwendungen ---
 export LIBREOFFICE_PKGS=(libreoffice-still)
+export FLATPAK_PKGS=(flatpak)
+export KVM_PKGS=(qemu-full virt-manager libvirt edk2-ovmf dnsmasq iptables-nft vde2 bridge-utils)

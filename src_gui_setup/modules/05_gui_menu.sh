@@ -72,6 +72,10 @@ show_apps_menu() {
         echo -e "${STR_GUI_APPS_SUB}"
         echo -e "${STR_GUI_OPT_LO}"
         echo -e "${STR_GUI_DESC_LO}"
+        echo -e "${STR_GUI_OPT_FLATPAK}"
+        echo -e "${STR_GUI_DESC_FLATPAK}"
+        echo -e "${STR_GUI_OPT_KVM}"
+        echo -e "${STR_GUI_DESC_KVM}"
         echo -e "${STR_GUI_OPT_BACK}"
         read -rp "$(echo -e "\n${STR_GUI_PROMPT}")" choice
         echo "$choice"
@@ -81,6 +85,8 @@ show_apps_menu() {
     local choice
     choice=$(whiptail --title "$STR_WT_APPS_TITLE" --menu "$STR_WT_APPS_MSG" 20 95 6 \
         "1" "$STR_WT_OPT_LO" \
+        "2" "$STR_WT_OPT_FLATPAK" \
+        "3" "$STR_WT_OPT_KVM" \
         "0" "$STR_WT_OPT_BACK" 3>&1 1>&2 2>&3)
 
     if [[ $? -ne 0 || -z "$choice" ]]; then
