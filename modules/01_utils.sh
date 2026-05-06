@@ -124,6 +124,40 @@ run_cmd() {
 }
 
 # =========================================
+# 📦 Funktion: verify_packages
+# -----------------------------------------
+# Zweck: Prüft Paketverfügbarkeit vor der Installation
+# Aufgabe: Simuliert Download (-Sp) und bricht bei Fehlern ab (Base-Installer)
+# =========================================
+verify_packages() {
+    local target_chroot=""
+    
+    # Prüfen, ob wir im Zielsystem (chroot) oder auf dem Live-Medium prüfen
+    if [[ "$1" == "--chroot" ]]; then
+        target_chroot="$2"
+        shift 2
+    fi
+    
+    local pkgs=("$@")
+    [[ ${#pkgs[@]} -eq 0 ]] && return 0
+    
+    log "${STR_LOG_VERIFY_PKGS:-Verifiziere Paketverfügbarkeit...}"
+    
+    local missing
+    if [[ -n "$target_chroot" ]]; then
+        if ! missing=$(arch-chroot "$target_chroot" pacman -Sp --noconfirm "${pkgs[@]}" 2>&1 >/dev/null); then
+            error "${STR_ERR_MISSING_PKGS:-Fehlende Pakete:}\n${missing}"
+            exit 1
+        fi
+    else
+        if ! missing=$(pacman -Sp --noconfirm "${pkgs[@]}" 2>&1 >/dev/null); then
+            error "${STR_ERR_MISSING_PKGS:-Fehlende Pakete:}\n${missing}"
+            exit 1
+        fi
+    fi
+}
+
+# =========================================
 # 📦 Funktion: print_option
 # -----------------------------------------
 # Zweck: Darstellung von Auswahlmöglichkeiten

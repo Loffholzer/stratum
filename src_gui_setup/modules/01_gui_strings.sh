@@ -59,6 +59,8 @@ export STR_GUI_LOG_GAMING_MULTILIB="${STR_GUI_INFO_PREFIX} Aktiviere [multilib] 
 export STR_GUI_LOG_GAMING_NVIDIA="${STR_GUI_INFO_PREFIX} NVIDIA GPU erkannt: Installiere lib32-nvidia-utils..."
 export STR_GUI_LOG_GAMING_AMD="${STR_GUI_INFO_PREFIX} AMD GPU erkannt: Installiere lib32-vulkan-radeon..."
 export STR_GUI_LOG_GAMING_INTEL="${STR_GUI_INFO_PREFIX} Intel GPU erkannt: Installiere lib32-vulkan-intel..."
+export STR_GUI_LOG_VERIFY_PKGS="${STR_GUI_INFO_PREFIX} Aktualisiere Paketdatenbanken und verifiziere Verfügbarkeit der Zielpakete..."
+export STR_GUI_ERR_MISSING_PKGS="${STR_GUI_ERR_PREFIX} Abbruch! Folgende Pakete konnten in den Arch-Repositories nicht gefunden werden:"
 
 # --- Modul: 03_kde_setup ---
 export STR_GUI_KDE_PHASE="${BOLD}${CYAN}--- KDE Plasma Installation ---${NC}"

@@ -29,6 +29,7 @@ echo "$USERNAME:$USER_PASSWORD" | chpasswd
 EOF
 
     log "$STR_LOG_SUDO_SETUP"
+    verify_packages --chroot /mnt "${SUDO_PKGS[@]}"
     arch-chroot /mnt pacman -S --needed --noconfirm "${SUDO_PKGS[@]}" >/dev/null 2>&1
     # Wheel-Gruppe in sudoers freischalten
     arch-chroot /mnt sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
@@ -41,6 +42,7 @@ EOF
 # =========================================
 users_setup_shell_tools() {
     log "$STR_LOG_UX_INSTALL"
+    verify_packages --chroot /mnt "${UX_PKGS[@]}"
     arch-chroot /mnt pacman -S --needed --noconfirm "${UX_PKGS[@]}" >/dev/null
     
     # UX global konfigurieren (Root erbt dies)
@@ -62,6 +64,7 @@ users_setup_shell_tools() {
     arch-chroot /mnt chsh -s /usr/bin/fish "$USERNAME" >/dev/null 2>&1
 
     log "$STR_LOG_TOOLS_INSTALL"
+    verify_packages --chroot /mnt "${CLI_TOOLS_PKGS[@]}"
     arch-chroot /mnt pacman -S --needed --noconfirm "${CLI_TOOLS_PKGS[@]}" >/dev/null
 }
 
@@ -111,11 +114,13 @@ users_setup_extras() {
 
     # 2. SSH Setup
     log "$STR_LOG_SSH_INSTALL"
+    verify_packages --chroot /mnt "${SSH_PKGS[@]}"
     arch-chroot /mnt pacman -S --needed --noconfirm "${SSH_PKGS[@]}" >/dev/null
     arch-chroot /mnt systemctl enable sshd >/dev/null
 
     # 3. Basis-Schriften und XDG-Ordner
     log "$STR_LOG_FONTS_XDG"
+    verify_packages --chroot /mnt "${FONTS_XDG_PKGS[@]}"
     arch-chroot /mnt pacman -S --needed --noconfirm "${FONTS_XDG_PKGS[@]}" >/dev/null
 
     # 4. Setup-Ordner im Home erstellen

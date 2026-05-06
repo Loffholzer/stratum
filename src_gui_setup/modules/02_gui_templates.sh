@@ -36,6 +36,10 @@ export TPL_FF_POLICIES='{
       "idcac-pub@guus.ninja": {
         "installation_mode": "force_installed",
         "install_url": "https://addons.mozilla.org/firefox/downloads/latest/istilldontcareaboutcookies/latest.xpi"
+      },
+      "addon@darkreader.org": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/darkreader/latest.xpi"
       }
     },
     "SearchEngines": {

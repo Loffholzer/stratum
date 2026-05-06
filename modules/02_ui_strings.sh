@@ -197,6 +197,9 @@ load_strings_de() {
     export STR_LOG_REBOOTING="System wird neu gestartet..."
     export STR_LOG_EXIT="Du bleibst in der Live-Umgebung. Du kannst sie mit 'reboot' verlassen."
 
+    export STR_LOG_VERIFY_PKGS="Verifiziere Paketverfügbarkeit in den Repositories..."
+    export STR_ERR_MISSING_PKGS="Abbruch! Folgende Pakete konnten nicht gefunden werden:"
+
     # --- Handoff (Erster Login nach Reboot) ---
     export STR_HANDOFF_TITLE="WILLKOMMEN ZU STRATUM OS"
     export STR_HANDOFF_QUESTION="Möchtest du jetzt mit der Installation der GUI (Grafikoberfläche) fortfahren? [j/N]: "
@@ -389,6 +392,9 @@ load_strings_en() {
     export STR_ASK_REBOOT="Do you want to reboot the system now?"
     export STR_LOG_REBOOTING="System is rebooting..."
     export STR_LOG_EXIT="You remain in the live environment. You can leave it with 'reboot'."
+
+    export STR_LOG_VERIFY_PKGS="Verifying package availability in repositories..."
+    export STR_ERR_MISSING_PKGS="Abort! The following packages could not be found:"
 
     # Handoff
     export STR_HANDOFF_TITLE="WELCOME TO STRATUM OS"

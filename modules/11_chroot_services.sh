@@ -15,6 +15,7 @@ services_setup() {
     log "$STR_LOG_BTRFS_SERVICES"
     
     # ZRAM Konfiguration anwenden
+    verify_packages --chroot /mnt "${ZRAM_PKGS[@]}"
     arch-chroot /mnt pacman -S --needed --noconfirm "${ZRAM_PKGS[@]}" >/dev/null 2>&1
     echo "$TPL_ZRAM_CONF" > /mnt/etc/systemd/zram-generator.conf
 
@@ -34,6 +35,7 @@ EOF
 snapper_setup() {
     log "$STR_LOG_SNAPPER_SETUP"
     
+    verify_packages --chroot /mnt "${SNAPPER_PKGS[@]}"
     arch-chroot /mnt pacman -S --needed --noconfirm "${SNAPPER_PKGS[@]}" >/dev/null 2>&1
 
     local conf_dir="/mnt/etc/snapper/configs"
@@ -77,6 +79,7 @@ EOF
 # =========================================
 services_setup_advanced() {
     log "$STR_LOG_INSTALL_FIREWALL_MDNS"
+    verify_packages --chroot /mnt "${NETWORK_SERVICES_PKGS[@]}"
     run_cmd arch-chroot /mnt pacman -S --color=always --needed --noconfirm "${NETWORK_SERVICES_PKGS[@]}"
     
     log "$STR_LOG_CONFIG_MDNS"

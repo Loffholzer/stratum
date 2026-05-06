@@ -103,6 +103,7 @@ env_bootloader() {
     fi
 
     log "$STR_LOG_INSTALL_LIMINE"
+    verify_packages --chroot /mnt "${BOOTLOADER_PKGS[@]}"
     arch-chroot /mnt pacman -S --noconfirm "${BOOTLOADER_PKGS[@]}" >/dev/null
 
     log "$STR_LOG_GEN_LIMINE_CONF"
@@ -188,6 +189,7 @@ env_hardware_and_locale() {
 
     # Alles in einem Rutsch installieren
     log "$STR_LOG_INSTALL_HW_LOCALE"
+    verify_packages --chroot /mnt "${loc_pkgs[@]}" "${gpu_pkgs[@]}"
     arch-chroot /mnt pacman -S --noconfirm "${loc_pkgs[@]}" "${gpu_pkgs[@]}" >/dev/null
     
     success "$STR_OK_HW_LOCALE"

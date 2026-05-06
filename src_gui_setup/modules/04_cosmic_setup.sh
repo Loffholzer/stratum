@@ -190,9 +190,29 @@ cosmic_configure_keyboard() {
         local sys_keymap
         sys_keymap=$(grep "^KEYMAP=" /etc/vconsole.conf | cut -d'=' -f2)
         if [[ -n "$sys_keymap" ]]; then
-            echo -e "\n${STR_GUI_LOG_KEYMAP} (${sys_keymap})"
-            localectl set-x11-keymap "$sys_keymap" 2>/dev/null || true
+            # Isoliert den Ländercode (z.B. "de-latin1" -> "de"), damit XKB/Wayland ihn erkennt
+            local x11_map
+            x11_map="${sys_keymap%%-*}"
+            echo -e "\n${STR_GUI_LOG_KEYMAP} (vconsole: ${sys_keymap} -> x11/wayland: ${x11_map})"
+            localectl set-x11-keymap "$x11_map" 2>/dev/null || true
         fi
+    fi
+}
+
+# =========================================
+# 📦 Funktion: cosmic_verify_packages
+# -----------------------------------------
+# Zweck: Prüft, ob alle vorgesehenen Pakete im Repository existieren
+# Aufgabe: Verhindert kaputte Installationen bei umbenannten/entfernten Paketen
+# =========================================
+cosmic_verify_packages() {
+    echo -e "\n${STR_GUI_LOG_VERIFY_PKGS}"
+    pacman -Sy >/dev/null 2>&1 || true
+
+    local missing
+    if ! missing=$(pacman -Sp --noconfirm "${COSMIC_PKGS[@]}" 2>&1 >/dev/null); then
+        echo -e "${STR_GUI_ERR_MISSING_PKGS}\n${missing}" >&2
+        exit 1
     fi
 }
 
@@ -249,6 +269,7 @@ run_cosmic_setup() {
     cosmic_ask_ootb
     cosmic_ask_gaming
     cosmic_detect_hardware
+    cosmic_verify_packages
     cosmic_install_packages
     cosmic_install_ootb
     cosmic_install_gaming
@@ -358,10 +379,10 @@ cosmic_purge_configs() {
     target_home=$(getent passwd "$target_user" | cut -d: -f6)
 
     if [[ -d "$target_home" ]]; then
-        rm -rf "${target_home}/.config/cosmic" 2>/dev/null || true
-        rm -rf "${target_home}/.local/state/cosmic" 2>/dev/null || true
-        rm -rf "${target_home}/.local/share/cosmic" 2>/dev/null || true
-        rm -rf "${target_home}/.cache/cosmic" 2>/dev/null || true
+        find "${target_home}/.config" -maxdepth 1 -name "cosmic*" -exec rm -rf {} + 2>/dev/null || true
+        find "${target_home}/.local/state" -maxdepth 1 -name "cosmic*" -exec rm -rf {} + 2>/dev/null || true
+        find "${target_home}/.local/share" -maxdepth 1 -name "cosmic*" -exec rm -rf {} + 2>/dev/null || true
+        find "${target_home}/.cache" -maxdepth 1 -name "cosmic*" -exec rm -rf {} + 2>/dev/null || true
     fi
 }
 
