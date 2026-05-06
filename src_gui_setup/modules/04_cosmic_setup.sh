@@ -240,11 +240,14 @@ cosmic_enable_services() {
     echo -e "\n${STR_GUI_LOG_ENABLE_SRV}"
     
     systemctl enable cosmic-greeter.service
-    systemctl enable power-profiles-daemon.service
+    systemctl enable power-profiles-daemon.service 2>/dev/null || true
     
     [[ "$ENABLE_BLUETOOTH" == true ]] && systemctl enable bluetooth.service
     [[ "$ENABLE_QEMU_GA" == true ]] && systemctl enable qemu-guest-agent.service
-    [[ "$INSTALL_OOTB" == true ]] && systemctl enable cups.service 2>/dev/null || true
+    if [[ "$INSTALL_OOTB" == true ]]; then
+        systemctl enable cups.service 2>/dev/null || true
+        systemctl enable ufw.service 2>/dev/null || true
+    fi
 }
 
 # =========================================
