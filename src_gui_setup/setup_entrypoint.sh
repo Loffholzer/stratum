@@ -172,52 +172,32 @@ while true; do
             done
             ;;
         6)
-            while true; do
-                if command -v show_apps_menu >/dev/null 2>&1; then
-                    app_choice=$(show_apps_menu)
-                else
-                    echo -e "\nAnwendungs-Menü:\n[1] LibreOffice\n[2] Flatpak\n[3] KVM/QEMU\n[4] Docker\n[0] Zurück"
-                    read -rp "Auswahl: " app_choice
+            if command -v show_apps_menu >/dev/null 2>&1; then
+                app_choices=$(show_apps_menu)
+                if [[ "$app_choices" != "0" && -n "$app_choices" ]]; then
+                    if [[ -f "$SETUP_DIR/modules/06_apps_setup.sh" ]]; then
+                        source "$SETUP_DIR/modules/06_apps_setup.sh"
+                        
+                        # Die Auswahl ist eine durch Zeilenumbrüche getrennte Liste von Tags
+                        for choice in $app_choices; do
+                            case $choice in
+                                "LIBREOFFICE") install_libreoffice ;;
+                                "FLATPAK") install_flatpak ;;
+                                "KVM") install_kvm ;;
+                                "DOCKER") install_docker ;;
+                                "HARUNA") install_haruna ;;
+                                "DISCORD") install_discord ;;
+                                "GIMP") install_gimp ;;
+                                "OBS") install_obs ;;
+                                "CODIUM") install_codium ;;
+                                "REMMINA") install_remmina ;;
+                                "FILEZILLA") install_filezilla ;;
+                                "NEXTCLOUD") install_nextcloud ;;
+                            esac
+                        done
+                    fi
                 fi
-                
-                case $app_choice in
-                    1)
-                        if [[ -f "$SETUP_DIR/modules/06_apps_setup.sh" ]]; then
-                            source "$SETUP_DIR/modules/06_apps_setup.sh"
-                            install_libreoffice
-                        else
-                            echo -e "${STR_GUI_ERR_PREFIX} Modul 06_apps_setup.sh nicht gefunden." >&2
-                        fi
-                        ;;
-                    2)
-                        if [[ -f "$SETUP_DIR/modules/06_apps_setup.sh" ]]; then
-                            source "$SETUP_DIR/modules/06_apps_setup.sh"
-                            install_flatpak
-                        else
-                            echo -e "${STR_GUI_ERR_PREFIX} Modul 06_apps_setup.sh nicht gefunden." >&2
-                        fi
-                        ;;
-                    3)
-                        if [[ -f "$SETUP_DIR/modules/06_apps_setup.sh" ]]; then
-                            source "$SETUP_DIR/modules/06_apps_setup.sh"
-                            install_kvm
-                        else
-                            echo -e "${STR_GUI_ERR_PREFIX} Modul 06_apps_setup.sh nicht gefunden." >&2
-                        fi
-                        ;;
-                    4)
-                        if [[ -f "$SETUP_DIR/modules/06_apps_setup.sh" ]]; then
-                            source "$SETUP_DIR/modules/06_apps_setup.sh"
-                            install_docker
-                        else
-                            echo -e "${STR_GUI_ERR_PREFIX} Modul 06_apps_setup.sh nicht gefunden." >&2
-                        fi
-                        ;;
-                    0)
-                        break
-                        ;;
-                esac
-            done
+            fi
             ;;
         0)
             echo -e "\n${STR_GUI_LOG_EXIT}"

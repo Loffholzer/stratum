@@ -82,3 +82,92 @@ install_kvm() {
     
     usermod -aG libvirt "${SUDO_USER:-$USER}" 2>/dev/null || true
 }
+
+# =========================================
+# 📦 Funktion: install_docker
+# -----------------------------------------
+# Zweck: Installiert Docker und Docker Compose
+# Aufgabe: Installiert Pakete, aktiviert Dienst und fügt User zur Gruppe hinzu
+# =========================================
+install_docker() {
+    check_gui_present || return 1
+
+    echo -e "\n${STR_GUI_LOG_APPS_DOCKER:-${STR_GUI_INFO_PREFIX} Installiere Docker und Docker Compose...}"
+    pacman -S --needed --noconfirm "${DOCKER_PKGS[@]}" || true
+    
+    systemctl enable docker.service 2>/dev/null || true
+    
+    usermod -aG docker "${SUDO_USER:-$USER}" 2>/dev/null || true
+}
+
+# =========================================
+# 📦 Funktion: install_haruna
+# =========================================
+install_haruna() {
+    check_gui_present || return 1
+    echo -e "\n${STR_GUI_INFO_PREFIX} Installiere Haruna Media Player..."
+    pacman -S --needed --noconfirm "${HARUNA_PKGS[@]}" || true
+}
+
+# =========================================
+# 📦 Funktion: install_discord
+# =========================================
+install_discord() {
+    check_gui_present || return 1
+    echo -e "\n${STR_GUI_INFO_PREFIX} Installiere Discord..."
+    pacman -S --needed --noconfirm "${DISCORD_PKGS[@]}" || true
+}
+
+# =========================================
+# 📦 Funktion: install_gimp
+# =========================================
+install_gimp() {
+    check_gui_present || return 1
+    echo -e "\n${STR_GUI_INFO_PREFIX} Installiere GIMP..."
+    pacman -S --needed --noconfirm "${GIMP_PKGS[@]}" || true
+}
+
+# =========================================
+# 📦 Funktion: install_obs
+# =========================================
+install_obs() {
+    check_gui_present || return 1
+    echo -e "\n${STR_GUI_INFO_PREFIX} Installiere OBS Studio..."
+    pacman -S --needed --noconfirm "${OBS_PKGS[@]}" || true
+}
+
+# =========================================
+# 📦 Funktion: install_codium
+# =========================================
+install_codium() {
+    check_gui_present || return 1
+    echo -e "\n${STR_GUI_INFO_PREFIX} Installiere VSCodium..."
+    pacman -S --needed --noconfirm "${CODIUM_PKGS[@]}" || true
+}
+
+# =========================================
+# 📦 Funktion: install_remmina
+# =========================================
+install_remmina() {
+    check_gui_present || return 1
+    echo -e "\n${STR_GUI_INFO_PREFIX} Installiere Remmina..."
+    pacman -S --needed --noconfirm "${REMMINA_PKGS[@]}" || true
+}
+
+# =========================================
+# 📦 Funktion: install_filezilla
+# =========================================
+install_filezilla() {
+    check_gui_present || return 1
+    echo -e "\n${STR_GUI_INFO_PREFIX} Installiere FileZilla..."
+    pacman -S --needed --noconfirm "${FILEZILLA_PKGS[@]}" || true
+}
+
+# =========================================
+# 📦 Funktion: install_nextcloud
+# =========================================
+install_nextcloud() {
+    check_gui_present || return 1
+    echo -e "\n${STR_GUI_INFO_PREFIX} Installiere Nextcloud Client..."
+    pacman -S --needed --noconfirm "${NEXTCLOUD_PKGS[@]}" || true
+}

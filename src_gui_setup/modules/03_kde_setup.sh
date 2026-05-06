@@ -29,7 +29,7 @@ kde_ask_features() {
         if [[ $choices == *"GAMING"* ]]; then INSTALL_GAMING=true; else INSTALL_GAMING=false; fi
     else
         # CLI Fallback
-        echo -e "\nMöchtest du OOTB-Apps installieren?"
+        echo -e "\n${STR_GUI_ASK_OOTB}"
         local choice_ootb
         while true; do
             read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice_ootb

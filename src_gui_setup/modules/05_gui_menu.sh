@@ -83,11 +83,22 @@ show_apps_menu() {
     fi
 
     local choice
-    choice=$(dialog --clear --title "$STR_DLG_APPS_TITLE" --menu "$STR_DLG_APPS_MSG" 20 95 6 \
-        "1" "$STR_DLG_OPT_LO" \
-        "2" "$STR_DLG_OPT_FLATPAK" \
-        "3" "$STR_DLG_OPT_KVM" \
-        "0" "$STR_DLG_OPT_BACK" 3>&1 1>&2 2>&3)
+    # Wir geben die Tags (VLC, GIMP etc.) zurück, getrennt durch Zeilenumbrüche
+    choice=$(dialog --clear --title "$STR_DLG_APPS_TITLE" --separate-output --checklist "$STR_DLG_APPS_CHECKLIST_MSG" 20 95 15 \
+        "LIBREOFFICE" "$STR_DLG_OPT_LO" off \
+        "FLATPAK" "$STR_DLG_OPT_FLATPAK" off \
+        "KVM" "$STR_DLG_OPT_KVM" off \
+        "DOCKER" "$STR_DLG_OPT_DOCKER" off \
+        "---" "--------------------------------------------" off \
+        "HARUNA" "$STR_DLG_APPS_HARUNA" off \
+        "DISCORD" "$STR_DLG_APPS_DISCORD" off \
+        "GIMP" "$STR_DLG_APPS_GIMP" off \
+        "OBS" "$STR_DLG_APPS_OBS" off \
+        "CODIUM" "$STR_DLG_APPS_CODIUM" off \
+        "REMMINA" "$STR_DLG_APPS_REMMINA" off \
+        "FILEZILLA" "$STR_DLG_APPS_FILEZILLA" off \
+        "NEXTCLOUD" "$STR_DLG_APPS_NEXTCLOUD" off \
+        3>&1 1>&2 2>&3)
 
     if [[ $? -ne 0 || -z "$choice" ]]; then
         echo "0"
@@ -113,7 +124,7 @@ show_uninstall_menu() {
 
     if ! command -v dialog >/dev/null 2>&1; then
         echo -e "\n${STR_GUI_MENU_UNINSTALL_TITLE}"
-        echo -e "Wähle die zu entfernende Oberfläche:"
+        echo -e "${STR_DLG_UNINSTALL_MSG}"
         echo -e "  ${CYAN}[1]${NC} KDE Plasma${kde_mark}"
         echo -e "  ${CYAN}[2]${NC} COSMIC Desktop${cosmic_mark}"
         echo -e "  ${CYAN}[3]${NC} GNOME${gnome_mark}"
