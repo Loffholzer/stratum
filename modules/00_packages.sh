@@ -25,7 +25,7 @@ load_base_packages() {
     # --- Benutzer, UX & Tools (10_chroot_users.sh) ---
     export SUDO_PKGS=(sudo)
     export UX_PKGS=(fish starship zoxide fastfetch)
-    export CLI_TOOLS_PKGS=(eza bat btop)
+    export CLI_TOOLS_PKGS=(eza bat btop dialog)
     export SSH_PKGS=(openssh)
     export FONTS_XDG_PKGS=(noto-fonts noto-fonts-emoji ttf-liberation xdg-user-dirs)
 

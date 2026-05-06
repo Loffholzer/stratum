@@ -13,51 +13,37 @@ export INSTALL_GAMING=false
 export PURGE_CONFIGS=false
 
 # =========================================
-# 📦 Funktion: kde_ask_ootb
+# 📦 Funktion: kde_ask_features
 # -----------------------------------------
-# Zweck: Fragt den Benutzer nach OOTB-Apps
-# Aufgabe: Setzt das Flag für die Installation von Firefox & Co.
+# Zweck: Fragt den Benutzer nach OOTB-Apps und Gaming-Tools
+# Aufgabe: Kombiniert Abfragen in einer übersichtlichen Dialog-Checklist
 # =========================================
-kde_ask_ootb() {
-    if command -v whiptail >/dev/null 2>&1; then
-        if whiptail --title "$STR_WT_TITLE" --yes-button "Ja" --no-button "Nein" --yesno "$STR_WT_ASK_OOTB" 10 75; then
-            INSTALL_OOTB=true
-        else
-            INSTALL_OOTB=false
-        fi
+kde_ask_features() {
+    if command -v dialog >/dev/null 2>&1; then
+        local choices
+        choices=$(dialog --clear --title "$STR_DLG_FEAT_TITLE" --checklist "$STR_DLG_FEAT_MSG" 15 75 2 \
+            "OOTB" "$STR_DLG_FEAT_OOTB" off \
+            "GAMING" "$STR_DLG_FEAT_GAMING" off 3>&1 1>&2 2>&3)
+        
+        if [[ $choices == *"OOTB"* ]]; then INSTALL_OOTB=true; else INSTALL_OOTB=false; fi
+        if [[ $choices == *"GAMING"* ]]; then INSTALL_GAMING=true; else INSTALL_GAMING=false; fi
     else
-        echo -e "\n${STR_GUI_LOG_OOTB_ASK}"
-        local choice
+        # CLI Fallback
+        echo -e "\nMöchtest du OOTB-Apps installieren?"
+        local choice_ootb
         while true; do
-            read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
-            case "${choice,,}" in
+            read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice_ootb
+            case "${choice_ootb,,}" in
                 j|ja|y|yes) INSTALL_OOTB=true; break ;;
                 n|nein|no)  INSTALL_OOTB=false; break ;;
                 *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
             esac
         done
-    fi
-}
-
-# =========================================
-# 📦 Funktion: kde_ask_gaming
-# -----------------------------------------
-# Zweck: Fragt den Benutzer nach Gaming-Tools
-# Aufgabe: Setzt das Flag für die Installation des Gaming-Stacks
-# =========================================
-kde_ask_gaming() {
-    if command -v whiptail >/dev/null 2>&1; then
-        if whiptail --title "$STR_WT_TITLE" --yes-button "Ja" --no-button "Nein" --yesno "$STR_WT_ASK_GAMING" 10 75; then
-            INSTALL_GAMING=true
-        else
-            INSTALL_GAMING=false
-        fi
-    else
         echo -e "\n${STR_GUI_ASK_GAMING}"
-        local choice
+        local choice_gaming
         while true; do
-            read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
-            case "${choice,,}" in
+            read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice_gaming
+            case "${choice_gaming,,}" in
                 j|ja|y|yes) INSTALL_GAMING=true; break ;;
                 n|nein|no)  INSTALL_GAMING=false; break ;;
                 *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
@@ -285,8 +271,7 @@ kde_cleanup() {
 # =========================================
 run_kde_setup() {
     echo -e "\n${STR_GUI_KDE_PHASE}\n"
-    kde_ask_ootb
-    kde_ask_gaming
+    kde_ask_features
     kde_detect_hardware
     kde_verify_packages
     kde_install_packages
@@ -298,6 +283,10 @@ run_kde_setup() {
     kde_enable_services
     kde_cleanup
     echo -e "\n${STR_GUI_OK_KDE}"
+    
+    if command -v dialog >/dev/null 2>&1; then
+        dialog --title "$STR_DLG_SUCCESS_TITLE" --msgbox "$STR_DLG_SUCCESS_KDE" 10 60
+    fi
 }
 
 # =========================================
@@ -307,8 +296,8 @@ run_kde_setup() {
 # Aufgabe: Setzt das Flag PURGE_CONFIGS basierend auf User-Eingabe
 # =========================================
 kde_ask_deep_clean() {
-    if command -v whiptail >/dev/null 2>&1; then
-        if whiptail --title "$STR_WT_UNINSTALL_TITLE" --yes-button "Ja" --no-button "Nein" --yesno "$STR_WT_ASK_DEEP_CLEAN" 10 75; then
+    if command -v dialog >/dev/null 2>&1; then
+        if dialog --title "$STR_DLG_UNINSTALL_TITLE" --yes-label "Ja" --no-label "Nein" --yesno "$STR_DLG_ASK_DEEP_CLEAN" 10 75; then
             PURGE_CONFIGS=true
         else
             PURGE_CONFIGS=false
