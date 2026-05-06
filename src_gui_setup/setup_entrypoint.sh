@@ -29,6 +29,22 @@ if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
     exit 1
 fi
 
+# 3. Theme-Farben für das Whiptail-Menü (Passend zum Cosmic Splash-Screen)
+export NEWT_COLORS="
+root=white,black
+window=white,black
+border=magenta,black
+shadow=black,black
+title=yellow,black
+button=white,magenta
+actbutton=white,red
+listbox=white,black
+actlistbox=white,magenta
+sellistbox=white,magenta
+checkbox=magenta,black
+actcheckbox=white,magenta
+"
+
 clear
 
 while true; do

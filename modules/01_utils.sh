@@ -18,13 +18,14 @@ setup_colors() {
     export GREEN='\033[1;32m'
     export YELLOW='\033[1;33m'
     export BLUE='\033[1;34m'
+    export MAGENTA='\033[1;35m'
     export CYAN='\033[1;36m'
     export BOLD='\033[1m'
     export NC='\033[0m'
 
     # UI Prefixes für konsistentes Logging
-    export STR_INPUT_PREFIX="${BLUE}[INPUT]${NC}"
-    export STR_INFO_PREFIX="${BLUE}[INFO]${NC}"
+    export STR_INPUT_PREFIX="${MAGENTA}[INPUT]${NC}"
+    export STR_INFO_PREFIX="${MAGENTA}[INFO]${NC}"
     export STR_OK_PREFIX="${GREEN}[OK]${NC}"
     export STR_WARN_PREFIX="${YELLOW}[WARN]${NC}"
     export STR_ERR_PREFIX="${RED}[ERROR]${NC}"
@@ -38,9 +39,9 @@ setup_colors() {
 # =========================================
 header() {
     local text="$1"
-    echo -e "\n${BLUE}=========================================${NC}"
+    echo -e "\n${MAGENTA}=========================================${NC}"
     echo -e "${BOLD}${CYAN} 🚀 ${text}${NC}"
-    echo -e "${BLUE}=========================================${NC}\n"
+    echo -e "${MAGENTA}=========================================${NC}\n"
 }
 
 # =========================================
@@ -51,7 +52,7 @@ header() {
 # =========================================
 phase_header() {
     local text="$1"
-    echo -e "\n${BOLD}${BLUE}--- ${text} ---${NC}\n"
+    echo -e "\n${BOLD}${MAGENTA}--- ${text} ---${NC}\n"
 }
 
 # =========================================

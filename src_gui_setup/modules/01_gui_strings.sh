@@ -9,11 +9,12 @@ export RED='\033[1;31m'
 export GREEN='\033[1;32m'
 export YELLOW='\033[1;33m'
 export BLUE='\033[1;34m'
+export MAGENTA='\033[1;35m'
 export CYAN='\033[1;36m'
 export BOLD='\033[1m'
 export NC='\033[0m'
 
-export STR_GUI_INFO_PREFIX="${BLUE}[INFO]${NC}"
+export STR_GUI_INFO_PREFIX="${MAGENTA}[INFO]${NC}"
 export STR_GUI_ERR_PREFIX="${RED}[FEHLER]${NC}"
 export STR_GUI_OK_PREFIX="${GREEN}[OK]${NC}"
 
@@ -35,8 +36,8 @@ export STR_GUI_OPT_LO="  ${CYAN}[1]${NC} LibreOffice"
 export STR_GUI_DESC_LO="      └─ Vollständige Office-Suite"
 export STR_GUI_OPT_EXIT="  ${CYAN}[0]${NC} Setup beenden"
 export STR_GUI_OPT_BACK="  ${CYAN}[0]${NC} Zurück zum Hauptmenü"
-export STR_GUI_PROMPT_YN="${BLUE}[INPUT]${NC} (j/n): "
-export STR_GUI_PROMPT="${BLUE}[INPUT]${NC} Auswahl [0-6]: "
+export STR_GUI_PROMPT_YN="${MAGENTA}[INPUT]${NC} (j/n): "
+export STR_GUI_PROMPT="${MAGENTA}[INPUT]${NC} Auswahl [0-6]: "
 
 export STR_GUI_LOG_START_KDE="${STR_GUI_INFO_PREFIX} Bereite Installation von KDE Plasma vor..."
 export STR_GUI_LOG_START_COSMIC="${STR_GUI_INFO_PREFIX} Bereite Installation von COSMIC Desktop vor..."
@@ -67,6 +68,10 @@ export STR_WT_APPS_TITLE="Stratum OS - Anwendungen"
 export STR_WT_APPS_MSG="Wähle eine Anwendung zur Installation aus:"
 export STR_WT_OPT_LO="LibreOffice | Vollständige Office-Suite"
 export STR_GUI_LOG_APPS_LO="${STR_GUI_INFO_PREFIX} Lade und installiere LibreOffice..."
+
+export STR_WT_ASK_OOTB="Möchtest du empfohlene Out-of-the-Box Anwendungen (Browser, Mail, Media-Tools) installieren?"
+export STR_WT_ASK_GAMING="Möchtest du den kompletten Gaming-Stack (Steam, Lutris, Wine, Gamemode, ProtonUp-Qt) installieren?"
+export STR_WT_ASK_DEEP_CLEAN="Möchtest du alle benutzerspezifischen Konfigurationen (Dotfiles) dieser GUI restlos aus deinem Home-Verzeichnis löschen?"
 
 export STR_GUI_ERR_INVALID="${STR_GUI_ERR_PREFIX} Ungültige Auswahl. Bitte versuche es erneut."
 export STR_GUI_ERR_SUDO="${STR_GUI_ERR_PREFIX} Bitte starte das Setup mit sudo: sudo ./install.sh"

@@ -415,15 +415,15 @@ load_ui_strings() {
         return 0
     fi
 
-    echo -e "\n${BLUE}=========================================${NC}"
+    echo -e "\n${MAGENTA}=========================================${NC}"
     echo -e "${BOLD}${CYAN} 🌐 SELECT INSTALLER LANGUAGE / SPRACHE WÄHLEN${NC}"
-    echo -e "${BLUE}=========================================${NC}\n"
+    echo -e "${MAGENTA}=========================================${NC}\n"
     echo -e "  ${CYAN}[1]${NC} English"
     echo -e "  ${CYAN}[2]${NC} Deutsch\n"
 
     local choice
     while true; do
-        read -rp "$(echo -e "${BLUE}[INPUT]${NC} Selection / Auswahl [1-2]: ")" choice
+        read -rp "$(echo -e "${MAGENTA}[INPUT]${NC} Selection / Auswahl [1-2]: ")" choice
         case "$choice" in
             1) 
                 load_strings_en

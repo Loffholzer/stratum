@@ -18,16 +18,24 @@ export PURGE_CONFIGS=false
 # Aufgabe: Setzt das Flag für die Installation von Firefox & Co.
 # =========================================
 cosmic_ask_ootb() {
-    echo -e "\n${STR_GUI_LOG_OOTB_ASK}"
-    local choice
-    while true; do
-        read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
-        case "${choice,,}" in
-            j|ja|y|yes) INSTALL_OOTB=true; break ;;
-            n|nein|no)  INSTALL_OOTB=false; break ;;
-            *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
-        esac
-    done
+    if command -v whiptail >/dev/null 2>&1; then
+        if whiptail --title "$STR_WT_TITLE" --yes-button "Ja" --no-button "Nein" --yesno "$STR_WT_ASK_OOTB" 10 75; then
+            INSTALL_OOTB=true
+        else
+            INSTALL_OOTB=false
+        fi
+    else
+        echo -e "\n${STR_GUI_LOG_OOTB_ASK}"
+        local choice
+        while true; do
+            read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
+            case "${choice,,}" in
+                j|ja|y|yes) INSTALL_OOTB=true; break ;;
+                n|nein|no)  INSTALL_OOTB=false; break ;;
+                *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
+            esac
+        done
+    fi
 }
 
 # =========================================
@@ -37,16 +45,24 @@ cosmic_ask_ootb() {
 # Aufgabe: Setzt das Flag für die Installation des Gaming-Stacks
 # =========================================
 cosmic_ask_gaming() {
-    echo -e "\n${STR_GUI_ASK_GAMING}"
-    local choice
-    while true; do
-        read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
-        case "${choice,,}" in
-            j|ja|y|yes) INSTALL_GAMING=true; break ;;
-            n|nein|no)  INSTALL_GAMING=false; break ;;
-            *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
-        esac
-    done
+    if command -v whiptail >/dev/null 2>&1; then
+        if whiptail --title "$STR_WT_TITLE" --yes-button "Ja" --no-button "Nein" --yesno "$STR_WT_ASK_GAMING" 10 75; then
+            INSTALL_GAMING=true
+        else
+            INSTALL_GAMING=false
+        fi
+    else
+        echo -e "\n${STR_GUI_ASK_GAMING}"
+        local choice
+        while true; do
+            read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
+            case "${choice,,}" in
+                j|ja|y|yes) INSTALL_GAMING=true; break ;;
+                n|nein|no)  INSTALL_GAMING=false; break ;;
+                *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
+            esac
+        done
+    fi
 }
 
 # =========================================
@@ -291,16 +307,24 @@ run_cosmic_setup() {
 # Aufgabe: Setzt das Flag PURGE_CONFIGS basierend auf User-Eingabe
 # =========================================
 cosmic_ask_deep_clean() {
-    echo -e "\n${STR_GUI_ASK_DEEP_CLEAN}"
-    local choice
-    while true; do
-        read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
-        case "${choice,,}" in
-            j|ja|y|yes) PURGE_CONFIGS=true; break ;;
-            n|nein|no)  PURGE_CONFIGS=false; break ;;
-            *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
-        esac
-    done
+    if command -v whiptail >/dev/null 2>&1; then
+        if whiptail --title "$STR_WT_UNINSTALL_TITLE" --yes-button "Ja" --no-button "Nein" --yesno "$STR_WT_ASK_DEEP_CLEAN" 10 75; then
+            PURGE_CONFIGS=true
+        else
+            PURGE_CONFIGS=false
+        fi
+    else
+        echo -e "\n${STR_GUI_ASK_DEEP_CLEAN}"
+        local choice
+        while true; do
+            read -rp "$(echo -e "${STR_GUI_PROMPT_YN}")" choice
+            case "${choice,,}" in
+                j|ja|y|yes) PURGE_CONFIGS=true; break ;;
+                n|nein|no)  PURGE_CONFIGS=false; break ;;
+                *) echo -e "${STR_GUI_ERR_INVALID}" >&2 ;;
+            esac
+        done
+    fi
 }
 
 # =========================================
