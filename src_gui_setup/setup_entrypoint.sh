@@ -29,21 +29,8 @@ if [[ "${EUID:-$(id -u)}" -ne 0 ]]; then
     exit 1
 fi
 
-# 3. Theme-Farben für das Whiptail-Menü (Passend zum Cosmic Splash-Screen)
-export NEWT_COLORS="
-root=white,black
-window=white,black
-border=magenta,black
-shadow=black,black
-title=yellow,black
-button=magenta,black
-actbutton=white,magenta
-listbox=white,black
-actlistbox=black,yellow
-sellistbox=black,yellow
-checkbox=magenta,black
-actcheckbox=white,magenta
-"
+# 3. Theme-Farben für das Whiptail-Menü (Robustes Single-Line Format)
+export NEWT_COLORS="root=white,black;window=white,black;border=magenta,black;shadow=black,black;title=yellow,black;button=magenta,black;actbutton=white,magenta;listbox=white,black;actlistbox=black,yellow;sellistbox=black,yellow;actsellistbox=black,yellow;checkbox=magenta,black;actcheckbox=white,magenta"
 
 clear
 
@@ -166,7 +153,7 @@ while true; do
                 if command -v show_apps_menu >/dev/null 2>&1; then
                     app_choice=$(show_apps_menu)
                 else
-                    echo -e "\nAnwendungs-Menü:\n[1] LibreOffice\n[2] Flatpak\n[3] KVM/QEMU\n[0] Zurück"
+                    echo -e "\nAnwendungs-Menü:\n[1] LibreOffice\n[2] Flatpak\n[3] KVM/QEMU\n[4] Docker\n[0] Zurück"
                     read -rp "Auswahl: " app_choice
                 fi
                 
@@ -191,6 +178,14 @@ while true; do
                         if [[ -f "$SETUP_DIR/modules/06_apps_setup.sh" ]]; then
                             source "$SETUP_DIR/modules/06_apps_setup.sh"
                             install_kvm
+                        else
+                            echo -e "${STR_GUI_ERR_PREFIX} Modul 06_apps_setup.sh nicht gefunden." >&2
+                        fi
+                        ;;
+                    4)
+                        if [[ -f "$SETUP_DIR/modules/06_apps_setup.sh" ]]; then
+                            source "$SETUP_DIR/modules/06_apps_setup.sh"
+                            install_docker
                         else
                             echo -e "${STR_GUI_ERR_PREFIX} Modul 06_apps_setup.sh nicht gefunden." >&2
                         fi
