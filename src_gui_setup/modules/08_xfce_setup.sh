@@ -238,7 +238,16 @@ xfce_disable_services() {
 xfce_remove_packages() {
     echo -e "\n${STR_GUI_LOG_XFCE_RM_PKGS}"
     local installed_pkgs=()
-    for pkg in "${XFCE_PKGS[@]}"; do
+    local target_pkgs=("${XFCE_PKGS[@]}")
+
+    # Architekturell saubere Erfassung: Wir fragen Pacman nach offiziellen Gruppen.
+    local group_pkgs
+    group_pkgs=$(pacman -Sgq xfce4 xfce4-goodies 2>/dev/null || true)
+    if [[ -n "$group_pkgs" ]]; then
+        target_pkgs+=($group_pkgs)
+    fi
+
+    for pkg in "${target_pkgs[@]}"; do
         local pkg_list
         if pacman -Sgq "$pkg" >/dev/null 2>&1; then
             pkg_list=$(pacman -Sgq "$pkg")

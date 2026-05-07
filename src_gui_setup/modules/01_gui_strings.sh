@@ -99,6 +99,11 @@ export STR_DLG_SUCCESS_KDE="KDE Plasma wurde erfolgreich installiert und konfigu
 export STR_DLG_SUCCESS_COSMIC="COSMIC Desktop wurde erfolgreich installiert und konfiguriert!\n\nDu kannst das Setup nun beenden oder weitere Anpassungen vornehmen."
 export STR_DLG_SUCCESS_GNOME="GNOME wurde erfolgreich installiert und konfiguriert!\n\nDu kannst das Setup nun beenden oder weitere Anpassungen vornehmen."
 export STR_DLG_SUCCESS_XFCE="XFCE wurde erfolgreich installiert und konfiguriert!\n\nDu kannst das Setup nun beenden oder weitere Anpassungen vornehmen."
+export STR_DLG_SUCCESS_RM_TITLE="Deinstallation Erfolgreich"
+export STR_DLG_SUCCESS_RM_KDE="KDE Plasma wurde erfolgreich und restlos von deinem System entfernt."
+export STR_DLG_SUCCESS_RM_COSMIC="COSMIC Desktop wurde erfolgreich und restlos von deinem System entfernt."
+export STR_DLG_SUCCESS_RM_GNOME="GNOME wurde erfolgreich und restlos von deinem System entfernt."
+export STR_DLG_SUCCESS_RM_XFCE="XFCE wurde erfolgreich und restlos von deinem System entfernt."
 
 export STR_DLG_ASK_DEEP_CLEAN="Möchtest du alle benutzerspezifischen Konfigurationen (Dotfiles) dieser GUI restlos aus deinem Home-Verzeichnis löschen?"
 

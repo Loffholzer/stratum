@@ -239,7 +239,16 @@ gnome_disable_services() {
 gnome_remove_packages() {
     echo -e "\n${STR_GUI_LOG_GNOME_RM_PKGS}"
     local installed_pkgs=()
-    for pkg in "${GNOME_PKGS[@]}"; do
+    local target_pkgs=("${GNOME_PKGS[@]}")
+
+    # Architekturell saubere Erfassung: Wir fragen Pacman nach offiziellen Gruppen.
+    local group_pkgs
+    group_pkgs=$(pacman -Sgq gnome gnome-extra 2>/dev/null || true)
+    if [[ -n "$group_pkgs" ]]; then
+        target_pkgs+=($group_pkgs)
+    fi
+
+    for pkg in "${target_pkgs[@]}"; do
         local pkg_list
         if pacman -Sgq "$pkg" >/dev/null 2>&1; then
             pkg_list=$(pacman -Sgq "$pkg")

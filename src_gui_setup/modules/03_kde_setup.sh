@@ -338,8 +338,16 @@ kde_remove_packages() {
     echo -e "\n${STR_GUI_LOG_KDE_RM_PKGS}"
     
     local installed_pkgs=()
+    local target_pkgs=("${KDE_PKGS[@]}")
     
-    for pkg in "${KDE_PKGS[@]}"; do
+    # Architekturell saubere Erfassung: Wir fragen Pacman nach offiziellen Gruppen.
+    local group_pkgs
+    group_pkgs=$(pacman -Sgq plasma kde-applications 2>/dev/null || true)
+    if [[ -n "$group_pkgs" ]]; then
+        target_pkgs+=($group_pkgs)
+    fi
+
+    for pkg in "${target_pkgs[@]}"; do
         # Wenn das Paket eine Gruppe ist, extrahiere die Mitglieder
         local pkg_list
         if pacman -Sgq "$pkg" >/dev/null 2>&1; then
@@ -422,4 +430,8 @@ remove_kde_setup() {
     kde_remove_packages
     kde_purge_configs
     echo -e "\n${STR_GUI_OK_RM_KDE}"
+    
+    if command -v dialog >/dev/null 2>&1; then
+        dialog --title "$STR_DLG_SUCCESS_RM_TITLE" --msgbox "$STR_DLG_SUCCESS_RM_KDE" 8 60
+    fi
 }

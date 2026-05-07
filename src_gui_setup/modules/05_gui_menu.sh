@@ -8,11 +8,37 @@
 # =========================================
 
 # =========================================
+# 📦 Funktion: _setup_dialog_theme
+# -----------------------------------------
+# Zweck: Setzt ein konsistentes Theme für 'dialog', das schwarze Hintergründe respektiert
+# Aufgabe: Erstellt eine temporäre .dialogrc, um unschöne weiße Artefakte zu vermeiden
+# =========================================
+_setup_dialog_theme() {
+    # Nur einmal ausführen und nur wenn 'dialog' existiert
+    if [[ -z "$STRATUM_DIALOG_THEME_SET" && -n "$(command -v dialog)" ]]; then
+        export DIALOGRC
+        DIALOGRC=$(mktemp)
+        # Aufräumen bei Skript-Ende sicherstellen
+        trap 'rm -f "$DIALOGRC"' EXIT
+        
+        # Minimal-Konfiguration, die den Terminal-Hintergrund respektiert
+        cat > "$DIALOGRC" <<EOF
+use_shadow = OFF
+screen_color = (WHITE,BLACK,OFF)
+title_color = (BLUE,BLACK,ON)
+button_active_color = (WHITE,BLUE,ON)
+EOF
+        export STRATUM_DIALOG_THEME_SET=true
+    fi
+}
+
+# =========================================
 # 📦 Funktion: show_gui_menu
 # -----------------------------------------
 # Zweck: Zeigt das Hauptmenü und gibt die Auswahl (0-4) zurück
 # =========================================
 show_gui_menu() {
+    _setup_dialog_theme
     local kde_mark=""
     local cosmic_mark=""
     local gnome_mark=""
@@ -67,6 +93,7 @@ show_gui_menu() {
 # Zweck: Zeigt das Menü für zusätzliche Anwendungen an
 # =========================================
 show_apps_menu() {
+    _setup_dialog_theme
     if ! command -v dialog >/dev/null 2>&1; then
         echo -e "\n${BOLD}${CYAN} 📦 ANWENDUNGEN${NC}"
         echo -e "${STR_GUI_APPS_SUB}"
@@ -113,6 +140,7 @@ show_apps_menu() {
 # Zweck: Zeigt das Deinstallations-Submenü
 # =========================================
 show_uninstall_menu() {
+    _setup_dialog_theme
     local kde_mark=""
     local cosmic_mark=""
     local gnome_mark=""
