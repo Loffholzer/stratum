@@ -34,24 +34,27 @@ export DIALOGRC="$SETUP_DIR/.dialogrc"
 cat << 'EOF' > "$DIALOGRC"
 use_colors = ON
 use_shadow = OFF
-screen_color = (BLACK,BLACK,OFF)
+screen_color = (CYAN,BLACK,OFF)
 dialog_color = (CYAN,BLACK,OFF)
-menubox_color = (BLACK,BLACK,OFF)
+title_color = (MAGENTA,BLACK,ON)
 border_color = (MAGENTA,BLACK,ON)
 border2_color = (MAGENTA,BLACK,ON)
+menubox_color = (WHITE,BLACK,OFF)
 menubox_border_color = (MAGENTA,BLACK,ON)
 menubox_border2_color = (MAGENTA,BLACK,ON)
+item_color = (YELLOW,BLACK,OFF)
 item_selected_color = (WHITE,MAGENTA,ON)
+tag_color = (YELLOW,BLACK,ON)
+tag_key_color = (YELLOW,BLACK,ON)
 tag_selected_color = (WHITE,MAGENTA,ON)
 tag_key_selected_color = (WHITE,MAGENTA,ON)
+check_color = (YELLOW,BLACK,OFF)
 check_selected_color = (WHITE,MAGENTA,ON)
 button_active_color = (WHITE,MAGENTA,ON)
 button_label_active_color = (WHITE,MAGENTA,ON)
-item_color = (YELLOW,BLACK,OFF)
-tag_color = (YELLOW,BLACK,ON)
-tag_key_color = (YELLOW,BLACK,ON)
-check_color = (YELLOW,BLACK,OFF)
 button_key_active_color = (YELLOW,MAGENTA,ON)
+button_inactive_color = (WHITE,BLACK,OFF)
+button_label_inactive_color = (WHITE,BLACK,OFF)
 button_key_inactive_color = (YELLOW,BLACK,OFF)
 EOF
 
