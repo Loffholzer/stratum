@@ -36,7 +36,7 @@ use_colors = ON
 use_shadow = OFF
 screen_color = (CYAN,BLACK,OFF)
 dialog_color = (CYAN,BLACK,OFF)
-title_color = (MAGENTA,BLACK,ON)
+title_color = (CYAN,BLACK,ON)
 border_color = (MAGENTA,BLACK,ON)
 border2_color = (MAGENTA,BLACK,ON)
 menubox_color = (WHITE,BLACK,OFF)
@@ -53,8 +53,8 @@ check_selected_color = (WHITE,MAGENTA,ON)
 button_active_color = (WHITE,MAGENTA,ON)
 button_label_active_color = (WHITE,MAGENTA,ON)
 button_key_active_color = (YELLOW,MAGENTA,ON)
-button_inactive_color = (WHITE,BLACK,OFF)
-button_label_inactive_color = (WHITE,BLACK,OFF)
+button_inactive_color = (CYAN,BLACK,OFF)
+button_label_inactive_color = (CYAN,BLACK,OFF)
 button_key_inactive_color = (YELLOW,BLACK,OFF)
 EOF
 
